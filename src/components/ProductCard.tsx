@@ -51,7 +51,7 @@ export const ProductCard = ({ product, onQuantitySelect }: ProductCardProps) => 
         </div>
         
         <div className="md:w-1/2">
-          <div className="grid grid-cols-[100px_1fr_80px] gap-4 text-sm font-medium text-gray-700 mb-2">
+          <div className="grid grid-cols-[80px_1fr_80px] gap-4 text-sm font-medium text-gray-700 mb-2">
             <div>Tamanho</div>
             <div>Quantidades</div>
             <div>Subtotal</div>
@@ -59,7 +59,7 @@ export const ProductCard = ({ product, onQuantitySelect }: ProductCardProps) => 
           
           {product.sizes.map((size) => (
             <div key={size.label} className="mb-4">
-              <div className="grid grid-cols-[100px_1fr_80px] gap-4 items-center">
+              <div className="grid grid-cols-[80px_1fr_80px] gap-4 items-center">
                 <div>
                   <span className="font-medium text-sm">{size.label}</span>
                   <div className="text-xs text-gray-500">R$ {size.price.toFixed(2)}</div>
