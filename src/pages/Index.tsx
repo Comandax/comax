@@ -65,8 +65,15 @@ const MOCK_PRODUCTS = [
   },
 ];
 
+interface SelectedItem {
+  productId: string;
+  size: string;
+  quantity: number;
+  price: number;
+}
+
 const Index = () => {
-  const [orderTotal, setOrderTotal] = useState(0);
+  const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
   const [notes, setNotes] = useState("");
   const { toast } = useToast();
 
@@ -74,9 +81,24 @@ const Index = () => {
     console.log("Contact form data:", data);
   };
 
-  const handleQuantitySelect = (size: string, quantity: number, price: number) => {
-    const total = quantity * price;
-    setOrderTotal((prev) => prev + total);
+  const handleQuantitySelect = (productId: string, size: string, quantity: number, price: number) => {
+    setSelectedItems(prev => {
+      // Remove any existing selection for this product size
+      const filtered = prev.filter(item => !(item.productId === productId && item.size === size));
+      
+      // Add new selection if quantity is not 0
+      if (quantity > 0) {
+        return [...filtered, { productId, size, quantity, price }];
+      }
+      
+      return filtered;
+    });
+  };
+
+  const calculateTotal = () => {
+    return selectedItems.reduce((total, item) => {
+      return total + (item.quantity * item.price);
+    }, 0);
   };
 
   const handleSubmitOrder = () => {
@@ -106,7 +128,9 @@ const Index = () => {
             <ProductCard
               key={product.id}
               product={product}
-              onQuantitySelect={handleQuantitySelect}
+              onQuantitySelect={(size, quantity, price) => 
+                handleQuantitySelect(product.id, size, quantity, price)
+              }
             />
           ))}
         </div>
@@ -124,7 +148,7 @@ const Index = () => {
         </div>
       </div>
 
-      <FloatingTotal total={orderTotal} />
+      <FloatingTotal total={calculateTotal()} />
     </div>
   );
 };

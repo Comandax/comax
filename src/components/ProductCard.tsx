@@ -1,6 +1,7 @@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { useState } from "react";
 
 interface ProductCardProps {
   product: {
@@ -18,6 +19,21 @@ interface ProductCardProps {
 }
 
 export const ProductCard = ({ product, onQuantitySelect }: ProductCardProps) => {
+  const [selectedQuantities, setSelectedQuantities] = useState<Record<string, number>>({});
+
+  const handleQuantityChange = (size: string, quantity: number, price: number) => {
+    setSelectedQuantities(prev => ({
+      ...prev,
+      [size]: quantity
+    }));
+    onQuantitySelect(size, quantity, price);
+  };
+
+  const calculateSubtotal = (size: string, price: number) => {
+    const quantity = selectedQuantities[size] || 0;
+    return quantity * price;
+  };
+
   return (
     <Card className="p-6 bg-white/90 shadow-md">
       <div className="flex flex-col md:flex-row gap-6">
@@ -49,8 +65,9 @@ export const ProductCard = ({ product, onQuantitySelect }: ProductCardProps) => 
                 </div>
                 
                 <RadioGroup
+                  value={selectedQuantities[size.label]?.toString()}
                   onValueChange={(value) => {
-                    onQuantitySelect(size.label, Number(value), size.price);
+                    handleQuantityChange(size.label, Number(value), size.price);
                   }}
                   className="flex flex-wrap gap-2"
                 >
@@ -63,7 +80,7 @@ export const ProductCard = ({ product, onQuantitySelect }: ProductCardProps) => 
                 </RadioGroup>
                 
                 <div className="text-right font-medium">
-                  R$ 0,00
+                  R$ {calculateSubtotal(size.label, size.price).toFixed(2)}
                 </div>
               </div>
             </div>
