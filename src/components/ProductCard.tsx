@@ -1,3 +1,4 @@
+
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
@@ -50,7 +51,7 @@ export const ProductCard = ({ product, onQuantitySelect }: ProductCardProps) => 
         </div>
         
         <div className="md:w-1/2">
-          <div className="grid grid-cols-3 gap-4 text-sm font-medium text-gray-700 mb-2">
+          <div className="grid grid-cols-[100px_1fr_80px] gap-4 text-sm font-medium text-gray-700 mb-2">
             <div>Tamanho</div>
             <div>Quantidades</div>
             <div>Subtotal</div>
@@ -58,10 +59,10 @@ export const ProductCard = ({ product, onQuantitySelect }: ProductCardProps) => 
           
           {product.sizes.map((size) => (
             <div key={size.label} className="mb-4">
-              <div className="grid grid-cols-3 gap-4 items-center">
+              <div className="grid grid-cols-[100px_1fr_80px] gap-4 items-center">
                 <div>
-                  <span className="font-medium">{size.label}</span>
-                  <div className="text-sm text-gray-500">R$ {size.price.toFixed(2)}</div>
+                  <span className="font-medium text-sm">{size.label}</span>
+                  <div className="text-xs text-gray-500">R$ {size.price.toFixed(2)}</div>
                 </div>
                 
                 <RadioGroup
@@ -69,17 +70,17 @@ export const ProductCard = ({ product, onQuantitySelect }: ProductCardProps) => 
                   onValueChange={(value) => {
                     handleQuantityChange(size.label, Number(value), size.price);
                   }}
-                  className="flex flex-wrap gap-2"
+                  className="flex flex-wrap gap-1"
                 >
                   {size.quantities.map((qty) => (
-                    <div key={qty} className="flex items-center space-x-2">
-                      <RadioGroupItem value={qty.toString()} id={`${size.label}-${qty}`} />
-                      <Label htmlFor={`${size.label}-${qty}`}>{qty}</Label>
+                    <div key={qty} className="flex items-center">
+                      <RadioGroupItem value={qty.toString()} id={`${size.label}-${qty}`} className="scale-75" />
+                      <Label htmlFor={`${size.label}-${qty}`} className="text-xs ml-1 mr-2">{qty}</Label>
                     </div>
                   ))}
                 </RadioGroup>
                 
-                <div className="text-right font-medium">
+                <div className="text-right text-xs font-medium text-gray-600">
                   R$ {calculateSubtotal(size.label, size.price).toFixed(2)}
                 </div>
               </div>
