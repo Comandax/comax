@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import InputMask from "input-mask-react";
 
 interface ContactFormProps {
   onSubmit: (data: ContactFormData) => void;
@@ -70,6 +71,11 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
   };
 
   const handleInputChange = (field: keyof ContactFormData, value: string) => {
+    // Remove todos os caracteres não numéricos para os campos de telefone e CEP
+    if (field === 'whatsapp' || field === 'zipCode') {
+      value = value.replace(/\D/g, '');
+    }
+    
     setFormData(prev => ({
       ...prev,
       [field]: value
@@ -101,12 +107,14 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
         
         <div className="space-y-2">
           <Label htmlFor="whatsapp">WhatsApp (com DDD)</Label>
-          <Input 
-            id="whatsapp" 
-            name="whatsapp" 
+          <InputMask
+            mask="(00) 0 0000-0000"
+            replacement={{ '0': /\d/ }}
+            showMask
             value={formData.whatsapp}
             onChange={(e) => handleInputChange("whatsapp", e.target.value)}
-            required 
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+            required
           />
         </div>
       </div>
@@ -153,12 +161,14 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
         
         <div className="space-y-2">
           <Label htmlFor="zipCode">CEP</Label>
-          <Input 
-            id="zipCode" 
-            name="zipCode" 
+          <InputMask
+            mask="00.000-000"
+            replacement={{ '0': /\d/ }}
+            showMask
             value={formData.zipCode}
             onChange={(e) => handleInputChange("zipCode", e.target.value)}
-            required 
+            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
+            required
           />
         </div>
       </div>
