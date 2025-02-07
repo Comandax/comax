@@ -70,12 +70,12 @@ export const ProductCard = ({ product, onQuantitySelect }: ProductCardProps) => 
                   onValueChange={(value) => {
                     handleQuantityChange(size.label, Number(value), size.price);
                   }}
-                  className="flex flex-wrap gap-1"
+                  className="grid grid-cols-6 gap-2"
                 >
                   {size.quantities.map((qty) => (
-                    <div key={qty} className="flex items-center">
+                    <div key={qty} className="flex flex-col items-center gap-1">
                       <RadioGroupItem value={qty.toString()} id={`${size.label}-${qty}`} className="scale-75" />
-                      <Label htmlFor={`${size.label}-${qty}`} className="text-xs ml-1 mr-2">{qty}</Label>
+                      <Label htmlFor={`${size.label}-${qty}`} className="text-xs">{qty}</Label>
                     </div>
                   ))}
                 </RadioGroup>
