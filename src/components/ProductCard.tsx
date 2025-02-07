@@ -2,6 +2,7 @@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 
 interface ProductCardProps {
@@ -57,33 +58,38 @@ export const ProductCard = ({ product, onQuantitySelect }: ProductCardProps) => 
             <div>Subtotal</div>
           </div>
           
-          {product.sizes.map((size) => (
-            <div key={size.label} className="mb-4">
-              <div className="grid grid-cols-[80px_1fr_60px] gap-4 items-center">
-                <div>
-                  <span className="font-medium text-sm">{size.label}</span>
-                  <div className="text-xs text-gray-500">R$ {size.price.toFixed(2)}</div>
-                </div>
-                
-                <RadioGroup
-                  value={selectedQuantities[size.label]?.toString()}
-                  onValueChange={(value) => {
-                    handleQuantityChange(size.label, Number(value), size.price);
-                  }}
-                  className="grid grid-cols-6 gap-2"
-                >
-                  {size.quantities.map((qty) => (
-                    <div key={qty} className="flex flex-col items-center gap-1">
-                      <RadioGroupItem value={qty.toString()} id={`${size.label}-${qty}`} className="scale-75" />
-                      <Label htmlFor={`${size.label}-${qty}`} className="text-xs">{qty}</Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-                
-                <div className="text-right text-xs font-medium text-gray-600">
-                  R$ {calculateSubtotal(size.label, size.price).toFixed(2)}
+          {product.sizes.map((size, index) => (
+            <div key={size.label}>
+              <div className="mb-4">
+                <div className="grid grid-cols-[80px_1fr_60px] gap-4 items-center">
+                  <div>
+                    <span className="font-medium text-sm">{size.label}</span>
+                    <div className="text-xs text-gray-500">R$ {size.price.toFixed(2)}</div>
+                  </div>
+                  
+                  <RadioGroup
+                    value={selectedQuantities[size.label]?.toString()}
+                    onValueChange={(value) => {
+                      handleQuantityChange(size.label, Number(value), size.price);
+                    }}
+                    className="grid grid-cols-6 gap-2"
+                  >
+                    {size.quantities.map((qty) => (
+                      <div key={qty} className="flex flex-col items-center gap-1">
+                        <RadioGroupItem value={qty.toString()} id={`${size.label}-${qty}`} className="scale-75" />
+                        <Label htmlFor={`${size.label}-${qty}`} className="text-xs">{qty}</Label>
+                      </div>
+                    ))}
+                  </RadioGroup>
+                  
+                  <div className="text-right text-xs font-medium text-gray-600">
+                    R$ {calculateSubtotal(size.label, size.price).toFixed(2)}
+                  </div>
                 </div>
               </div>
+              {index < product.sizes.length - 1 && (
+                <Separator className="my-4 opacity-30" />
+              )}
             </div>
           ))}
         </div>
