@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { ContactForm, type ContactFormData } from "@/components/ContactForm";
 import { ProductCard } from "@/components/ProductCard";
@@ -5,65 +6,19 @@ import { FloatingTotal } from "@/components/FloatingTotal";
 import { OrderNotes } from "@/components/OrderNotes";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
+import { useQuery } from "@tanstack/react-query";
 
-const MOCK_PRODUCTS = [
-  {
-    id: "1",
-    name: "Cueca Feminina Infantil (Algodão)",
-    image: "/lovable-uploads/1856d481-4fe4-450a-937a-54bdaffb0f22.png",
-    ref: "3002",
-    sizes: [
-      {
-        label: "P",
-        price: 7.54,
-        quantities: [0, 6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-      },
-      {
-        label: "M",
-        price: 7.54,
-        quantities: [0, 6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-      },
-      {
-        label: "G",
-        price: 7.54,
-        quantities: [0, 6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-      },
-      {
-        label: "GG",
-        price: 7.54,
-        quantities: [0, 6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-      },
-    ],
-  },
-  {
-    id: "2",
-    name: "Daurinha Sublime",
-    image: "/lovable-uploads/8b77818a-8bb0-45ea-9df7-84802eecd322.png",
-    ref: "3007",
-    sizes: [
-      {
-        label: "P",
-        price: 7.00,
-        quantities: [0, 6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-      },
-      {
-        label: "M",
-        price: 7.00,
-        quantities: [0, 6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-      },
-      {
-        label: "G",
-        price: 7.00,
-        quantities: [0, 6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-      },
-      {
-        label: "GG",
-        price: 7.00,
-        quantities: [0, 6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-      },
-    ],
-  },
-];
+interface Product {
+  _id: string;
+  reference: string;
+  name: string;
+  sizes: Array<{
+    label: string;
+    price: number;
+    quantities: number[];
+  }>;
+  disabled: boolean;
+}
 
 interface SelectedItem {
   productId: string;
@@ -72,10 +27,31 @@ interface SelectedItem {
   price: number;
 }
 
+const fetchProducts = async (): Promise<Product[]> => {
+  const response = await fetch('http://82.180.136.47:30000/products');
+  const data = await response.json();
+  return data.map((product: any) => ({
+    _id: product._id,
+    reference: product.reference,
+    name: product.name,
+    sizes: product.sizes.map((size: any) => ({
+      label: size.size,
+      price: size.value,
+      quantities: [0, 6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120], // Mantendo as mesmas quantidades disponíveis
+    })),
+    disabled: product.disabled
+  }));
+};
+
 const Index = () => {
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
   const [notes, setNotes] = useState("");
   const { toast } = useToast();
+
+  const { data: products = [], isLoading, error } = useQuery({
+    queryKey: ['products'],
+    queryFn: fetchProducts,
+  });
 
   const handleContactSubmit = (data: ContactFormData) => {
     console.log("Contact form data:", data);
@@ -83,10 +59,8 @@ const Index = () => {
 
   const handleQuantitySelect = (productId: string, size: string, quantity: number, price: number) => {
     setSelectedItems(prev => {
-      // Remove any existing selection for this product size
       const filtered = prev.filter(item => !(item.productId === productId && item.size === size));
       
-      // Add new selection if quantity is not 0
       if (quantity > 0) {
         return [...filtered, { productId, size, quantity, price }];
       }
@@ -108,6 +82,22 @@ const Index = () => {
     });
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8 flex items-center justify-center">
+        <div className="text-white text-xl">Carregando produtos...</div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8 flex items-center justify-center">
+        <div className="text-white text-xl">Erro ao carregar produtos. Por favor, tente novamente mais tarde.</div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-8">
@@ -124,12 +114,18 @@ const Index = () => {
 
         <div className="space-y-6">
           <h2 className="text-2xl font-semibold text-white">Itens para pedido</h2>
-          {MOCK_PRODUCTS.map((product) => (
+          {products.filter(product => !product.disabled).map((product) => (
             <ProductCard
-              key={product.id}
-              product={product}
+              key={product._id}
+              product={{
+                id: product._id,
+                name: product.name,
+                image: `http://82.180.136.47/pedido/productImages/${product.reference}.jpeg?v=2`,
+                ref: product.reference,
+                sizes: product.sizes
+              }}
               onQuantitySelect={(size, quantity, price) => 
-                handleQuantitySelect(product.id, size, quantity, price)
+                handleQuantitySelect(product._id, size, quantity, price)
               }
             />
           ))}
