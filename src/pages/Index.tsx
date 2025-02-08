@@ -28,19 +28,33 @@ interface SelectedItem {
 }
 
 const fetchProducts = async (): Promise<Product[]> => {
-  const response = await fetch('http://82.180.136.47:30000/products');
-  const data = await response.json();
-  return data.map((product: any) => ({
-    _id: product._id,
-    reference: product.reference,
-    name: product.name,
-    sizes: product.sizes.map((size: any) => ({
-      label: size.size,
-      price: size.value,
-      quantities: [0, 6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120], // Mantendo as mesmas quantidades disponíveis
-    })),
-    disabled: product.disabled
-  }));
+  try {
+    console.log('Iniciando fetchProducts');
+    const response = await fetch('http://82.180.136.47:30000/products');
+    
+    if (!response.ok) {
+      console.error('Erro na resposta:', response.status, response.statusText);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    console.log('Dados recebidos:', data);
+    
+    return data.map((product: any) => ({
+      _id: product._id,
+      reference: product.reference,
+      name: product.name,
+      sizes: product.sizes.map((size: any) => ({
+        label: size.size,
+        price: size.value,
+        quantities: [0, 6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
+      })),
+      disabled: product.disabled
+    }));
+  } catch (error) {
+    console.error('Erro ao buscar produtos:', error);
+    throw error;
+  }
 };
 
 const Index = () => {
@@ -93,7 +107,16 @@ const Index = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8 flex items-center justify-center">
-        <div className="text-white text-xl">Erro ao carregar produtos. Por favor, tente novamente mais tarde.</div>
+        <div className="text-white text-xl">
+          Erro ao carregar produtos: {error instanceof Error ? error.message : 'Erro desconhecido'}
+          <br />
+          <Button 
+            onClick={() => window.location.reload()}
+            className="mt-4 bg-white text-primary hover:bg-white/90"
+          >
+            Tentar novamente
+          </Button>
+        </div>
       </div>
     );
   }
