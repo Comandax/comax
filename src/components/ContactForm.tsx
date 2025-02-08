@@ -108,7 +108,7 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
         <div className="space-y-2">
           <Label htmlFor="whatsapp">WhatsApp (com DDD)</Label>
           <InputMask
-            mask="(00) 0 0000-0000"
+            masks={["(00) 0 0000-0000"]}
             replacement={{ '0': /\d/ }}
             showMask
             value={formData.whatsapp}
@@ -162,7 +162,7 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
         <div className="space-y-2">
           <Label htmlFor="zipCode">CEP</Label>
           <InputMask
-            mask="00.000-000"
+            masks={["00.000-000"]}
             replacement={{ '0': /\d/ }}
             showMask
             value={formData.zipCode}
