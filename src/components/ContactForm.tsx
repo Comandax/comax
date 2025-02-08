@@ -4,7 +4,6 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { InputMask } from "input-mask-react";
 
 interface ContactFormProps {
   onSubmit: (data: ContactFormData) => void;
@@ -107,14 +106,13 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
         
         <div className="space-y-2">
           <Label htmlFor="whatsapp">WhatsApp (com DDD)</Label>
-          <InputMask
-            masks={["(00) 0 0000-0000"]}
-            replacement={{ '0': /\d/ }}
-            showMask
+          <Input
+            id="whatsapp"
+            name="whatsapp"
             value={formData.whatsapp}
             onChange={(e) => handleInputChange("whatsapp", e.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
             required
+            className="md:text-sm"
           />
         </div>
       </div>
@@ -161,18 +159,16 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
         
         <div className="space-y-2">
           <Label htmlFor="zipCode">CEP</Label>
-          <InputMask
-            masks={["00.000-000"]}
-            replacement={{ '0': /\d/ }}
-            showMask
+          <Input
+            id="zipCode"
+            name="zipCode"
             value={formData.zipCode}
             onChange={(e) => handleInputChange("zipCode", e.target.value)}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
             required
+            className="md:text-sm"
           />
         </div>
       </div>
     </form>
   );
 };
-
