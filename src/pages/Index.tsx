@@ -6,6 +6,7 @@ import { OrderNotes } from "@/components/OrderNotes";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 
 interface Product {
   _id: string;
@@ -17,6 +18,7 @@ interface Product {
     quantities: number[];
   }>;
   disabled: boolean;
+  companyId?: string; // Added company ID
 }
 
 interface SelectedItem {
@@ -26,6 +28,7 @@ interface SelectedItem {
   price: number;
 }
 
+// Mock data now includes companyId
 const mockData = {
   "products": [
     {
@@ -39,7 +42,8 @@ const mockData = {
         {"size": "GG", "value": 5.76}
       ],
       "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-      "disabled": false
+      "disabled": false,
+      "companyId": "1"
     },
     {
       "_id": "65c14c98ebe1ad654f459e82",
@@ -136,22 +140,26 @@ const mockData = {
   ]
 };
 
-const fetchProducts = async (): Promise<Product[]> => {
-  // Simulating an async operation with the mock data
+const fetchProducts = async (companyId: string = "1"): Promise<Product[]> => {
+  // Simulating an async operation with the mock data and filtering by company
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(mockData.products.map(product => ({
-        _id: product._id,
-        reference: product.reference,
-        name: product.name,
-        sizes: product.sizes.map(size => ({
-          label: size.size,
-          price: size.value,
-          quantities: [0, ...product.quantities],
-        })),
-        disabled: product.disabled
-      })));
-    }, 500); // Adding a small delay to simulate network request
+      const filteredProducts = mockData.products
+        .filter(product => product.companyId === companyId)
+        .map(product => ({
+          _id: product._id,
+          reference: product.reference,
+          name: product.name,
+          sizes: product.sizes.map(size => ({
+            label: size.size,
+            price: size.value,
+            quantities: [0, ...product.quantities],
+          })),
+          disabled: product.disabled,
+          companyId: product.companyId
+        }));
+      resolve(filteredProducts);
+    }, 500);
   });
 };
 
@@ -159,10 +167,15 @@ const Index = () => {
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
   const [notes, setNotes] = useState("");
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  // For now, we're using a hardcoded companyId. In a real application,
+  // this would come from authentication or URL parameters
+  const companyId = "1";
 
   const { data: products = [], isLoading, error } = useQuery({
-    queryKey: ['products'],
-    queryFn: fetchProducts,
+    queryKey: ['products', companyId],
+    queryFn: () => fetchProducts(companyId),
   });
 
   const handleContactSubmit = (data: ContactFormData) => {
@@ -229,6 +242,12 @@ const Index = () => {
             className="w-32 h-32 mx-auto"
           />
           <h1 className="text-3xl font-bold text-white mt-4">Simulações e Pedidos</h1>
+          <Button
+            onClick={() => navigate("/companies")}
+            className="mt-4 bg-white text-primary hover:bg-white/90"
+          >
+            Gerenciar Empresas
+          </Button>
         </div>
 
         <ContactForm onSubmit={handleContactSubmit} />
