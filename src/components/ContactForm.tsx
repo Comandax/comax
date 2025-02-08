@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import InputMask from "input-mask-react";
+import { InputMask } from "input-mask-react";
 
 interface ContactFormProps {
   onSubmit: (data: ContactFormData) => void;
@@ -175,3 +175,4 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
     </form>
   );
 };
+
