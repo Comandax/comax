@@ -1,5 +1,5 @@
 
-import type { AuthProvider, User } from '../types/auth';
+import type { AuthProvider, User, Role } from '../types/auth';
 import { supabase } from '@/integrations/supabase/client';
 
 export class SupabaseAuthProvider implements AuthProvider {
@@ -12,11 +12,13 @@ export class SupabaseAuthProvider implements AuthProvider {
     if (error) throw new Error(error.message);
     if (!data.user) throw new Error('No user data returned');
 
-    // Aqui você buscaria os dados adicionais do usuário, como companyId
+    const roles = await this.getUserRoles(data.user.id);
+
     return {
       id: data.user.id,
       email: data.user.email!,
-      companyId: '1', // Exemplo - na implementação real isso viria do perfil do usuário
+      companyId: '1',
+      roles,
     };
   }
 
@@ -30,10 +32,27 @@ export class SupabaseAuthProvider implements AuthProvider {
     
     if (!user) return null;
 
+    const roles = await this.getUserRoles(user.id);
+
     return {
       id: user.id,
       email: user.email!,
-      companyId: '1', // Exemplo - na implementação real isso viria do perfil do usuário
+      companyId: '1',
+      roles,
     };
+  }
+
+  async getUserRoles(userId: string): Promise<Role[]> {
+    const { data, error } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId);
+
+    if (error) {
+      console.error('Error fetching user roles:', error);
+      return [];
+    }
+
+    return data.map(role => role.role as Role);
   }
 }

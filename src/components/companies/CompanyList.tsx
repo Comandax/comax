@@ -15,6 +15,7 @@ interface CompanyListProps {
   onToggleSort: (field: SortField) => void;
   onToggleStatus: (id: string, currentStatus: boolean) => void;
   onUpdateSuccess: () => void;
+  isSuperuser: boolean;
 }
 
 export function CompanyList({
@@ -24,6 +25,7 @@ export function CompanyList({
   onToggleSort,
   onToggleStatus,
   onUpdateSuccess,
+  isSuperuser,
 }: CompanyListProps) {
   const [expandedCompanyId, setExpandedCompanyId] = useState<string | null>(null);
 
@@ -31,6 +33,18 @@ export function CompanyList({
     if (sortField !== field) return null;
     return sortOrder === 'asc' ? <ChevronUp className="inline w-4 h-4" /> : <ChevronDown className="inline w-4 h-4" />;
   };
+
+  if (companies.length === 0) {
+    return (
+      <Card className="p-4">
+        <p className="text-center text-gray-500">
+          {isSuperuser 
+            ? "Nenhuma empresa cadastrada ainda."
+            : "Você ainda não cadastrou sua empresa."}
+        </p>
+      </Card>
+    );
+  }
 
   return (
     <Card className="p-4">
