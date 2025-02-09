@@ -43,6 +43,12 @@ interface ProductListProps {
 
 export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStatus }: ProductListProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleToggleStatus = async (productId: string, disabled: boolean, event?: React.MouseEvent) => {
+    event?.stopPropagation();
+    await onToggleStatus(productId, disabled);
+  };
 
   return (
     <>
@@ -61,7 +67,10 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
             <TableRow 
               key={product._id}
               className="cursor-pointer hover:bg-muted/50"
-              onClick={() => setSelectedProduct(product)}
+              onClick={() => {
+                setSelectedProduct(product);
+                setIsModalOpen(true);
+              }}
             >
               <TableCell>
                 <img
@@ -75,7 +84,7 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
               <TableCell onClick={(e) => e.stopPropagation()}>
                 <Switch
                   checked={!product.disabled}
-                  onCheckedChange={(checked) => onToggleStatus(product._id, !checked)}
+                  onCheckedChange={(checked) => handleToggleStatus(product._id, !checked)}
                 />
               </TableCell>
               <TableCell className="text-right">
@@ -133,8 +142,7 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
         </TableBody>
       </Table>
 
-      {/* Modal de Detalhes do Produto */}
-      <Dialog open={!!selectedProduct} onOpenChange={() => setSelectedProduct(null)}>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>Detalhes do Produto</DialogTitle>
@@ -165,8 +173,8 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
                     <Switch
                       checked={!selectedProduct.disabled}
                       onCheckedChange={(checked) => {
-                        onToggleStatus(selectedProduct._id, !checked);
-                        setSelectedProduct(null);
+                        handleToggleStatus(selectedProduct._id, !checked);
+                        setIsModalOpen(false);
                       }}
                     />
                   </div>
@@ -236,7 +244,7 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
                       <AlertDialogCancel>Cancelar</AlertDialogCancel>
                       <AlertDialogAction onClick={() => {
                         onDelete(selectedProduct._id);
-                        setSelectedProduct(null);
+                        setIsModalOpen(false);
                       }}>
                         Excluir
                       </AlertDialogAction>
