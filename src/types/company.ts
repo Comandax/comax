@@ -9,3 +9,6 @@ export interface Company {
   logo_url?: string;
   created_at: string;
 }
+
+export type SortField = "name" | "responsible" | "created_at";
+export type SortOrder = "asc" | "desc";
