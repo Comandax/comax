@@ -6,4 +6,5 @@ export interface Company {
   email: string;
   phone: string;
   active: boolean;
+  logo_url?: string;
 }
