@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ProductForm } from "@/components/products/ProductForm";
 import { ProductList } from "@/components/products/ProductList";
 import {
@@ -19,6 +19,7 @@ import { fetchProducts } from "@/services/productService";
 const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: products = [], refetch } = useQuery({
     queryKey: ["products", "1"], // Hardcoded companyId for now
@@ -64,11 +65,20 @@ const Products = () => {
   const handleToggleStatus = async (productId: string, disabled: boolean) => {
     try {
       console.log("Toggling product status:", { productId, disabled });
+      // Optimistically update the UI
+      queryClient.setQueryData(["products", "1"], (oldData: Product[] | undefined) => {
+        if (!oldData) return [];
+        return oldData.map((product) =>
+          product._id === productId ? { ...product, disabled } : product
+        );
+      });
+      
       toast({
         title: `Produto ${disabled ? "desativado" : "ativado"} com sucesso!`,
       });
-      refetch();
     } catch (error) {
+      // Revert optimistic update on error
+      queryClient.invalidateQueries({ queryKey: ["products", "1"] });
       toast({
         title: "Erro ao alterar status do produto",
         variant: "destructive",
