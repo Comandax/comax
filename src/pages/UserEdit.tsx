@@ -25,6 +25,15 @@ export default function UserEdit() {
     },
   });
 
+  const handleSubmit = async (data: ProfileFormData) => {
+    return new Promise<void>((resolve, reject) => {
+      updateUserProfile(data, {
+        onSuccess: () => resolve(),
+        onError: (error) => reject(error),
+      });
+    });
+  };
+
   if (isLoadingProfile) return <div>Carregando...</div>;
   if (!profile) return <div>Usuário não encontrado</div>;
 
@@ -34,7 +43,7 @@ export default function UserEdit() {
         <h1 className="text-2xl font-bold mb-6">Editar Usuário</h1>
         <UserForm
           initialData={profile}
-          onSubmit={updateUserProfile}
+          onSubmit={handleSubmit}
           isLoading={isUpdating}
         />
       </div>
