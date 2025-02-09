@@ -55,6 +55,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
         description: "Um email de confirmação foi enviado para o seu endereço de email.",
       });
     } catch (error: any) {
+      console.error('Form submission error:', error);
       toast({
         variant: "destructive",
         title: "Erro",

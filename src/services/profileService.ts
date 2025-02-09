@@ -26,7 +26,12 @@ export async function getProfile(id: string): Promise<Profile | null> {
 export async function updateProfile(id: string, profile: ProfileFormData): Promise<Profile> {
   const { data, error } = await supabase
     .from('profiles')
-    .update(profile)
+    .update({
+      first_name: profile.first_name,
+      last_name: profile.last_name,
+      email: profile.email,
+      phone: profile.phone
+    })
     .eq('id', id)
     .select()
     .single();
@@ -52,15 +57,19 @@ export async function createProfile(profile: ProfileFormData): Promise<Profile> 
   if (signUpError) {
     throw new Error(signUpError.message);
   }
+  
   if (!authData.user) {
     throw new Error('Falha ao criar usuário');
   }
+
+  // Wait a moment for the auth session to be established
+  await new Promise(resolve => setTimeout(resolve, 1000));
 
   // Create the profile with the user's ID
   const { data, error } = await supabase
     .from('profiles')
     .insert({
-      id: authData.user.id, // This ensures RLS policy is satisfied
+      id: authData.user.id,
       first_name: profile.first_name,
       last_name: profile.last_name,
       email: profile.email,
@@ -70,10 +79,12 @@ export async function createProfile(profile: ProfileFormData): Promise<Profile> 
     .single();
 
   if (error) {
+    console.error('Profile creation error:', error);
     // If profile creation fails, we should probably clean up the auth user
     // but Supabase doesn't provide a way to delete users via the client library
-    throw error;
+    throw new Error('Erro ao criar perfil: ' + error.message);
   }
 
   return data;
 }
+
