@@ -10,6 +10,8 @@ import Admin from "./pages/Admin";
 import Companies from "./pages/Companies";
 import Products from "./pages/Products";
 import Orders from "./pages/Orders";
+import Users from "./pages/Users";
+import UserEdit from "./pages/UserEdit";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 
@@ -29,6 +31,8 @@ const App = () => (
             <Route path="/companies" element={<Companies />} />
             <Route path="/products" element={<Products />} />
             <Route path="/orders" element={<Orders />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/users/:id" element={<UserEdit />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
@@ -38,4 +42,3 @@ const App = () => (
 );
 
 export default App;
-
