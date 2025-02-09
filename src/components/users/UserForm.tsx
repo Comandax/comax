@@ -13,13 +13,18 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { ProfileFormData } from "@/types/profile";
-import { useToast } from "../ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   first_name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   last_name: z.string().min(2, "Sobrenome deve ter pelo menos 2 caracteres"),
   email: z.string().email("Email inválido"),
   phone: z.string().min(10, "Celular deve ter pelo menos 10 dígitos"),
+  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
+  confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "As senhas não coincidem",
+  path: ["confirmPassword"],
 });
 
 interface UserFormProps {
@@ -37,6 +42,8 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
       last_name: "",
       email: "",
       phone: "",
+      password: "",
+      confirmPassword: "",
     },
   });
 
@@ -45,13 +52,13 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
       await onSubmit(data);
       toast({
         title: "Sucesso",
-        description: "Perfil atualizado com sucesso",
+        description: "Um email de confirmação foi enviado para o seu endereço de email.",
       });
-    } catch (error) {
+    } catch (error: any) {
       toast({
         variant: "destructive",
         title: "Erro",
-        description: "Erro ao atualizar perfil",
+        description: error?.message || "Erro ao criar usuário",
       });
     }
   };
@@ -106,6 +113,32 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
               <FormLabel>Celular</FormLabel>
               <FormControl>
                 <Input type="tel" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Senha</FormLabel>
+              <FormControl>
+                <Input type="password" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirmar Senha</FormLabel>
+              <FormControl>
+                <Input type="password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

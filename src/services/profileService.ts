@@ -36,27 +36,35 @@ export async function updateProfile(id: string, profile: ProfileFormData): Promi
 }
 
 export async function createProfile(profile: ProfileFormData): Promise<Profile> {
-  // First sign up the user
+  // First sign up the user with email confirmation enabled
   const { data: authData, error: signUpError } = await supabase.auth.signUp({
     email: profile.email,
-    password: "password123", // You might want to generate this or ask for it in the form
+    password: profile.password,
     options: {
       data: {
         first_name: profile.first_name,
         last_name: profile.last_name
-      }
+      },
+      emailRedirectTo: `${window.location.origin}/login`
     }
   });
 
-  if (signUpError) throw signUpError;
-  if (!authData.user) throw new Error('Failed to create user');
+  if (signUpError) {
+    throw new Error(signUpError.message);
+  }
+  if (!authData.user) {
+    throw new Error('Falha ao criar usuário');
+  }
 
   // Then create the profile
   const { data, error } = await supabase
     .from('profiles')
     .insert({
       id: authData.user.id,
-      ...profile
+      first_name: profile.first_name,
+      last_name: profile.last_name,
+      email: profile.email,
+      phone: profile.phone
     })
     .select()
     .single();
