@@ -13,6 +13,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
+import { Plus } from "lucide-react";
 
 export function UserList() {
   const navigate = useNavigate();
@@ -27,6 +28,10 @@ export function UserList() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Usuários</h2>
+        <Button onClick={() => navigate('/users/create')}>
+          <Plus className="size-4" />
+          Novo Usuário
+        </Button>
       </div>
       <Table>
         <TableHeader>

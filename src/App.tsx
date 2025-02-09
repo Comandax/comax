@@ -12,6 +12,7 @@ import Products from "./pages/Products";
 import Orders from "./pages/Orders";
 import Users from "./pages/Users";
 import UserEdit from "./pages/UserEdit";
+import UserCreate from "./pages/UserCreate";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/products" element={<Products />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/users" element={<Users />} />
+            <Route path="/users/create" element={<UserCreate />} />
             <Route path="/users/:id" element={<UserEdit />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
