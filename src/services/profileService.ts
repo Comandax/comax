@@ -56,11 +56,11 @@ export async function createProfile(profile: ProfileFormData): Promise<Profile> 
     throw new Error('Falha ao criar usuário');
   }
 
-  // Then create the profile
+  // Create the profile with the user's ID
   const { data, error } = await supabase
     .from('profiles')
     .insert({
-      id: authData.user.id,
+      id: authData.user.id, // This ensures RLS policy is satisfied
       first_name: profile.first_name,
       last_name: profile.last_name,
       email: profile.email,
@@ -69,6 +69,11 @@ export async function createProfile(profile: ProfileFormData): Promise<Profile> 
     .select()
     .single();
 
-  if (error) throw error;
+  if (error) {
+    // If profile creation fails, we should probably clean up the auth user
+    // but Supabase doesn't provide a way to delete users via the client library
+    throw error;
+  }
+
   return data;
 }
