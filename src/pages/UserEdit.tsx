@@ -37,12 +37,19 @@ export default function UserEdit() {
   if (isLoadingProfile) return <div>Carregando...</div>;
   if (!profile) return <div>Usuário não encontrado</div>;
 
+  // Convert Profile to ProfileFormData by adding empty password fields
+  const initialData: ProfileFormData = {
+    ...profile,
+    password: '',
+    confirmPassword: '',
+  };
+
   return (
     <div className="container mx-auto py-8">
       <div className="max-w-2xl mx-auto">
         <h1 className="text-2xl font-bold mb-6">Editar Usuário</h1>
         <UserForm
-          initialData={profile}
+          initialData={initialData}
           onSubmit={handleSubmit}
           isLoading={isUpdating}
         />
