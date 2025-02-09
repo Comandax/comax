@@ -18,4 +18,6 @@ export interface Order {
   customerZipCode: string;
   items: OrderItem[];
   total: number;
+  companyId: string;
 }
+

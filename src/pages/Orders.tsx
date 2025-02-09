@@ -30,9 +30,9 @@ const mockOrders: Order[] = [
         quantity: 6,
         subtotal: 35.76
       },
-      // Adicione mais itens conforme necessário
     ],
-    total: 557.28
+    total: 557.28,
+    companyId: "1"
   }
 ];
 
@@ -92,10 +92,11 @@ const OrderDetails = ({ order }: { order: Order }) => {
 
 const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const companyId = "1"; // Em um sistema real, isso viria do contexto de autenticação
 
   const { data: orders = [] } = useQuery({
-    queryKey: ["orders"],
-    queryFn: () => Promise.resolve(mockOrders),
+    queryKey: ["orders", companyId],
+    queryFn: () => Promise.resolve(mockOrders.filter(order => order.companyId === companyId)),
   });
 
   return (
@@ -139,3 +140,4 @@ const Orders = () => {
 };
 
 export default Orders;
+
