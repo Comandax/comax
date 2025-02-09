@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Product } from "@/types/product";
+import type { Product, ProductFormData } from "@/types/product";
 import { ProductTableActions } from "./ProductTableActions";
 
 interface ProductTableProps {
