@@ -9,6 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -37,9 +38,10 @@ interface ProductListProps {
   onEdit: (product: Product) => void;
   onDelete: (productId: string) => Promise<void>;
   onSubmit: (data: ProductFormData) => Promise<void>;
+  onToggleStatus: (productId: string, disabled: boolean) => Promise<void>;
 }
 
-export function ProductList({ products, onEdit, onDelete, onSubmit }: ProductListProps) {
+export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStatus }: ProductListProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   return (
@@ -47,6 +49,7 @@ export function ProductList({ products, onEdit, onDelete, onSubmit }: ProductLis
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead>Imagem</TableHead>
             <TableHead>Referência</TableHead>
             <TableHead>Nome</TableHead>
             <TableHead>Status</TableHead>
@@ -60,10 +63,20 @@ export function ProductList({ products, onEdit, onDelete, onSubmit }: ProductLis
               className="cursor-pointer hover:bg-muted/50"
               onClick={() => setSelectedProduct(product)}
             >
+              <TableCell>
+                <img
+                  src={product.image || "/placeholder.svg"}
+                  alt={product.name}
+                  className="w-12 h-12 object-cover rounded-lg"
+                />
+              </TableCell>
               <TableCell>{product.reference}</TableCell>
               <TableCell>{product.name}</TableCell>
-              <TableCell>
-                {product.disabled ? "Inativo" : "Ativo"}
+              <TableCell onClick={(e) => e.stopPropagation()}>
+                <Switch
+                  checked={!product.disabled}
+                  onCheckedChange={(checked) => onToggleStatus(product._id, !checked)}
+                />
               </TableCell>
               <TableCell className="text-right">
                 <Dialog>
@@ -134,7 +147,7 @@ export function ProductList({ products, onEdit, onDelete, onSubmit }: ProductLis
             <div className="grid gap-6 py-4">
               <div className="flex gap-6">
                 <img
-                  src="/placeholder.svg"
+                  src={selectedProduct.image || "/placeholder.svg"}
                   alt={selectedProduct.name}
                   className="w-48 h-48 object-cover rounded-lg border"
                 />
@@ -149,9 +162,13 @@ export function ProductList({ products, onEdit, onDelete, onSubmit }: ProductLis
                   </div>
                   <div>
                     <h3 className="font-semibold">Status</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {selectedProduct.disabled ? "Inativo" : "Ativo"}
-                    </p>
+                    <Switch
+                      checked={!selectedProduct.disabled}
+                      onCheckedChange={(checked) => {
+                        onToggleStatus(selectedProduct._id, !checked);
+                        setSelectedProduct(null);
+                      }}
+                    />
                   </div>
                 </div>
               </div>

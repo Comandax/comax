@@ -61,6 +61,21 @@ const Products = () => {
     }
   };
 
+  const handleToggleStatus = async (productId: string, disabled: boolean) => {
+    try {
+      console.log("Toggling product status:", { productId, disabled });
+      toast({
+        title: `Produto ${disabled ? "desativado" : "ativado"} com sucesso!`,
+      });
+      refetch();
+    } catch (error) {
+      toast({
+        title: "Erro ao alterar status do produto",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="container mx-auto py-10">
       <div className="flex justify-between items-center mb-6">
@@ -88,6 +103,7 @@ const Products = () => {
         onEdit={handleEdit}
         onDelete={handleDelete}
         onSubmit={onSubmit}
+        onToggleStatus={handleToggleStatus}
       />
     </div>
   );

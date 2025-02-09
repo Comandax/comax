@@ -3,6 +3,7 @@ export interface Product {
   _id: string;
   reference: string;
   name: string;
+  image?: string;
   sizes: Array<{
     size: string;
     value: number;
@@ -15,6 +16,7 @@ export interface Product {
 export interface ProductFormData {
   reference: string;
   name: string;
+  image?: string;
   sizes: Array<{
     size: string;
     value: number;
