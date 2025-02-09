@@ -13,7 +13,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
-import { Plus } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 
 export function UserList() {
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ export function UserList() {
             <TableHead>Celular</TableHead>
             <TableHead>Criado em</TableHead>
             <TableHead>Atualizado em</TableHead>
-            <TableHead>Ações</TableHead>
+            <TableHead className="text-right">Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -58,13 +58,20 @@ export function UserList() {
               <TableCell>
                 {format(new Date(profile.updated_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
               </TableCell>
-              <TableCell>
+              <TableCell className="text-right space-x-2">
                 <Button
                   variant="outline"
-                  size="sm"
+                  size="icon"
                   onClick={() => navigate(`/users/${profile.id}`)}
                 >
-                  Editar
+                  <Pencil className="size-4" />
+                </Button>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="text-red-500 hover:text-red-600"
+                >
+                  <Trash2 className="size-4" />
                 </Button>
               </TableCell>
             </TableRow>
