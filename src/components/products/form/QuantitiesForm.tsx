@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -10,9 +11,9 @@ interface QuantitiesFormProps {
 }
 
 export function QuantitiesForm({ form }: QuantitiesFormProps) {
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove } = useFieldArray<ProductFormData>({
     control: form.control,
-    name: "quantities" as const, // Explicitly type as const to match the schema
+    name: "quantities",
   });
 
   return (
@@ -23,7 +24,7 @@ export function QuantitiesForm({ form }: QuantitiesFormProps) {
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => append(0 as const)} // Explicitly type the value
+          onClick={() => append(0)}
         >
           <Plus className="mr-2 h-4 w-4" />
           Adicionar Quantidade
