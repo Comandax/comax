@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Plus, Trash2 } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -25,9 +26,13 @@ export function ProductForm({ onSubmit, initialData }: ProductFormProps) {
     defaultValues: {
       reference: initialData?.reference || "",
       name: initialData?.name || "",
-      sizes: initialData?.sizes || [],
+      sizes: initialData?.sizes || [{ size: "", value: 0 }],
       quantities: initialData?.quantities || [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
     },
+  });
+
+  const { fields: sizeFields, append: appendSize, remove: removeSize } = form.useFieldArray({
+    name: "sizes",
   });
 
   return (
@@ -46,6 +51,7 @@ export function ProductForm({ onSubmit, initialData }: ProductFormProps) {
             </FormItem>
           )}
         />
+        
         <FormField
           control={form.control}
           name="name"
@@ -59,6 +65,68 @@ export function ProductForm({ onSubmit, initialData }: ProductFormProps) {
             </FormItem>
           )}
         />
+
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <FormLabel>Tamanhos e Valores</FormLabel>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => appendSize({ size: "", value: 0 })}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Adicionar Tamanho
+            </Button>
+          </div>
+
+          {sizeFields.map((field, index) => (
+            <div key={field.id} className="flex gap-4 items-start">
+              <FormField
+                control={form.control}
+                name={`sizes.${index}.size`}
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormControl>
+                      <Input {...field} placeholder="Tamanho (P, M, G, etc)" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name={`sizes.${index}.value`}
+                render={({ field }) => (
+                  <FormItem className="flex-1">
+                    <FormControl>
+                      <Input 
+                        {...field} 
+                        type="number" 
+                        step="0.01"
+                        placeholder="Valor"
+                        onChange={(e) => field.onChange(parseFloat(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="mt-0.5"
+                onClick={() => removeSize(index)}
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
+
         <Button type="submit">Salvar</Button>
       </form>
     </Form>
