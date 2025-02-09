@@ -37,7 +37,7 @@ export function ProductForm({ onSubmit, initialData }: ProductFormProps) {
     name: "sizes",
   });
 
-  const { fields: quantityFields, append: appendQuantity, remove: removeQuantity } = useFieldArray({
+  const { fields: quantityFields, append: appendQuantity, remove: removeQuantity } = useFieldArray<ProductFormData>({
     control: form.control,
     name: "quantities",
   });
