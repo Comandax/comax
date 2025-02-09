@@ -7,4 +7,5 @@ export interface Company {
   phone: string;
   active: boolean;
   logo_url?: string;
+  created_at: string;
 }
