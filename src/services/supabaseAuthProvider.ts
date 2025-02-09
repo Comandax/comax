@@ -1,11 +1,6 @@
 
-import { createClient } from '@supabase/supabase-js';
 import type { AuthProvider, User } from '../types/auth';
-
-const supabase = createClient(
-  import.meta.env.VITE_SUPABASE_URL,
-  import.meta.env.VITE_SUPABASE_ANON_KEY
-);
+import { supabase } from '@/integrations/supabase/client';
 
 export class SupabaseAuthProvider implements AuthProvider {
   async login(email: string, password: string): Promise<User> {
