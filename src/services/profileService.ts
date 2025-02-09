@@ -37,7 +37,7 @@ export async function updateProfile(id: string, profile: ProfileFormData): Promi
 
 export async function createProfile(profile: ProfileFormData): Promise<Profile> {
   const { data: { user }, error: authError } = await supabase.auth.admin.createUser({
-    email: `${profile.first_name.toLowerCase()}.${profile.last_name.toLowerCase()}@example.com`,
+    email: profile.email,
     password: "password123",
     user_metadata: {
       first_name: profile.first_name,

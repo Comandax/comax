@@ -18,6 +18,8 @@ import { useToast } from "../ui/use-toast";
 const formSchema = z.object({
   first_name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   last_name: z.string().min(2, "Sobrenome deve ter pelo menos 2 caracteres"),
+  email: z.string().email("Email inválido"),
+  phone: z.string().min(10, "Celular deve ter pelo menos 10 dígitos"),
 });
 
 interface UserFormProps {
@@ -33,6 +35,8 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
     defaultValues: initialData || {
       first_name: "",
       last_name: "",
+      email: "",
+      phone: "",
     },
   });
 
@@ -76,6 +80,32 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
               <FormLabel>Sobrenome</FormLabel>
               <FormControl>
                 <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input type="email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Celular</FormLabel>
+              <FormControl>
+                <Input type="tel" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

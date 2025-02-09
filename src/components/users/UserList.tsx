@@ -38,6 +38,8 @@ export function UserList() {
           <TableRow>
             <TableHead>Nome</TableHead>
             <TableHead>Sobrenome</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Celular</TableHead>
             <TableHead>Criado em</TableHead>
             <TableHead>Atualizado em</TableHead>
             <TableHead>Ações</TableHead>
@@ -48,6 +50,8 @@ export function UserList() {
             <TableRow key={profile.id}>
               <TableCell>{profile.first_name}</TableCell>
               <TableCell>{profile.last_name}</TableCell>
+              <TableCell>{profile.email}</TableCell>
+              <TableCell>{profile.phone}</TableCell>
               <TableCell>
                 {format(new Date(profile.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
               </TableCell>
