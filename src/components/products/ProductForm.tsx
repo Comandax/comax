@@ -1,5 +1,5 @@
 
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +31,8 @@ export function ProductForm({ onSubmit, initialData }: ProductFormProps) {
     },
   });
 
-  const { fields: sizeFields, append: appendSize, remove: removeSize } = form.useFieldArray({
+  const { fields: sizeFields, append: appendSize, remove: removeSize } = useFieldArray({
+    control: form.control,
     name: "sizes",
   });
 
