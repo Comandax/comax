@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { Company } from "@/types/company";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface CompanyFormProps {
   onSubmitSuccess: () => void;
@@ -17,6 +18,7 @@ export function CompanyForm({ onSubmitSuccess }: CompanyFormProps) {
   const [newCompany, setNewCompany] = useState<Partial<Company>>({});
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -49,6 +51,15 @@ export function CompanyForm({ onSubmitSuccess }: CompanyFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!user) {
+      toast({
+        title: "Erro",
+        description: "Você precisa estar logado para criar uma empresa.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!newCompany.name || !newCompany.responsible || !newCompany.email || !newCompany.phone) {
       toast({
         title: "Erro",
@@ -79,6 +90,7 @@ export function CompanyForm({ onSubmitSuccess }: CompanyFormProps) {
         email: newCompany.email,
         phone: newCompany.phone,
         logo_url: logoUrl,
+        owner_id: user.id
       }]);
 
     if (error) {
@@ -142,8 +154,7 @@ export function CompanyForm({ onSubmitSuccess }: CompanyFormProps) {
           </div>
           <div className="space-y-2">
             <Label htmlFor="logo">Logo da Empresa</Label>
-            <div className="flex items
--center gap-2">
+            <div className="flex items-center gap-2">
               <Input
                 id="logo"
                 type="file"

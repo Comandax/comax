@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { Company } from "@/types/company";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface CompanyDetailsProps {
   company: Company;
@@ -17,6 +18,7 @@ export function CompanyDetails({ company, onUpdateSuccess }: CompanyDetailsProps
   const [editData, setEditData] = useState<Partial<Company>>(company);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -48,6 +50,15 @@ export function CompanyDetails({ company, onUpdateSuccess }: CompanyDetailsProps
   };
 
   const handleUpdate = async () => {
+    if (!user) {
+      toast({
+        title: "Erro",
+        description: "Você precisa estar logado para atualizar uma empresa.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (!editData.name || !editData.responsible || !editData.email || !editData.phone) {
       toast({
         title: "Erro",
@@ -80,7 +91,8 @@ export function CompanyDetails({ company, onUpdateSuccess }: CompanyDetailsProps
         logo_url: logoUrl,
         active: editData.active,
       })
-      .eq('id', company.id);
+      .eq('id', company.id)
+      .eq('owner_id', user.id);
 
     if (error) {
       toast({
