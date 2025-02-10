@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface ContactFormProps {
   onSubmit: (data: ContactFormData) => void;
@@ -64,13 +64,7 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
     enabled: !!selectedState,
   });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
-
   const handleInputChange = (field: keyof ContactFormData, value: string) => {
-    // Remove todos os caracteres não numéricos para os campos de telefone e CEP
     if (field === 'whatsapp' || field === 'zipCode') {
       value = value.replace(/\D/g, '');
     }
@@ -88,8 +82,15 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
     handleInputChange("city", "");
   };
 
+  // Update effect to automatically submit form data when it changes
+  useEffect(() => {
+    if (formData.name && formData.whatsapp && formData.city && formData.zipCode) {
+      onSubmit(formData);
+    }
+  }, [formData, onSubmit]);
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 bg-white/90 p-6 rounded-lg shadow-md">
+    <div className="space-y-4 bg-white/90 p-6 rounded-lg shadow-md">
       <h2 className="text-xl font-semibold text-gray-800 mb-4">Informações para contato</h2>
       
       <div className="grid gap-4 md:grid-cols-2">
@@ -169,6 +170,6 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
           />
         </div>
       </div>
-    </form>
+    </div>
   );
 };
