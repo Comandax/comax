@@ -17,7 +17,8 @@ import type { Product, ProductFormData } from "@/types/product";
 import { fetchProducts, createProduct } from "@/services/productService";
 import { useCompany } from "@/hooks/useCompany";
 import { Card } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -26,11 +27,44 @@ const Products = () => {
   const queryClient = useQueryClient();
   const { company } = useCompany();
   const navigate = useNavigate();
+  const { companyId } = useParams();
+  const [publicCompany, setPublicCompany] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch public company data if accessed via URL
+  const fetchPublicCompany = async (id: string) => {
+    const { data, error } = await supabase
+      .from('companies')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching company:', error);
+      return null;
+    }
+    return data;
+  };
+
+  // Effect to fetch public company data when accessed via URL
+  React.useEffect(() => {
+    if (companyId && !company) {
+      fetchPublicCompany(companyId).then((data) => {
+        setPublicCompany(data);
+        setIsLoading(false);
+      });
+    } else {
+      setIsLoading(false);
+    }
+  }, [companyId, company]);
+
+  const effectiveCompany = company || publicCompany;
+  const isPublicView = !company && !!publicCompany;
 
   const { data: products = [], refetch } = useQuery({
-    queryKey: ["products", company?.id],
-    queryFn: () => fetchProducts(company?.id || ""),
-    enabled: !!company?.id,
+    queryKey: ["products", effectiveCompany?.id],
+    queryFn: () => fetchProducts(effectiveCompany?.id || ""),
+    enabled: !!effectiveCompany?.id,
   });
 
   const onSubmit = async (data: ProductFormData) => {
@@ -81,7 +115,7 @@ const Products = () => {
     try {
       console.log("Toggling product status:", { productId, disabled });
       // Optimistically update the UI
-      queryClient.setQueryData(["products", company?.id], (oldData: Product[] | undefined) => {
+      queryClient.setQueryData(["products", effectiveCompany?.id], (oldData: Product[] | undefined) => {
         if (!oldData) return [];
         return oldData.map((product) =>
           product._id === productId ? { ...product, disabled } : product
@@ -93,7 +127,7 @@ const Products = () => {
       });
     } catch (error) {
       // Revert optimistic update on error
-      queryClient.invalidateQueries({ queryKey: ["products", company?.id] });
+      queryClient.invalidateQueries({ queryKey: ["products", effectiveCompany?.id] });
       toast({
         title: "Erro ao alterar status do produto",
         variant: "destructive",
@@ -101,56 +135,64 @@ const Products = () => {
     }
   };
 
-  if (!company) {
+  if (isLoading) {
     return <div>Loading...</div>;
+  }
+
+  if (!effectiveCompany) {
+    return <div>Empresa não encontrada</div>;
   }
 
   return (
     <div className="container mx-auto py-10">
-      <Card 
-        className="p-6 mb-8 bg-white/90 cursor-pointer hover:bg-white/95 transition-colors"
-        onClick={() => navigate("/admin")}
-      >
-        <div className="flex items-center gap-4">
-          {company.logo_url && (
-            <img 
-              src={company.logo_url} 
-              alt={`${company.name} logo`}
-              className="w-16 h-16 object-contain rounded-lg"
-            />
-          )}
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">{company.name}</h2>
+      {!isPublicView && (
+        <Card 
+          className="p-6 mb-8 bg-white/90 cursor-pointer hover:bg-white/95 transition-colors"
+          onClick={() => navigate("/admin")}
+        >
+          <div className="flex items-center gap-4">
+            {effectiveCompany.logo_url && (
+              <img 
+                src={effectiveCompany.logo_url} 
+                alt={`${effectiveCompany.name} logo`}
+                className="w-16 h-16 object-contain rounded-lg"
+              />
+            )}
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">{effectiveCompany.name}</h2>
+            </div>
           </div>
-        </div>
-      </Card>
+        </Card>
+      )}
 
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Produtos</h1>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={() => setSelectedProduct(null)}>
-              <Plus className="mr-2" />
-              Novo Produto
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>
-                {selectedProduct ? "Editar Produto" : "Novo Produto"}
-              </DialogTitle>
-            </DialogHeader>
-            <ProductForm onSubmit={onSubmit} initialData={selectedProduct || undefined} />
-          </DialogContent>
-        </Dialog>
+        {!isPublicView && (
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <Button onClick={() => setSelectedProduct(null)}>
+                <Plus className="mr-2" />
+                Novo Produto
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>
+                  {selectedProduct ? "Editar Produto" : "Novo Produto"}
+                </DialogTitle>
+              </DialogHeader>
+              <ProductForm onSubmit={onSubmit} initialData={selectedProduct || undefined} />
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
 
       <ProductList
         products={products}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        onSubmit={onSubmit}
-        onToggleStatus={handleToggleStatus}
+        onEdit={isPublicView ? undefined : handleEdit}
+        onDelete={isPublicView ? undefined : handleDelete}
+        onSubmit={isPublicView ? undefined : onSubmit}
+        onToggleStatus={isPublicView ? undefined : handleToggleStatus}
       />
     </div>
   );
