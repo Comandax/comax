@@ -56,6 +56,37 @@ export const createProduct = async (product: ProductFormData, companyId: string)
   };
 };
 
+export const updateProduct = async (productId: string, product: ProductFormData): Promise<Product> => {
+  const { data, error } = await supabase
+    .from('products')
+    .update({
+      reference: product.reference,
+      name: product.name,
+      image_url: product.image,
+      sizes: product.sizes as Array<{size: string; value: number}>,
+      quantities: product.quantities,
+    })
+    .eq('id', productId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error updating product:', error);
+    throw error;
+  }
+
+  return {
+    _id: data.id,
+    reference: data.reference,
+    name: data.name,
+    image: data.image_url,
+    sizes: (data.sizes as Array<{size: string; value: number}>),
+    quantities: data.quantities,
+    disabled: data.disabled,
+    companyId: data.company_id
+  };
+};
+
 export const deleteProduct = async (productId: string): Promise<void> => {
   const { error } = await supabase
     .from('products')
@@ -67,4 +98,3 @@ export const deleteProduct = async (productId: string): Promise<void> => {
     throw error;
   }
 };
-

@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import type { Product, ProductFormData } from "@/types/product";
-import { fetchProducts, createProduct, deleteProduct } from "@/services/productService";
+import { fetchProducts, createProduct, updateProduct, deleteProduct } from "@/services/productService";
 import { useCompany } from "@/hooks/useCompany";
 import { Card } from "@/components/ui/card";
 import { useNavigate, useParams } from "react-router-dom";
@@ -73,14 +73,20 @@ const Products = () => {
         throw new Error("Company ID not found");
       }
 
-      await createProduct(data, company.id);
+      if (selectedProduct) {
+        await updateProduct(selectedProduct._id, data);
+        toast({
+          title: "Produto atualizado com sucesso!",
+        });
+      } else {
+        await createProduct(data, company.id);
+        toast({
+          title: "Produto criado com sucesso!",
+        });
+      }
       
-      toast({
-        title: selectedProduct
-          ? "Produto atualizado com sucesso!"
-          : "Produto criado com sucesso!",
-      });
       setDialogOpen(false);
+      setSelectedProduct(null);
       refetch();
     } catch (error) {
       console.error('Error saving product:', error);
@@ -182,7 +188,14 @@ const Products = () => {
                   {selectedProduct ? "Editar Produto" : "Novo Produto"}
                 </DialogTitle>
               </DialogHeader>
-              <ProductForm onSubmit={onSubmit} initialData={selectedProduct || undefined} />
+              <ProductForm 
+                onSubmit={onSubmit} 
+                initialData={selectedProduct || undefined} 
+                onComplete={() => {
+                  setDialogOpen(false);
+                  setSelectedProduct(null);
+                }}
+              />
             </DialogContent>
           </Dialog>
         )}
@@ -200,4 +213,3 @@ const Products = () => {
 };
 
 export default Products;
-
