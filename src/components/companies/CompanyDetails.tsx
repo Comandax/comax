@@ -7,6 +7,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { CompanyView } from "./details/CompanyView";
 import { CompanyEditForm } from "./details/CompanyEditForm";
 import { uploadCompanyLogo } from "@/services/companyLogoService";
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 interface CompanyDetailsProps {
   company: Company;
@@ -80,6 +82,19 @@ export function CompanyDetails({ company, onUpdateSuccess }: CompanyDetailsProps
     onUpdateSuccess();
   };
 
+  const CompanyViewWithOrdersLink = (props: { company: Company; onEditClick: () => void }) => {
+    return (
+      <div className="space-y-6">
+        <CompanyView {...props} />
+        <div className="flex justify-end">
+          <Link to={`/orders?company=${company.id}`}>
+            <Button variant="outline">Ver Pedidos</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  };
+
   if (editMode) {
     return (
       <CompanyEditForm
@@ -91,7 +106,7 @@ export function CompanyDetails({ company, onUpdateSuccess }: CompanyDetailsProps
   }
 
   return (
-    <CompanyView
+    <CompanyViewWithOrdersLink
       company={company}
       onEditClick={() => setEditMode(true)}
     />
