@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { ContactForm, type ContactFormData } from "@/components/ContactForm";
 import { ProductCard } from "@/components/ProductCard";
@@ -7,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { Settings2 } from "lucide-react";
 
 interface Product {
   _id: string;
@@ -18,7 +20,7 @@ interface Product {
     quantities: number[];
   }>;
   disabled: boolean;
-  companyId?: string; // Added company ID
+  companyId?: string;
 }
 
 interface SelectedItem {
@@ -169,8 +171,6 @@ const Index = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // For now, we're using a hardcoded companyId. In a real application,
-  // this would come from authentication or URL parameters
   const companyId = "1";
 
   const { data: products = [], isLoading, error } = useQuery({
@@ -235,19 +235,20 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-8">
-        <div className="text-center">
+        <div className="text-center relative">
+          <button
+            onClick={() => navigate("/admin")}
+            className="absolute right-0 top-0 p-2 text-white hover:text-white/80 transition-colors"
+            title="Painel Administrativo"
+          >
+            <Settings2 size={24} />
+          </button>
           <img
             src="/lovable-uploads/aa777edd-491a-43ae-aee4-5444b6657060.png"
             alt="Logo"
             className="w-32 h-32 mx-auto"
           />
           <h1 className="text-3xl font-bold text-white mt-4">Simulações e Pedidos</h1>
-          <Button
-            onClick={() => navigate("/companies")}
-            className="mt-4 bg-white text-primary hover:bg-white/90"
-          >
-            Gerenciar Empresas
-          </Button>
         </div>
 
         <ContactForm onSubmit={handleContactSubmit} />
