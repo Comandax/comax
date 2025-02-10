@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import type { Product, ProductFormData } from "@/types/product";
-import { fetchProducts } from "@/services/productService";
+import { fetchProducts, createProduct } from "@/services/productService";
 import { useCompany } from "@/hooks/useCompany";
 import { Card } from "@/components/ui/card";
 
@@ -33,15 +33,21 @@ const Products = () => {
 
   const onSubmit = async (data: ProductFormData) => {
     try {
-      console.log("Form submitted:", data);
+      if (!company?.id) {
+        throw new Error("Company ID not found");
+      }
+
+      await createProduct(data, company.id);
+      
       toast({
         title: selectedProduct
           ? "Produto atualizado com sucesso!"
           : "Produto criado com sucesso!",
       });
-      setDialogOpen(false); // Close the dialog after successful submission
+      setDialogOpen(false);
       refetch();
     } catch (error) {
+      console.error('Error saving product:', error);
       toast({
         title: "Erro ao salvar produto",
         variant: "destructive",
@@ -146,3 +152,4 @@ const Products = () => {
 };
 
 export default Products;
+
