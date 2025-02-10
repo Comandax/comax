@@ -7,7 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import Index from "./pages/Index";
 import Admin from "./pages/Admin";
-import Company from "./pages/Company";
+import Companies from "./pages/Companies";
 import Products from "./pages/Products";
 import Orders from "./pages/Orders";
 import Users from "./pages/Users";
@@ -30,7 +30,7 @@ const App = () => (
             <Route path="/:companyId" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/admin" element={<Admin />} />
-            <Route path="/company" element={<Company />} />
+            <Route path="/companies" element={<Companies />} />
             <Route path="/products" element={<Products />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/users" element={<Users />} />

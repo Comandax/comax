@@ -10,7 +10,7 @@ import { CompanyDetails } from "@/components/companies/CompanyDetails";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card } from "@/components/ui/card";
 
-export default function Company() {
+export default function Companies() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -85,6 +85,7 @@ export default function Company() {
           </h1>
         </div>
 
+        {/* Mostrar o formulário apenas se for superusuário ou se o usuário não tiver empresas */}
         {(isSuperuser || companies.length === 0) && (
           <CompanyForm onSubmitSuccess={fetchCompanies} />
         )}
