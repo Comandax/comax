@@ -35,7 +35,7 @@ const Index = () => {
     const fetchCompany = async () => {
       if (!companyId) {
         setIsLoading(false);
-        setError("Nenhuma empresa especificada no endereço.");
+        setError("Por favor, verifique se o endereço está correto.");
         return;
       }
 
@@ -47,7 +47,7 @@ const Index = () => {
 
       if (error) {
         console.error('Error fetching company:', error);
-        setError("Empresa não encontrada. Por favor, verifique se o endereço está correto.");
+        setError("Por favor, verifique se o endereço está correto.");
         toast({
           title: "Erro ao carregar informações da empresa",
           variant: "destructive",
@@ -164,17 +164,20 @@ const Index = () => {
 
   if (error || !company) {
     return (
-      <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8 flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-white text-3xl font-bold mb-4">Página não encontrada</h1>
-          <p className="text-white text-xl mb-6">{error || "Empresa não encontrada"}</p>
-          <p className="text-white text-lg mb-8">Por favor, verifique se o endereço está correto.</p>
-          <Button 
-            onClick={() => window.location.reload()}
-            className="bg-white text-primary hover:bg-white/90"
-          >
-            Tentar novamente
-          </Button>
+      <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8 relative">
+        <button
+          onClick={() => navigate("/admin")}
+          className="absolute right-4 top-4 p-2 text-white hover:text-white/80 transition-colors"
+          title="Painel Administrativo"
+        >
+          <Settings2 size={24} />
+        </button>
+        
+        <div className="flex items-center justify-center h-full">
+          <div className="text-center">
+            <h1 className="text-white text-3xl font-bold mb-4">Página não encontrada</h1>
+            <p className="text-white text-lg mb-8">Por favor, verifique se o endereço está correto.</p>
+          </div>
         </div>
       </div>
     );
