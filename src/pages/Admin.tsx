@@ -1,6 +1,6 @@
 
 import { LayoutDashboard, Package, Building2, LogOut } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +12,11 @@ const Admin = () => {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  
+  // If user is not logged in, redirect to login page
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
   
   const { data: userCompany, isError } = useQuery({
     queryKey: ['company', user?.id],
@@ -98,3 +103,4 @@ const Admin = () => {
 };
 
 export default Admin;
+
