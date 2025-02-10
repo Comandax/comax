@@ -31,6 +31,11 @@ interface SelectedItem {
   price: number;
 }
 
+interface ProductSize {
+  size: string;
+  value: number;
+}
+
 const fetchProducts = async (companySlug: string): Promise<Product[]> => {
   // First, get company ID from the slug
   const { data: companies, error: companyError } = await supabase
@@ -57,7 +62,7 @@ const fetchProducts = async (companySlug: string): Promise<Product[]> => {
     _id: product.id,
     reference: product.reference,
     name: product.name,
-    sizes: product.sizes.map((size: { size: string; value: number }) => ({
+    sizes: (product.sizes as ProductSize[]).map(size => ({
       label: size.size,
       price: size.value,
       quantities: [0, ...(product.quantities || [])],
