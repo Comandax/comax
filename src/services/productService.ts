@@ -32,7 +32,7 @@ export const createProduct = async (product: ProductFormData, companyId: string)
       reference: product.reference,
       name: product.name,
       image_url: product.image,
-      sizes: product.sizes,
+      sizes: product.sizes as Array<{size: string; value: number}>,
       quantities: product.quantities,
       company_id: companyId
     })
@@ -49,10 +49,9 @@ export const createProduct = async (product: ProductFormData, companyId: string)
     reference: data.reference,
     name: data.name,
     image: data.image_url,
-    sizes: data.sizes,
+    sizes: (data.sizes as Array<{size: string; value: number}>),
     quantities: data.quantities,
     disabled: data.disabled,
     companyId: data.company_id
   };
 };
-
