@@ -41,10 +41,16 @@ const fetchProducts = async (companySlug: string): Promise<Product[]> => {
   const { data: companies, error: companyError } = await supabase
     .from('companies')
     .select('id, name')
-    .single();
+    .eq('active', true)
+    .ilike('name', companySlug.replace(/-/g, ' '))
+    .maybeSingle();
 
   if (companyError) {
     throw companyError;
+  }
+
+  if (!companies) {
+    return []; // Return empty array if company not found
   }
 
   // Then fetch products for this company
@@ -62,7 +68,7 @@ const fetchProducts = async (companySlug: string): Promise<Product[]> => {
     _id: product.id,
     reference: product.reference,
     name: product.name,
-    sizes: (product.sizes as ProductSize[]).map(size => ({
+    sizes: ((product.sizes || []) as ProductSize[]).map(size => ({
       label: size.size,
       price: size.value,
       quantities: [0, ...(product.quantities || [])],
@@ -121,6 +127,24 @@ const Index = () => {
     return (
       <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8 flex items-center justify-center">
         <div className="text-white text-xl">Carregando produtos...</div>
+      </div>
+    );
+  }
+
+  // Show "page not found" message when no products are found and we're not loading
+  if (!isLoading && products.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8 flex items-center justify-center">
+        <div className="text-center text-white">
+          <h1 className="text-3xl font-bold mb-4">Página não encontrada</h1>
+          <p className="text-xl">Por favor, verifique se o endereço está correto e tente novamente.</p>
+          <Button 
+            onClick={() => window.location.reload()}
+            className="mt-8 bg-white text-primary hover:bg-white/90"
+          >
+            Tentar novamente
+          </Button>
+        </div>
       </div>
     );
   }
