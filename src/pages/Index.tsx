@@ -14,6 +14,7 @@ import { ErrorScreen } from "@/components/layout/ErrorScreen";
 import { PageHeader } from "@/components/layout/PageHeader";
 import { getCompanyBySlug } from "@/services/companyService";
 import { getProductsByCompanyId } from "@/services/productService";
+import type { ProductSize } from "@/types/product";
 
 interface SelectedItem {
   productId: string;
@@ -103,7 +104,11 @@ const Index = () => {
                 name: product.name,
                 image: `http://82.180.136.47/pedido/productImages/${product.reference}.jpeg?v=2`,
                 ref: product.reference,
-                sizes: product.sizes
+                sizes: product.sizes.map(size => ({
+                  label: size.size,
+                  price: size.value,
+                  quantities: [0, ...product.quantities]
+                }))
               }}
               onQuantitySelect={(size, quantity, price) => 
                 handleQuantitySelect(product._id, size, quantity, price)
