@@ -3,7 +3,8 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Trash2, Upload } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import {
   Form,
   FormControl,
@@ -14,6 +15,7 @@ import {
 } from "@/components/ui/form";
 import { productFormSchema } from "@/schemas/productSchema";
 import type { Product, ProductFormData } from "@/types/product";
+import { useState } from "react";
 
 interface ProductFormProps {
   onSubmit: (data: ProductFormData) => Promise<void>;
@@ -21,6 +23,8 @@ interface ProductFormProps {
 }
 
 export function ProductForm({ onSubmit, initialData }: ProductFormProps) {
+  const [isUploading, setIsUploading] = useState(false);
+
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productFormSchema),
     defaultValues: {
@@ -37,13 +41,48 @@ export function ProductForm({ onSubmit, initialData }: ProductFormProps) {
     name: "sizes",
   });
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      // Here you would typically upload the file to your server
-      // For now, we'll just use a placeholder URL
-      console.log("File selected:", file);
-      form.setValue("image", URL.createObjectURL(file));
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      const fileExt = file.name.split('.').pop();
+      const reference = form.getValues('reference');
+      
+      if (!reference) {
+        form.setError('reference', {
+          type: 'manual',
+          message: 'Please fill in the reference before uploading an image'
+        });
+        return;
+      }
+
+      const fileName = `${reference}.${fileExt}`;
+      
+      const { data, error: uploadError } = await supabase.storage
+        .from('products')
+        .upload(fileName, file, {
+          upsert: true
+        });
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: urlData } = supabase.storage
+        .from('products')
+        .getPublicUrl(fileName);
+
+      form.setValue('image', urlData.publicUrl);
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      form.setError('image', {
+        type: 'manual',
+        message: 'Error uploading image. Please try again.'
+      });
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -51,36 +90,6 @@ export function ProductForm({ onSubmit, initialData }: ProductFormProps) {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <div className="grid gap-4">
-          <FormField
-            control={form.control}
-            name="image"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Imagem do Produto</FormLabel>
-                <FormControl>
-                  <div className="flex items-center gap-4">
-                    {field.value && (
-                      <img
-                        src={field.value}
-                        alt="Preview"
-                        className="w-24 h-24 object-cover rounded-lg border"
-                      />
-                    )}
-                    <div className="flex-1">
-                      <Input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="cursor-pointer"
-                      />
-                    </div>
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
           <FormField
             control={form.control}
             name="reference"
@@ -103,6 +112,37 @@ export function ProductForm({ onSubmit, initialData }: ProductFormProps) {
                 <FormLabel>Nome</FormLabel>
                 <FormControl>
                   <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="image"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Imagem do Produto</FormLabel>
+                <FormControl>
+                  <div className="flex items-center gap-4">
+                    {field.value && (
+                      <img
+                        src={field.value}
+                        alt="Preview"
+                        className="w-24 h-24 object-cover rounded-lg border"
+                      />
+                    )}
+                    <div className="flex-1">
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        disabled={isUploading}
+                        className="cursor-pointer"
+                      />
+                    </div>
+                  </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -171,7 +211,9 @@ export function ProductForm({ onSubmit, initialData }: ProductFormProps) {
           ))}
         </div>
 
-        <Button type="submit">Salvar</Button>
+        <Button type="submit" disabled={isUploading}>
+          {isUploading ? 'Uploading...' : 'Salvar'}
+        </Button>
       </form>
     </Form>
   );

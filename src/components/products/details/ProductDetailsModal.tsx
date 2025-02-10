@@ -62,11 +62,17 @@ export function ProductDetailsModal({
         
         <div className="grid gap-6 py-4">
           <div className="flex gap-6">
-            <img
-              src={product.image || "/placeholder.svg"}
-              alt={product.name}
-              className="w-48 h-48 object-cover rounded-lg border"
-            />
+            {product.image ? (
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-48 h-48 object-cover rounded-lg border"
+              />
+            ) : (
+              <div className="w-48 h-48 bg-gray-100 rounded-lg border flex items-center justify-center text-gray-400">
+                No Image
+              </div>
+            )}
             <div className="space-y-4">
               <div>
                 <h3 className="font-semibold">Referência</h3>

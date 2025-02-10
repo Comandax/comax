@@ -1,6 +1,7 @@
 
 import type { Product } from "@/types/product";
 import { ProductCard } from "@/components/ProductCard";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ProductListProps {
   products: Product[];
@@ -8,6 +9,13 @@ interface ProductListProps {
 }
 
 export const ProductList = ({ products, onQuantitySelect }: ProductListProps) => {
+  const getImageUrl = async (reference: string) => {
+    const { data } = supabase.storage
+      .from('products')
+      .getPublicUrl(`${reference}.jpeg`);
+    return data.publicUrl;
+  };
+
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold text-white">Itens para pedido</h2>
@@ -17,7 +25,7 @@ export const ProductList = ({ products, onQuantitySelect }: ProductListProps) =>
           product={{
             id: product._id,
             name: product.name,
-            image: `http://82.180.136.47/pedido/productImages/${product.reference}.jpeg?v=2`,
+            image: product.image || '',
             ref: product.reference,
             sizes: product.sizes.map(size => ({
               label: size.size,
@@ -33,4 +41,3 @@ export const ProductList = ({ products, onQuantitySelect }: ProductListProps) =>
     </div>
   );
 };
-
