@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -107,7 +106,6 @@ const Products = () => {
           )}
           <div>
             <h2 className="text-2xl font-bold text-gray-900">{company.name}</h2>
-            <p className="text-sm text-gray-500">Gerenciamento de Produtos</p>
           </div>
         </div>
       </Card>
