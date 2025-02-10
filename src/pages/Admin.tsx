@@ -8,34 +8,39 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const Admin = () => {
   const { user } = useAuth();
-  const { data: userCompany } = useQuery({
+  const { data: userCompany, isError } = useQuery({
     queryKey: ['company', user?.id],
     queryFn: async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from('companies')
         .select('*')
         .eq('owner_id', user?.id)
         .maybeSingle();
+      
+      if (error) {
+        console.error('Error fetching company:', error);
+        throw error;
+      }
+      
       return data;
     },
     enabled: !!user,
   });
 
   const isSuperuser = user?.roles?.includes('superuser');
-  const showCompanyButton = isSuperuser || userCompany;
+  // Allow creating a company if user doesn't have one yet
+  const showCompanyButton = isSuperuser || userCompany !== null;
 
   return (
     <div className="container mx-auto py-10">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Painel Administrativo</h1>
-        {showCompanyButton && (
-          <Button variant="outline" asChild>
-            <Link to="/companies" className="flex items-center gap-2">
-              <Building2 className="w-4 h-4" />
-              {isSuperuser ? "Gerenciar Empresas" : "Editar Empresa"}
-            </Link>
-          </Button>
-        )}
+        <Button variant="outline" asChild>
+          <Link to="/companies" className="flex items-center gap-2">
+            <Building2 className="w-4 h-4" />
+            {isSuperuser ? "Gerenciar Empresas" : userCompany ? "Editar Empresa" : "Criar Empresa"}
+          </Link>
+        </Button>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
