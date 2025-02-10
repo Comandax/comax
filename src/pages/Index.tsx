@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { ContactForm, type ContactFormData } from "@/components/ContactForm";
 import { FloatingTotal } from "@/components/FloatingTotal";
@@ -6,12 +5,12 @@ import { OrderNotes } from "@/components/OrderNotes";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
-import { OrderHeader } from "@/components/order/OrderHeader";
+import { useParams, useNavigate } from "react-router-dom";
 import { ProductList } from "@/components/order/ProductList";
 import { fetchProducts } from "@/services/productService";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
+import { Settings2 } from "lucide-react";
 
 interface SelectedItem {
   productId: string;
@@ -28,6 +27,7 @@ const Index = () => {
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
   const { companyId } = useParams<{ companyId?: string }>();
+  const navigate = useNavigate();
 
   // Fetch company data
   useEffect(() => {
@@ -126,21 +126,29 @@ const Index = () => {
       <div className="max-w-6xl mx-auto space-y-8">
         {company && (
           <Card className="p-6 bg-white/90">
-            <div className="flex items-center gap-4">
-              {company.logo_url && (
-                <img 
-                  src={company.logo_url} 
-                  alt={`${company.name} logo`}
-                  className="w-16 h-16 object-contain rounded-lg"
-                />
-              )}
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">{company.name}</h2>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                {company.logo_url && (
+                  <img 
+                    src={company.logo_url} 
+                    alt={`${company.name} logo`}
+                    className="w-16 h-16 object-contain rounded-lg"
+                  />
+                )}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">{company.name}</h2>
+                </div>
               </div>
+              <button
+                onClick={() => navigate("/admin")}
+                className="p-2 text-gray-600 hover:text-gray-900 transition-colors"
+                title="Painel Administrativo"
+              >
+                <Settings2 size={24} />
+              </button>
             </div>
           </Card>
         )}
-        <OrderHeader />
         <ContactForm onSubmit={handleContactSubmit} />
         <ProductList products={products} onQuantitySelect={handleQuantitySelect} />
         <OrderNotes value={notes} onChange={setNotes} />
