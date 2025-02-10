@@ -2,13 +2,16 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
-import { Company } from "@/types/company";
+import type { Company } from "@/types/company";
 import { supabase } from "@/integrations/supabase/client";
 import { CompanyForm } from "@/components/companies/CompanyForm";
 import { CompanyList } from "@/components/companies/CompanyList";
 import { CompanyDetails } from "@/components/companies/CompanyDetails";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Copy } from "lucide-react";
 
 export default function Companies() {
   const [companies, setCompanies] = useState<Company[]>([]);
@@ -72,6 +75,15 @@ export default function Companies() {
     fetchCompanies();
   };
 
+  const copyToClipboard = async (companyId: string) => {
+    const url = `${window.location.origin}/${companyId}`;
+    await navigator.clipboard.writeText(url);
+    toast({
+      title: "Link copiado!",
+      description: "O link foi copiado para sua área de transferência.",
+    });
+  };
+
   if (!user) {
     return null;
   }
@@ -91,12 +103,33 @@ export default function Companies() {
         )}
 
         {!isSuperuser && companies.length === 1 ? (
-          <Card className="p-6">
-            <CompanyDetails 
-              company={companies[0]}
-              onUpdateSuccess={fetchCompanies}
-            />
-          </Card>
+          <>
+            <Card className="p-6">
+              <CompanyDetails 
+                company={companies[0]}
+                onUpdateSuccess={fetchCompanies}
+              />
+            </Card>
+            <Card className="p-6">
+              <h2 className="text-xl font-semibold mb-4">Link para Pedidos</h2>
+              <div className="flex gap-2">
+                <Input
+                  readOnly
+                  value={`${window.location.origin}/${companies[0].id}`}
+                  className="flex-1"
+                />
+                <Button
+                  onClick={() => copyToClipboard(companies[0].id)}
+                  variant="outline"
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mt-2">
+                Compartilhe este link com seus clientes para que eles possam fazer pedidos.
+              </p>
+            </Card>
+          </>
         ) : (
           <CompanyList
             companies={companies}
