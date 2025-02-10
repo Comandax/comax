@@ -55,3 +55,16 @@ export const createProduct = async (product: ProductFormData, companyId: string)
     companyId: data.company_id
   };
 };
+
+export const deleteProduct = async (productId: string): Promise<void> => {
+  const { error } = await supabase
+    .from('products')
+    .delete()
+    .eq('id', productId);
+
+  if (error) {
+    console.error('Error deleting product:', error);
+    throw error;
+  }
+};
+

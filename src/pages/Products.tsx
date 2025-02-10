@@ -14,7 +14,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import type { Product, ProductFormData } from "@/types/product";
-import { fetchProducts, createProduct } from "@/services/productService";
+import { fetchProducts, createProduct, deleteProduct } from "@/services/productService";
 import { useCompany } from "@/hooks/useCompany";
 import { Card } from "@/components/ui/card";
 import { useNavigate, useParams } from "react-router-dom";
@@ -98,12 +98,13 @@ const Products = () => {
 
   const handleDelete = async (productId: string) => {
     try {
-      console.log("Deleting product:", productId);
+      await deleteProduct(productId);
+      await refetch();
       toast({
         title: "Produto excluído com sucesso!",
       });
-      refetch();
     } catch (error) {
+      console.error('Error deleting product:', error);
       toast({
         title: "Erro ao excluir produto",
         variant: "destructive",
