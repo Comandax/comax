@@ -17,6 +17,7 @@ import type { Product, ProductFormData } from "@/types/product";
 import { fetchProducts, createProduct } from "@/services/productService";
 import { useCompany } from "@/hooks/useCompany";
 import { Card } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 
 const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -24,6 +25,7 @@ const Products = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { company } = useCompany();
+  const navigate = useNavigate();
 
   const { data: products = [], refetch } = useQuery({
     queryKey: ["products", company?.id],
@@ -105,7 +107,10 @@ const Products = () => {
 
   return (
     <div className="container mx-auto py-10">
-      <Card className="p-6 mb-8 bg-white/90">
+      <Card 
+        className="p-6 mb-8 bg-white/90 cursor-pointer hover:bg-white/95 transition-colors"
+        onClick={() => navigate("/admin")}
+      >
         <div className="flex items-center gap-4">
           {company.logo_url && (
             <img 
@@ -152,4 +157,3 @@ const Products = () => {
 };
 
 export default Products;
-

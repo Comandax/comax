@@ -14,6 +14,7 @@ import { Card } from "@/components/ui/card";
 import type { Order } from "@/types/order";
 import { useCompany } from "@/hooks/useCompany";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 const OrderDetails = ({ order }: { order: Order }) => {
   return (
@@ -72,6 +73,7 @@ const OrderDetails = ({ order }: { order: Order }) => {
 const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const { company } = useCompany();
+  const navigate = useNavigate();
 
   const { data: orders = [] } = useQuery({
     queryKey: ["orders", company?.id],
@@ -109,7 +111,10 @@ const Orders = () => {
 
   return (
     <div className="container mx-auto py-10">
-      <Card className="p-6 mb-8 bg-white/90">
+      <Card 
+        className="p-6 mb-8 bg-white/90 cursor-pointer hover:bg-white/95 transition-colors"
+        onClick={() => navigate("/admin")}
+      >
         <div className="flex items-center gap-4">
           {company.logo_url && (
             <img 
