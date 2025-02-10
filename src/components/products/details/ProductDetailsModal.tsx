@@ -132,7 +132,11 @@ export function ProductDetailsModal({
                 <DialogHeader>
                   <DialogTitle>Editar Produto</DialogTitle>
                 </DialogHeader>
-                <ProductForm onSubmit={onSubmit} initialData={product} />
+                <ProductForm 
+                  onSubmit={onSubmit} 
+                  initialData={product} 
+                  onComplete={() => onOpenChange(false)}
+                />
               </DialogContent>
             </Dialog>
 

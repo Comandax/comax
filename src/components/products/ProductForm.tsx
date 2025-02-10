@@ -1,4 +1,3 @@
-
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -20,9 +19,10 @@ import { useState } from "react";
 interface ProductFormProps {
   onSubmit: (data: ProductFormData) => Promise<void>;
   initialData?: Product;
+  onComplete?: () => void;
 }
 
-export function ProductForm({ onSubmit, initialData }: ProductFormProps) {
+export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormProps) {
   const [isUploading, setIsUploading] = useState(false);
 
   const form = useForm<ProductFormData>({
@@ -86,9 +86,16 @@ export function ProductForm({ onSubmit, initialData }: ProductFormProps) {
     }
   };
 
+  const handleFormSubmit = async (data: ProductFormData) => {
+    await onSubmit(data);
+    if (onComplete) {
+      onComplete();
+    }
+  };
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={form.handleSubmit(handleFormSubmit)} className="space-y-4">
         <div className="grid gap-4">
           <FormField
             control={form.control}
