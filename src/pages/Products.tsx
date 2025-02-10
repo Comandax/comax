@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,7 @@ import {
 import type { Product, ProductFormData } from "@/types/product";
 import { fetchProducts } from "@/services/productService";
 import { useCompany } from "@/hooks/useCompany";
+import { Card } from "@/components/ui/card";
 
 const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -94,6 +96,22 @@ const Products = () => {
 
   return (
     <div className="container mx-auto py-10">
+      <Card className="p-6 mb-8 bg-white/90">
+        <div className="flex items-center gap-4">
+          {company.logo_url && (
+            <img 
+              src={company.logo_url} 
+              alt={`${company.name} logo`}
+              className="w-16 h-16 object-contain rounded-lg"
+            />
+          )}
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">{company.name}</h2>
+            <p className="text-sm text-gray-500">Gerenciamento de Produtos</p>
+          </div>
+        </div>
+      </Card>
+
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Produtos</h1>
         <Dialog>
