@@ -16,6 +16,7 @@ import UserEdit from "./pages/UserEdit";
 import UserCreate from "./pages/UserCreate";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import OrderSuccess from "./pages/OrderSuccess";
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/:companyId" element={<Index />} />
+            <Route path="/:companyId/success" element={<OrderSuccess />} />
             <Route path="/login" element={<Login />} />
             <Route 
               path="/admin" 
@@ -95,4 +97,3 @@ const App = () => (
 );
 
 export default App;
-

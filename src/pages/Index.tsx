@@ -25,6 +25,7 @@ const Index = () => {
   const [company, setCompany] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [contactData, setContactData] = useState<ContactFormData | null>(null);
   const { toast } = useToast();
   const { companyId } = useParams<{ companyId?: string }>();
   const navigate = useNavigate();
@@ -67,7 +68,7 @@ const Index = () => {
   });
 
   const handleContactSubmit = (data: ContactFormData) => {
-    console.log("Contact form data:", data);
+    setContactData(data);
   };
 
   const handleQuantitySelect = (productId: string, size: string, quantity: number, price: number) => {
@@ -88,11 +89,69 @@ const Index = () => {
     }, 0);
   };
 
-  const handleSubmitOrder = () => {
-    toast({
-      title: "Pedido enviado com sucesso!",
-      description: "Entraremos em contato em breve.",
-    });
+  const handleSubmitOrder = async () => {
+    if (!companyId) {
+      toast({
+        title: "Erro ao enviar pedido",
+        description: "Empresa não especificada.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!contactData) {
+      toast({
+        title: "Erro ao enviar pedido",
+        description: "Por favor, preencha seus dados de contato.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (selectedItems.length === 0) {
+      toast({
+        title: "Erro ao enviar pedido",
+        description: "Selecione pelo menos um produto.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const orderData = {
+        company_id: companyId,
+        customer_name: `${contactData.firstName} ${contactData.lastName}`,
+        customer_phone: contactData.phone,
+        customer_city: contactData.city,
+        customer_zip_code: contactData.zipCode,
+        items: selectedItems.map(item => ({
+          productId: item.productId,
+          size: item.size,
+          quantity: item.quantity,
+          price: item.price,
+          subtotal: item.quantity * item.price
+        })),
+        total: calculateTotal(),
+        notes: notes
+      };
+
+      const { error: insertError } = await supabase
+        .from('orders')
+        .insert([orderData]);
+
+      if (insertError) {
+        throw insertError;
+      }
+
+      navigate(`/${companyId}/success`);
+    } catch (error) {
+      console.error('Error submitting order:', error);
+      toast({
+        title: "Erro ao enviar pedido",
+        description: "Ocorreu um erro ao salvar seu pedido. Por favor, tente novamente.",
+        variant: "destructive",
+      });
+    }
   };
 
   if (isLoading) {
