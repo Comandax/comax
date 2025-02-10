@@ -24,39 +24,46 @@ const Index = () => {
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
   const [notes, setNotes] = useState("");
   const [company, setCompany] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
   const { companyId } = useParams<{ companyId?: string }>();
 
   // Fetch company data
   useEffect(() => {
     const fetchCompany = async () => {
-      if (companyId) {
-        const { data, error } = await supabase
-          .from('companies')
-          .select('*')
-          .eq('id', companyId)
-          .single();
+      if (!companyId) {
+        setIsLoading(false);
+        setError("Nenhuma empresa especificada no endereço.");
+        return;
+      }
 
-        if (error) {
-          console.error('Error fetching company:', error);
-          toast({
-            title: "Erro ao carregar informações da empresa",
-            variant: "destructive",
-          });
-          return;
-        }
+      const { data, error } = await supabase
+        .from('companies')
+        .select('*')
+        .eq('id', companyId)
+        .single();
 
+      if (error) {
+        console.error('Error fetching company:', error);
+        setError("Empresa não encontrada. Por favor, verifique se o endereço está correto.");
+        toast({
+          title: "Erro ao carregar informações da empresa",
+          variant: "destructive",
+        });
+      } else {
         setCompany(data);
       }
+      setIsLoading(false);
     };
 
     fetchCompany();
   }, [companyId, toast]);
 
-  const { data: products = [], isLoading, error } = useQuery({
+  const { data: products = [] } = useQuery({
     queryKey: ['products', companyId],
     queryFn: () => fetchProducts(companyId || ''),
-    enabled: !!companyId
+    enabled: !!companyId && !!company
   });
 
   const handleContactSubmit = (data: ContactFormData) => {
@@ -91,20 +98,21 @@ const Index = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8 flex items-center justify-center">
-        <div className="text-white text-xl">Carregando produtos...</div>
+        <div className="text-white text-xl">Carregando...</div>
       </div>
     );
   }
 
-  if (error) {
+  if (error || !company) {
     return (
       <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8 flex items-center justify-center">
-        <div className="text-white text-xl">
-          Erro ao carregar produtos: {error instanceof Error ? error.message : 'Erro desconhecido'}
-          <br />
+        <div className="text-center">
+          <h1 className="text-white text-3xl font-bold mb-4">Página não encontrada</h1>
+          <p className="text-white text-xl mb-6">{error || "Empresa não encontrada"}</p>
+          <p className="text-white text-lg mb-8">Por favor, verifique se o endereço está correto.</p>
           <Button 
             onClick={() => window.location.reload()}
-            className="mt-4 bg-white text-primary hover:bg-white/90"
+            className="bg-white text-primary hover:bg-white/90"
           >
             Tentar novamente
           </Button>
