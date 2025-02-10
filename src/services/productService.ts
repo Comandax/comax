@@ -1,33 +1,26 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import type { Product, ProductSize } from "@/types/product";
+import type { Product } from "@/types/product";
 
-export const getProductsByCompanyId = async (companyId: string): Promise<Product[]> => {
-  const { data: products, error: productsError } = await supabase
+export const fetchProducts = async (companyId: string): Promise<Product[]> => {
+  const { data, error } = await supabase
     .from('products')
     .select('*')
-    .eq('company_id', companyId)
-    .eq('disabled', false);
+    .eq('company_id', companyId);
 
-  if (productsError) {
-    throw productsError;
+  if (error) {
+    console.error('Error fetching products:', error);
+    throw error;
   }
 
-  return (products || []).map(product => ({
+  return (data || []).map(product => ({
     _id: product.id,
     reference: product.reference,
     name: product.name,
     image: product.image_url,
-    sizes: (product.sizes as ProductSize[]) || [],
-    quantities: product.quantities || [],
+    sizes: (product.sizes as Array<{size: string; value: number}>), // Explicitly cast the JSON to the correct type
+    quantities: product.quantities,
     disabled: product.disabled,
     companyId: product.company_id
   }));
 };
-
-// Renaming fetchProducts to match the import in Products.tsx
-export const fetchProducts = async (companyId: string): Promise<Product[]> => {
-  if (!companyId) return [];
-  return getProductsByCompanyId(companyId);
-};
-
