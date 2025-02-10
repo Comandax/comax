@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { ContactForm, type ContactFormData } from "@/components/ContactForm";
 import { FloatingTotal } from "@/components/FloatingTotal";
@@ -131,7 +132,7 @@ const Index = () => {
           subtotal: item.quantity * item.price
         })),
         total: calculateTotal(),
-        notes: notes
+        notes: notes // Now properly including notes in the order data
       };
 
       const { error: insertError } = await supabase

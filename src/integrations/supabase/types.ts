@@ -56,6 +56,7 @@ export type Database = {
           date: string
           id: string
           items: Json
+          notes: string | null
           time: string
           total: number
           updated_at: string
@@ -70,6 +71,7 @@ export type Database = {
           date?: string
           id?: string
           items?: Json
+          notes?: string | null
           time?: string
           total: number
           updated_at?: string
@@ -84,6 +86,7 @@ export type Database = {
           date?: string
           id?: string
           items?: Json
+          notes?: string | null
           time?: string
           total?: number
           updated_at?: string
