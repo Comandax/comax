@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { ContactForm, type ContactFormData } from "@/components/ContactForm";
 import { ProductCard } from "@/components/ProductCard";
@@ -7,7 +6,7 @@ import { OrderNotes } from "@/components/OrderNotes";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Settings2 } from "lucide-react";
 
 interface Product {
@@ -136,7 +135,7 @@ const mockData = {
         {"size": "M", "value": 7.1},
         {"size": "G", "value": 7.1}
       ],
-      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
+      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 120],
       "disabled": true
     }
   ]
@@ -147,7 +146,7 @@ const fetchProducts = async (companyId: string = "1"): Promise<Product[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
       const filteredProducts = mockData.products
-        .filter(product => product.companyId === companyId)
+        .filter(product => !companyId || product.companyId === companyId)
         .map(product => ({
           _id: product._id,
           reference: product.reference,
@@ -170,8 +169,7 @@ const Index = () => {
   const [notes, setNotes] = useState("");
   const { toast } = useToast();
   const navigate = useNavigate();
-
-  const companyId = "1";
+  const { companyId } = useParams<{ companyId?: string }>();
 
   const { data: products = [], isLoading, error } = useQuery({
     queryKey: ['products', companyId],
