@@ -1,24 +1,15 @@
 
 import React, { useState } from "react";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ProductForm } from "@/components/products/ProductForm";
 import { ProductList } from "@/components/products/ProductList";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import type { Product, ProductFormData } from "@/types/product";
 import { fetchProducts, createProduct, updateProduct, deleteProduct } from "@/services/productService";
 import { useCompany } from "@/hooks/useCompany";
-import { Card } from "@/components/ui/card";
 import { useNavigate, useParams } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { CompanyHeader } from "@/components/companies/CompanyHeader";
+import { ProductsHeader } from "@/components/products/ProductsHeader";
+import { usePublicCompany } from "@/hooks/usePublicCompany";
 
 const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -26,37 +17,8 @@ const Products = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { company } = useCompany();
-  const navigate = useNavigate();
   const { companyId } = useParams();
-  const [publicCompany, setPublicCompany] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Fetch public company data if accessed via URL
-  const fetchPublicCompany = async (id: string) => {
-    const { data, error } = await supabase
-      .from('companies')
-      .select('*')
-      .eq('id', id)
-      .single();
-
-    if (error) {
-      console.error('Error fetching company:', error);
-      return null;
-    }
-    return data;
-  };
-
-  // Effect to fetch public company data when accessed via URL
-  React.useEffect(() => {
-    if (companyId && !company) {
-      fetchPublicCompany(companyId).then((data) => {
-        setPublicCompany(data);
-        setIsLoading(false);
-      });
-    } else {
-      setIsLoading(false);
-    }
-  }, [companyId, company]);
+  const { publicCompany, isLoading } = usePublicCompany(companyId);
 
   const effectiveCompany = company || publicCompany;
   const isPublicView = !company && !!publicCompany;
@@ -152,54 +114,20 @@ const Products = () => {
 
   return (
     <div className="container mx-auto py-10">
-      {!isPublicView && (
-        <Card 
-          className="p-6 mb-8 bg-white/90 cursor-pointer hover:bg-white/95 transition-colors"
-          onClick={() => navigate("/admin")}
-        >
-          <div className="flex items-center gap-4">
-            {effectiveCompany.logo_url && (
-              <img 
-                src={effectiveCompany.logo_url} 
-                alt={`${effectiveCompany.name} logo`}
-                className="w-16 h-16 object-contain rounded-lg"
-              />
-            )}
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">{effectiveCompany.name}</h2>
-            </div>
-          </div>
-        </Card>
-      )}
+      <CompanyHeader 
+        logo_url={effectiveCompany.logo_url}
+        name={effectiveCompany.name}
+        isPublicView={isPublicView}
+      />
 
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Produtos</h1>
-        {!isPublicView && (
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button onClick={() => setSelectedProduct(null)}>
-                <Plus className="mr-2" />
-                Novo Produto
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>
-                  {selectedProduct ? "Editar Produto" : "Novo Produto"}
-                </DialogTitle>
-              </DialogHeader>
-              <ProductForm 
-                onSubmit={onSubmit} 
-                initialData={selectedProduct || undefined} 
-                onComplete={() => {
-                  setDialogOpen(false);
-                  setSelectedProduct(null);
-                }}
-              />
-            </DialogContent>
-          </Dialog>
-        )}
-      </div>
+      <ProductsHeader
+        isPublicView={isPublicView}
+        dialogOpen={dialogOpen}
+        setDialogOpen={setDialogOpen}
+        selectedProduct={selectedProduct}
+        setSelectedProduct={setSelectedProduct}
+        onSubmit={onSubmit}
+      />
 
       <ProductList
         products={products}
