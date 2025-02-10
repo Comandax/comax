@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import type { Product, ProductFormData } from "@/types/product";
 import { ProductForm } from "../ProductForm";
+import { useState } from "react";
 
 interface ProductTableActionsProps {
   product: Product;
@@ -36,9 +37,16 @@ export function ProductTableActions({
   onDelete,
   onSubmit,
 }: ProductTableActionsProps) {
+  const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const handleSubmit = async (data: ProductFormData) => {
+    await onSubmit(data);
+    setIsEditOpen(false);
+  };
+
   return (
     <div onClick={(e) => e.stopPropagation()}>
-      <Dialog>
+      <Dialog open={isEditOpen} onOpenChange={setIsEditOpen}>
         <DialogTrigger asChild>
           <Button
             variant="ghost"
@@ -56,7 +64,7 @@ export function ProductTableActions({
             <DialogTitle>Editar Produto</DialogTitle>
           </DialogHeader>
           <ScrollArea className="h-[80vh] pr-4">
-            <ProductForm onSubmit={onSubmit} initialData={product} />
+            <ProductForm onSubmit={handleSubmit} initialData={product} />
           </ScrollArea>
         </DialogContent>
       </Dialog>
