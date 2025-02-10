@@ -16,12 +16,20 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const handleDelete = async (productId: string) => {
+    if (onDelete) {
+      await onDelete(productId);
+      setIsModalOpen(false); // Fecha o modal após a exclusão
+      setSelectedProduct(null); // Limpa o produto selecionado
+    }
+  };
+
   return (
     <>
       <ProductTable
         products={products}
         onEdit={onEdit}
-        onDelete={onDelete}
+        onDelete={handleDelete}
         onSubmit={onSubmit}
         onToggleStatus={onToggleStatus}
         onProductClick={(product) => {
@@ -35,7 +43,7 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
         isOpen={isModalOpen}
         onOpenChange={setIsModalOpen}
         onEdit={onEdit}
-        onDelete={onDelete}
+        onDelete={handleDelete}
         onSubmit={onSubmit}
         onToggleStatus={onToggleStatus}
       />
