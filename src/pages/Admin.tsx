@@ -38,7 +38,7 @@ const Admin = () => {
         <Button variant="outline" asChild>
           <Link to="/companies" className="flex items-center gap-2">
             <Building2 className="w-4 h-4" />
-            {isSuperuser ? "Gerenciar Empresas" : userCompany ? "Editar Empresa" : "Criar Empresa"}
+            {isSuperuser ? "Gerenciar Empresas" : userCompany ? "Minha Empresa" : "Criar Empresa"}
           </Link>
         </Button>
       </div>
