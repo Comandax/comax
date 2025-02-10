@@ -19,7 +19,11 @@ export const ProductList = ({ products, onQuantitySelect }: ProductListProps) =>
             name: product.name,
             image: `http://82.180.136.47/pedido/productImages/${product.reference}.jpeg?v=2`,
             ref: product.reference,
-            sizes: product.sizes
+            sizes: product.sizes.map(size => ({
+              label: size.size,
+              price: size.value,
+              quantities: [0, ...product.quantities]
+            }))
           }}
           onQuantitySelect={(size, quantity, price) => 
             onQuantitySelect(product._id, size, quantity, price)
@@ -29,3 +33,4 @@ export const ProductList = ({ products, onQuantitySelect }: ProductListProps) =>
     </div>
   );
 };
+

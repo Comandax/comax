@@ -1,4 +1,3 @@
-
 import type { Product } from "@/types/product";
 
 // Mock data moved from Index.tsx
@@ -116,21 +115,18 @@ const mockData = {
 export const fetchProducts = async (companyId: string = "1"): Promise<Product[]> => {
   return new Promise((resolve) => {
     setTimeout(() => {
-      const filteredProducts = mockData.products
+      const products = mockData.products
         .filter(product => !companyId || product.companyId === companyId)
         .map(product => ({
           _id: product._id,
           reference: product.reference,
           name: product.name,
-          sizes: product.sizes.map(size => ({
-            label: size.size,
-            price: size.value,
-            quantities: [0, ...product.quantities],
-          })),
+          sizes: product.sizes,
+          quantities: product.quantities,
           disabled: product.disabled,
           companyId: product.companyId
         }));
-      resolve(filteredProducts);
+      resolve(products);
     }, 500);
   });
 };
