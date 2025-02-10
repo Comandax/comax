@@ -45,6 +45,59 @@ export type Database = {
         }
         Relationships: []
       }
+      orders: {
+        Row: {
+          company_id: string
+          created_at: string
+          customer_city: string
+          customer_name: string
+          customer_phone: string
+          customer_zip_code: string
+          date: string
+          id: string
+          items: Json
+          time: string
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          customer_city: string
+          customer_name: string
+          customer_phone: string
+          customer_zip_code: string
+          date?: string
+          id?: string
+          items?: Json
+          time?: string
+          total: number
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          customer_city?: string
+          customer_name?: string
+          customer_phone?: string
+          customer_zip_code?: string
+          date?: string
+          id?: string
+          items?: Json
+          time?: string
+          total?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           company_id: string

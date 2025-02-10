@@ -10,31 +10,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Card } from "@/components/ui/card";
 import type { Order } from "@/types/order";
-
-const mockOrders: Order[] = [
-  {
-    _id: "1da1c",
-    customerName: "Antonia Barros",
-    date: "2025-02-05",
-    time: "19:02",
-    customerPhone: "9999139-4891",
-    customerCity: "Barra do Corda/MA",
-    customerZipCode: "65950-000",
-    items: [
-      {
-        _id: "1",
-        code: "2020-M",
-        name: "Cueca Infantil Slip",
-        size: "M",
-        quantity: 6,
-        subtotal: 35.76
-      },
-    ],
-    total: 557.28,
-    companyId: "1"
-  }
-];
+import { useCompany } from "@/hooks/useCompany";
+import { supabase } from "@/integrations/supabase/client";
 
 const OrderDetails = ({ order }: { order: Order }) => {
   return (
@@ -92,15 +71,59 @@ const OrderDetails = ({ order }: { order: Order }) => {
 
 const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const companyId = "1"; // Em um sistema real, isso viria do contexto de autenticação
+  const { company } = useCompany();
 
   const { data: orders = [] } = useQuery({
-    queryKey: ["orders", companyId],
-    queryFn: () => Promise.resolve(mockOrders.filter(order => order.companyId === companyId)),
+    queryKey: ["orders", company?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("company_id", company?.id)
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching orders:", error);
+        throw error;
+      }
+
+      return data.map((order: any) => ({
+        _id: order.id,
+        customerName: order.customer_name,
+        customerPhone: order.customer_phone,
+        customerCity: order.customer_city,
+        customerZipCode: order.customer_zip_code,
+        date: new Date(order.date).toLocaleDateString(),
+        time: order.time,
+        items: order.items,
+        total: order.total,
+        companyId: order.company_id,
+      }));
+    },
+    enabled: !!company?.id,
   });
+
+  if (!company) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="container mx-auto py-10">
+      <Card className="p-6 mb-8 bg-white/90">
+        <div className="flex items-center gap-4">
+          {company.logo_url && (
+            <img 
+              src={company.logo_url} 
+              alt={`${company.name} logo`}
+              className="w-16 h-16 object-contain rounded-lg"
+            />
+          )}
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">{company.name}</h2>
+          </div>
+        </div>
+      </Card>
+
       <h1 className="text-3xl font-bold mb-6">Relatório de Pedidos</h1>
 
       <Table>
@@ -140,4 +163,3 @@ const Orders = () => {
 };
 
 export default Orders;
-
