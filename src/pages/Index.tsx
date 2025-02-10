@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ContactForm, type ContactFormData } from "@/components/ContactForm";
 import { ProductCard } from "@/components/ProductCard";
 import { FloatingTotal } from "@/components/FloatingTotal";
@@ -7,8 +7,9 @@ import { OrderNotes } from "@/components/OrderNotes";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Settings2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Product {
   _id: string;
@@ -30,139 +31,40 @@ interface SelectedItem {
   price: number;
 }
 
-// Mock data now includes companyId
-const mockData = {
-  "products": [
-    {
-      "_id": "65c14c53ebe1ad654f459e81",
-      "reference": "3001",
-      "name": "Calcinha Infantil com botão",
-      "sizes": [
-        {"size": "P", "value": 5.76},
-        {"size": "M", "value": 5.76},
-        {"size": "G", "value": 5.76},
-        {"size": "GG", "value": 5.76}
-      ],
-      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-      "disabled": false,
-      "companyId": "1"
-    },
-    {
-      "_id": "65c14c98ebe1ad654f459e82",
-      "reference": "3002",
-      "name": "Cueca Feminina Infantil (algodão)",
-      "sizes": [
-        {"size": "P", "value": 7.54},
-        {"size": "M", "value": 7.54},
-        {"size": "G", "value": 7.54},
-        {"size": "GG", "value": 7.54}
-      ],
-      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-      "disabled": false
-    },
-    {
-      "_id": "65c14cceebe1ad654f459e84",
-      "reference": "3003",
-      "name": "Calcinha Infantil Acapulco (sainha)",
-      "sizes": [
-        {"size": "PP", "value": 12.5},
-        {"size": "P", "value": 12.5},
-        {"size": "M", "value": 12.5},
-        {"size": "G", "value": 12.5}
-      ],
-      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-      "disabled": false
-    },
-    {
-      "_id": "65c14d05ebe1ad654f459e85",
-      "reference": "3004",
-      "name": "Calcinha Infantil Babadinho Perna",
-      "sizes": [
-        {"size": "PP", "value": 5.96},
-        {"size": "P", "value": 5.96},
-        {"size": "M", "value": 5.96},
-        {"size": "G", "value": 5.96},
-        {"size": "GG", "value": 5.96}
-      ],
-      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-      "disabled": false
-    },
-    {
-      "_id": "65c14d42ebe1ad654f459e87",
-      "reference": "3005",
-      "name": "Calcinha Infantil Cós Personalizado",
-      "sizes": [
-        {"size": "PP", "value": 5.86},
-        {"size": "P", "value": 5.86},
-        {"size": "M", "value": 5.86},
-        {"size": "G", "value": 5.86},
-        {"size": "GG", "value": 5.86}
-      ],
-      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-      "disabled": false
-    },
-    {
-      "_id": "65c14d59ebe1ad654f459e88",
-      "reference": "3006",
-      "name": "Calcinha Infantil Babadinho no Cós",
-      "sizes": [
-        {"size": "PP", "value": 5.76},
-        {"size": "P", "value": 5.76},
-        {"size": "M", "value": 5.76},
-        {"size": "G", "value": 5.76},
-        {"size": "GG", "value": 5.76}
-      ],
-      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-      "disabled": false
-    },
-    {
-      "_id": "65c14d73ebe1ad654f459e89",
-      "reference": "3008",
-      "name": "Calcinha Infantil Babadinho nas Costas",
-      "sizes": [
-        {"size": "P", "value": 6.96},
-        {"size": "M", "value": 6.96},
-        {"size": "G", "value": 6.96}
-      ],
-      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-      "disabled": false
-    },
-    {
-      "_id": "65c14db4ebe1ad654f459e8b",
-      "reference": "3011",
-      "name": "Calcinha Infantil Sophia",
-      "sizes": [
-        {"size": "P", "value": 7.1},
-        {"size": "M", "value": 7.1},
-        {"size": "G", "value": 7.1}
-      ],
-      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
-      "disabled": true
-    }
-  ]
-};
+const fetchProducts = async (companySlug: string): Promise<Product[]> => {
+  // First, get company ID from the slug
+  const { data: companies, error: companyError } = await supabase
+    .from('companies')
+    .select('id, name')
+    .single();
 
-const fetchProducts = async (companyId: string = "1"): Promise<Product[]> => {
-  // Simulating an async operation with the mock data and filtering by company
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const filteredProducts = mockData.products
-        .filter(product => product.companyId === companyId)
-        .map(product => ({
-          _id: product._id,
-          reference: product.reference,
-          name: product.name,
-          sizes: product.sizes.map(size => ({
-            label: size.size,
-            price: size.value,
-            quantities: [0, ...product.quantities],
-          })),
-          disabled: product.disabled,
-          companyId: product.companyId
-        }));
-      resolve(filteredProducts);
-    }, 500);
-  });
+  if (companyError) {
+    throw companyError;
+  }
+
+  // Then fetch products for this company
+  const { data: products, error: productsError } = await supabase
+    .from('products')
+    .select('*')
+    .eq('company_id', companies.id)
+    .eq('disabled', false);
+
+  if (productsError) {
+    throw productsError;
+  }
+
+  return (products || []).map(product => ({
+    _id: product.id,
+    reference: product.reference,
+    name: product.name,
+    sizes: product.sizes.map((size: { size: string; value: number }) => ({
+      label: size.size,
+      price: size.value,
+      quantities: [0, ...(product.quantities || [])],
+    })),
+    disabled: product.disabled,
+    companyId: product.company_id
+  }));
 };
 
 const Index = () => {
@@ -170,12 +72,15 @@ const Index = () => {
   const [notes, setNotes] = useState("");
   const { toast } = useToast();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const companyId = "1";
+  // Get company slug from URL path
+  const companySlug = location.pathname.split('/').pop() || '';
 
   const { data: products = [], isLoading, error } = useQuery({
-    queryKey: ['products', companyId],
-    queryFn: () => fetchProducts(companyId),
+    queryKey: ['products', companySlug],
+    queryFn: () => fetchProducts(companySlug),
+    enabled: !!companySlug,
   });
 
   const handleContactSubmit = (data: ContactFormData) => {
@@ -255,7 +160,7 @@ const Index = () => {
 
         <div className="space-y-6">
           <h2 className="text-2xl font-semibold text-white">Itens para pedido</h2>
-          {products.filter(product => !product.disabled).map((product) => (
+          {products.map((product) => (
             <ProductCard
               key={product._id}
               product={{
