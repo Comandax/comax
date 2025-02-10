@@ -30,7 +30,6 @@ const Index = () => {
   const { companyId } = useParams<{ companyId?: string }>();
   const navigate = useNavigate();
 
-  // Fetch company data
   useEffect(() => {
     const fetchCompany = async () => {
       if (!companyId) {
@@ -120,8 +119,8 @@ const Index = () => {
     try {
       const orderData = {
         company_id: companyId,
-        customer_name: `${contactData.firstName} ${contactData.lastName}`,
-        customer_phone: contactData.phone,
+        customer_name: contactData.name,
+        customer_phone: contactData.whatsapp,
         customer_city: contactData.city,
         customer_zip_code: contactData.zipCode,
         items: selectedItems.map(item => ({
