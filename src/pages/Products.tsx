@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ import { Card } from "@/components/ui/card";
 
 const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { company } = useCompany();
@@ -37,6 +39,7 @@ const Products = () => {
           ? "Produto atualizado com sucesso!"
           : "Produto criado com sucesso!",
       });
+      setDialogOpen(false); // Close the dialog after successful submission
       refetch();
     } catch (error) {
       toast({
@@ -48,6 +51,7 @@ const Products = () => {
 
   const handleEdit = (product: Product) => {
     setSelectedProduct(product);
+    setDialogOpen(true);
   };
 
   const handleDelete = async (productId: string) => {
@@ -112,9 +116,9 @@ const Products = () => {
 
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Produtos</h1>
-        <Dialog>
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button onClick={() => setSelectedProduct(null)}>
               <Plus className="mr-2" />
               Novo Produto
             </Button>
