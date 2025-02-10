@@ -2,16 +2,16 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
-import { Company, SortField, SortOrder } from "@/types/company";
+import { Company } from "@/types/company";
 import { supabase } from "@/integrations/supabase/client";
 import { CompanyForm } from "@/components/companies/CompanyForm";
 import { CompanyList } from "@/components/companies/CompanyList";
+import { CompanyDetails } from "@/components/companies/CompanyDetails";
 import { useAuth } from "@/contexts/AuthContext";
+import { Card } from "@/components/ui/card";
 
 export default function Companies() {
   const [companies, setCompanies] = useState<Company[]>([]);
-  const [sortField, setSortField] = useState<SortField>("name");
-  const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
   const { toast } = useToast();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -23,15 +23,14 @@ export default function Companies() {
       return;
     }
     fetchCompanies();
-  }, [sortField, sortOrder, user, navigate]);
+  }, [user, navigate]);
 
   const fetchCompanies = async () => {
     if (!user) return;
 
     let query = supabase
       .from('companies')
-      .select('*')
-      .order(sortField, { ascending: sortOrder === 'asc' });
+      .select('*');
 
     // Se não for superusuário, filtra apenas as empresas do usuário
     if (!isSuperuser) {
@@ -49,16 +48,7 @@ export default function Companies() {
       return;
     }
 
-    setCompanies(data);
-  };
-
-  const toggleSort = (field: SortField) => {
-    if (sortField === field) {
-      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortOrder('asc');
-    }
+    setCompanies(data || []);
   };
 
   const toggleCompanyStatus = async (id: string, currentStatus: boolean) => {
@@ -100,15 +90,24 @@ export default function Companies() {
           <CompanyForm onSubmitSuccess={fetchCompanies} />
         )}
 
-        <CompanyList
-          companies={companies}
-          sortField={sortField}
-          sortOrder={sortOrder}
-          onToggleSort={toggleSort}
-          onToggleStatus={toggleCompanyStatus}
-          onUpdateSuccess={fetchCompanies}
-          isSuperuser={isSuperuser}
-        />
+        {!isSuperuser && companies.length === 1 ? (
+          <Card className="p-6">
+            <CompanyDetails 
+              company={companies[0]}
+              onUpdateSuccess={fetchCompanies}
+            />
+          </Card>
+        ) : (
+          <CompanyList
+            companies={companies}
+            sortField="name"
+            sortOrder="asc"
+            onToggleSort={() => {}}
+            onToggleStatus={toggleCompanyStatus}
+            onUpdateSuccess={fetchCompanies}
+            isSuperuser={isSuperuser}
+          />
+        )}
       </div>
     </div>
   );
