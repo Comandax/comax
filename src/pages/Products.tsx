@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,15 +14,18 @@ import {
 } from "@/components/ui/dialog";
 import type { Product, ProductFormData } from "@/types/product";
 import { fetchProducts } from "@/services/productService";
+import { useCompany } from "@/hooks/useCompany";
 
 const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { company } = useCompany();
 
   const { data: products = [], refetch } = useQuery({
-    queryKey: ["products", "1"], // Hardcoded companyId for now
-    queryFn: () => fetchProducts("1"),
+    queryKey: ["products", company?.id],
+    queryFn: () => fetchProducts(company?.id || ""),
+    enabled: !!company?.id,
   });
 
   const onSubmit = async (data: ProductFormData) => {
@@ -66,7 +68,7 @@ const Products = () => {
     try {
       console.log("Toggling product status:", { productId, disabled });
       // Optimistically update the UI
-      queryClient.setQueryData(["products", "1"], (oldData: Product[] | undefined) => {
+      queryClient.setQueryData(["products", company?.id], (oldData: Product[] | undefined) => {
         if (!oldData) return [];
         return oldData.map((product) =>
           product._id === productId ? { ...product, disabled } : product
@@ -78,13 +80,17 @@ const Products = () => {
       });
     } catch (error) {
       // Revert optimistic update on error
-      queryClient.invalidateQueries({ queryKey: ["products", "1"] });
+      queryClient.invalidateQueries({ queryKey: ["products", company?.id] });
       toast({
         title: "Erro ao alterar status do produto",
         variant: "destructive",
       });
     }
   };
+
+  if (!company) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="container mx-auto py-10">

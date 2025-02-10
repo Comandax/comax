@@ -45,6 +45,53 @@ export type Database = {
         }
         Relationships: []
       }
+      products: {
+        Row: {
+          company_id: string
+          created_at: string
+          disabled: boolean
+          id: string
+          image_url: string | null
+          name: string
+          quantities: number[]
+          reference: string
+          sizes: Json
+          updated_at: string
+        }
+        Insert: {
+          company_id: string
+          created_at?: string
+          disabled?: boolean
+          id?: string
+          image_url?: string | null
+          name: string
+          quantities?: number[]
+          reference: string
+          sizes?: Json
+          updated_at?: string
+        }
+        Update: {
+          company_id?: string
+          created_at?: string
+          disabled?: boolean
+          id?: string
+          image_url?: string | null
+          name?: string
+          quantities?: number[]
+          reference?: string
+          sizes?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
