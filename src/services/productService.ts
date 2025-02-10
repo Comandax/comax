@@ -18,7 +18,7 @@ export const fetchProducts = async (companyId: string): Promise<Product[]> => {
     reference: product.reference,
     name: product.name,
     image: product.image_url,
-    sizes: product.sizes,
+    sizes: (product.sizes as Array<{size: string; value: number}>), // Explicitly cast the JSON to the correct type
     quantities: product.quantities,
     disabled: product.disabled,
     companyId: product.company_id
