@@ -2,11 +2,13 @@
 import { Card } from "@/components/ui/card";
 import { Settings2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import type { Company } from "@/types/company";
 
-type CompanyHeaderProps = {
-  company: Pick<Company, 'name' | 'logo_url'>;
-};
+interface CompanyHeaderProps {
+  company: {
+    name: string;
+    logo_url?: string | null;
+  };
+}
 
 export const CompanyHeader = ({ company }: CompanyHeaderProps) => {
   const navigate = useNavigate();
