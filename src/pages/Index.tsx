@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ContactForm, type ContactFormData } from "@/components/ContactForm";
 import { ProductCard } from "@/components/ProductCard";
 import { FloatingTotal } from "@/components/FloatingTotal";
@@ -7,22 +7,13 @@ import { OrderNotes } from "@/components/OrderNotes";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useLocation } from "react-router-dom";
-import { Settings2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-
-interface Product {
-  _id: string;
-  reference: string;
-  name: string;
-  sizes: Array<{
-    label: string;
-    price: number;
-    quantities: number[];
-  }>;
-  disabled: boolean;
-  companyId?: string;
-}
+import { useLocation } from "react-router-dom";
+import { LoadingScreen } from "@/components/layout/LoadingScreen";
+import { NotFoundScreen } from "@/components/layout/NotFoundScreen";
+import { ErrorScreen } from "@/components/layout/ErrorScreen";
+import { PageHeader } from "@/components/layout/PageHeader";
+import { getCompanyBySlug } from "@/services/companyService";
+import { getProductsByCompanyId } from "@/services/productService";
 
 interface SelectedItem {
   productId: string;
@@ -31,58 +22,18 @@ interface SelectedItem {
   price: number;
 }
 
-interface ProductSize {
-  size: string;
-  value: number;
-}
-
-const fetchProducts = async (companySlug: string): Promise<Product[]> => {
-  // First, get company ID from the slug
-  const { data: companies, error: companyError } = await supabase
-    .from('companies')
-    .select('id, name')
-    .eq('active', true)
-    .ilike('name', companySlug.replace(/-/g, ' '))
-    .maybeSingle();
-
-  if (companyError) {
-    throw companyError;
+const fetchProducts = async (companySlug: string) => {
+  const company = await getCompanyBySlug(companySlug);
+  if (!company) {
+    return [];
   }
-
-  if (!companies) {
-    return []; // Return empty array if company not found
-  }
-
-  // Then fetch products for this company
-  const { data: products, error: productsError } = await supabase
-    .from('products')
-    .select('*')
-    .eq('company_id', companies.id)
-    .eq('disabled', false);
-
-  if (productsError) {
-    throw productsError;
-  }
-
-  return (products || []).map(product => ({
-    _id: product.id,
-    reference: product.reference,
-    name: product.name,
-    sizes: ((product.sizes || []) as ProductSize[]).map(size => ({
-      label: size.size,
-      price: size.value,
-      quantities: [0, ...(product.quantities || [])],
-    })),
-    disabled: product.disabled,
-    companyId: product.company_id
-  }));
+  return getProductsByCompanyId(company.id);
 };
 
 const Index = () => {
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
   const [notes, setNotes] = useState("");
   const { toast } = useToast();
-  const navigate = useNavigate();
   const location = useLocation();
 
   // Get company slug from URL path
@@ -124,66 +75,21 @@ const Index = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8 flex items-center justify-center">
-        <div className="text-white text-xl">Carregando produtos...</div>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
-  // Show "page not found" message when no products are found and we're not loading
   if (!isLoading && products.length === 0) {
-    return (
-      <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8 flex items-center justify-center">
-        <div className="text-center text-white">
-          <h1 className="text-3xl font-bold mb-4">Página não encontrada</h1>
-          <p className="text-xl">Por favor, verifique se o endereço está correto e tente novamente.</p>
-          <Button 
-            onClick={() => window.location.reload()}
-            className="mt-8 bg-white text-primary hover:bg-white/90"
-          >
-            Tentar novamente
-          </Button>
-        </div>
-      </div>
-    );
+    return <NotFoundScreen />;
   }
 
   if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8 flex items-center justify-center">
-        <div className="text-white text-xl">
-          Erro ao carregar produtos: {error instanceof Error ? error.message : 'Erro desconhecido'}
-          <br />
-          <Button 
-            onClick={() => window.location.reload()}
-            className="mt-4 bg-white text-primary hover:bg-white/90"
-          >
-            Tentar novamente
-          </Button>
-        </div>
-      </div>
-    );
+    return <ErrorScreen error={error} />;
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-8">
-        <div className="text-center relative">
-          <button
-            onClick={() => navigate("/admin")}
-            className="absolute right-0 top-0 p-2 text-white hover:text-white/80 transition-colors"
-            title="Painel Administrativo"
-          >
-            <Settings2 size={24} />
-          </button>
-          <img
-            src="/lovable-uploads/aa777edd-491a-43ae-aee4-5444b6657060.png"
-            alt="Logo"
-            className="w-32 h-32 mx-auto"
-          />
-          <h1 className="text-3xl font-bold text-white mt-4">Simulações e Pedidos</h1>
-        </div>
+        <PageHeader />
 
         <ContactForm onSubmit={handleContactSubmit} />
 
@@ -225,3 +131,4 @@ const Index = () => {
 };
 
 export default Index;
+
