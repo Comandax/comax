@@ -36,7 +36,7 @@ export function ProductTableActions({
   onSubmit,
 }: ProductTableActionsProps) {
   return (
-    <>
+    <div onClick={(e) => e.stopPropagation()}>
       <Dialog>
         <DialogTrigger asChild>
           <Button
@@ -50,7 +50,7 @@ export function ProductTableActions({
             <Edit className="h-4 w-4" />
           </Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent onClick={(e) => e.stopPropagation()}>
           <DialogHeader>
             <DialogTitle>Editar Produto</DialogTitle>
           </DialogHeader>
@@ -85,6 +85,6 @@ export function ProductTableActions({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </div>
   );
 }
