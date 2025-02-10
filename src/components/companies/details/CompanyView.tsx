@@ -10,6 +10,7 @@ interface CompanyViewProps {
 export function CompanyView({ company, onEditClick }: CompanyViewProps) {
   return (
     <div className="space-y-4">
+      <h2 className="text-2xl font-bold mb-4">{company.name}</h2>
       <div className="flex gap-4">
         {company.logo_url && (
           <img
@@ -19,6 +20,7 @@ export function CompanyView({ company, onEditClick }: CompanyViewProps) {
           />
         )}
         <div className="flex-1">
+          <p><strong>Responsável:</strong> {company.responsible}</p>
           <p><strong>Email:</strong> {company.email}</p>
           <p><strong>Telefone:</strong> {company.phone}</p>
           <p><strong>Status:</strong> {company.active ? "Ativo" : "Inativo"}</p>
