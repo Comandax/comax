@@ -29,15 +29,17 @@ const Index = () => {
         .from('companies')
         .select('*')
         .eq('short_name', shortName)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.error('Error fetching company:', error);
-        setError("Por favor, verifique se o endereço está correto.");
+        setError("Erro ao carregar informações da empresa.");
         toast({
           title: "Erro ao carregar informações da empresa",
           variant: "destructive",
         });
+      } else if (!data) {
+        setError("Empresa não encontrada. Por favor, verifique se o endereço está correto.");
       } else {
         setCompany(data);
       }
