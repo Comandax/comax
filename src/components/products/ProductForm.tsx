@@ -1,3 +1,4 @@
+
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -39,6 +40,11 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
   const { fields: sizeFields, append: appendSize, remove: removeSize } = useFieldArray({
     control: form.control,
     name: "sizes",
+  });
+
+  const { fields: quantityFields, append: appendQuantity, remove: removeQuantity } = useFieldArray({
+    control: form.control,
+    name: "quantities",
   });
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -216,6 +222,56 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
               </Button>
             </div>
           ))}
+        </div>
+
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <FormLabel>Quantidades</FormLabel>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => appendQuantity(0)}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Adicionar Quantidade
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-4 gap-4">
+            {quantityFields.map((field, index) => (
+              <div key={field.id} className="flex gap-2 items-start">
+                <FormField
+                  control={form.control}
+                  name={`quantities.${index}`}
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormControl>
+                        <Input 
+                          {...field}
+                          type="number"
+                          min="0"
+                          placeholder="Quantidade"
+                          onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="mt-0.5"
+                  onClick={() => removeQuantity(index)}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </div>
+            ))}
+          </div>
         </div>
 
         <Button type="submit" disabled={isUploading}>
