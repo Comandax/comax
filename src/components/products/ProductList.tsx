@@ -2,6 +2,7 @@
 import type { Product, ProductFormData } from "@/types/product";
 import { ProductTable } from "./table/ProductTable";
 import { useState } from "react";
+import { ProductDetailsModal } from "./details/ProductDetailsModal";
 
 interface ProductListProps {
   products: Product[];
@@ -12,14 +13,32 @@ interface ProductListProps {
 }
 
 export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStatus }: ProductListProps) {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  const handleProductClick = (product: Product) => {
+    setSelectedProduct(product);
+  };
+
   return (
-    <ProductTable
-      products={products}
-      onEdit={onEdit}
-      onDelete={onDelete}
-      onSubmit={onSubmit}
-      onToggleStatus={onToggleStatus}
-      onProductClick={() => {}}
-    />
+    <>
+      <ProductTable
+        products={products}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        onSubmit={onSubmit}
+        onToggleStatus={onToggleStatus}
+        onProductClick={handleProductClick}
+      />
+
+      <ProductDetailsModal
+        product={selectedProduct}
+        isOpen={!!selectedProduct}
+        onOpenChange={(open) => !open && setSelectedProduct(null)}
+        onEdit={onEdit}
+        onDelete={onDelete}
+        onSubmit={onSubmit}
+        onToggleStatus={onToggleStatus}
+      />
+    </>
   );
 }

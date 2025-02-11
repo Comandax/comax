@@ -66,7 +66,7 @@ export function ProductTable({
                 onCheckedChange={(checked) => handleToggleStatus(product._id, !checked)}
               />
             </TableCell>
-            <TableCell className="text-right">
+            <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
               <ProductTableActions
                 product={product}
                 onEdit={onEdit}
