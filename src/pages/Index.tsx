@@ -18,29 +18,38 @@ const Index = () => {
   const { shortName } = useParams<{ shortName?: string }>();
 
   useEffect(() => {
+    console.log('🔍 Iniciando busca da empresa com shortName:', shortName);
+    
     const fetchCompany = async () => {
       if (!shortName) {
+        console.log('❌ shortName não fornecido');
         setIsLoading(false);
         setError("Por favor, verifique se o endereço está correto.");
         return;
       }
 
+      console.log('📡 Fazendo requisição ao Supabase para shortName:', shortName);
+      
       const { data, error } = await supabase
         .from('companies')
         .select('*')
         .eq('short_name', shortName)
         .maybeSingle();
 
+      console.log('📦 Resposta do Supabase:', { data, error });
+
       if (error) {
-        console.error('Error fetching company:', error);
+        console.error('❌ Erro ao buscar empresa:', error);
         setError("Erro ao carregar informações da empresa.");
         toast({
           title: "Erro ao carregar informações da empresa",
           variant: "destructive",
         });
       } else if (!data) {
+        console.log('⚠️ Nenhuma empresa encontrada para shortName:', shortName);
         setError("Empresa não encontrada. Por favor, verifique se o endereço está correto.");
       } else {
+        console.log('✅ Empresa encontrada:', data);
         setCompany(data);
       }
       setIsLoading(false);
@@ -51,18 +60,37 @@ const Index = () => {
 
   const { data: products = [] } = useQuery({
     queryKey: ['products', company?.id],
-    queryFn: () => fetchProducts(company?.id || ''),
-    enabled: !!company?.id
+    queryFn: () => {
+      console.log('🔍 Buscando produtos para empresa:', company?.id);
+      return fetchProducts(company?.id || '');
+    },
+    enabled: !!company?.id,
+    onSuccess: (data) => {
+      console.log('✅ Produtos carregados:', data);
+    },
+    onError: (error) => {
+      console.error('❌ Erro ao carregar produtos:', error);
+    }
+  });
+
+  console.log('🔄 Estado atual:', {
+    isLoading,
+    error,
+    company,
+    productsCount: products.length
   });
 
   if (isLoading) {
+    console.log('⏳ Exibindo estado de carregamento');
     return <LoadingState />;
   }
 
   if (error || !company) {
+    console.log('❌ Exibindo estado de erro:', error);
     return <NotFoundState error={error} />;
   }
 
+  console.log('✅ Renderizando página principal');
   return (
     <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-8">
