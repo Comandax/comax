@@ -15,7 +15,8 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
-  const { shortName } = useParams<{ shortName?: string }>();
+  const params = useParams();
+  const shortName = params.shortName;
 
   useEffect(() => {
     console.log('🔍 Iniciando busca da empresa com shortName:', shortName);
@@ -65,11 +66,13 @@ const Index = () => {
       return fetchProducts(company?.id || '');
     },
     enabled: !!company?.id,
-    onSuccess: (data) => {
-      console.log('✅ Produtos carregados:', data);
-    },
-    onError: (error) => {
-      console.error('❌ Erro ao carregar produtos:', error);
+    meta: {
+      onSuccess: (data: any) => {
+        console.log('✅ Produtos carregados:', data);
+      },
+      onError: (error: any) => {
+        console.error('❌ Erro ao carregar produtos:', error);
+      }
     }
   });
 
