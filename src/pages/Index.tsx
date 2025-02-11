@@ -15,11 +15,11 @@ const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
-  const { companyId } = useParams<{ companyId?: string }>();
+  const { shortName } = useParams<{ shortName?: string }>();
 
   useEffect(() => {
     const fetchCompany = async () => {
-      if (!companyId) {
+      if (!shortName) {
         setIsLoading(false);
         setError("Por favor, verifique se o endereço está correto.");
         return;
@@ -28,7 +28,7 @@ const Index = () => {
       const { data, error } = await supabase
         .from('companies')
         .select('*')
-        .eq('id', companyId)
+        .eq('short_name', shortName)
         .single();
 
       if (error) {
@@ -45,12 +45,12 @@ const Index = () => {
     };
 
     fetchCompany();
-  }, [companyId, toast]);
+  }, [shortName, toast]);
 
   const { data: products = [] } = useQuery({
-    queryKey: ['products', companyId],
-    queryFn: () => fetchProducts(companyId || ''),
-    enabled: !!companyId && !!company
+    queryKey: ['products', company?.id],
+    queryFn: () => fetchProducts(company?.id || ''),
+    enabled: !!company?.id
   });
 
   if (isLoading) {
@@ -66,7 +66,7 @@ const Index = () => {
       <div className="max-w-6xl mx-auto space-y-8">
         <CompanyInfo company={company} />
         <h1 className="text-3xl font-bold text-white text-center">Simulações e Pedidos</h1>
-        <OrderForm companyId={companyId} products={products} />
+        <OrderForm companyId={company.id} products={products} />
       </div>
     </div>
   );
