@@ -47,7 +47,6 @@ export function ProductDetailsModal({
 
   const handleToggleStatus = async (productId: string, disabled: boolean) => {
     await onToggleStatus(productId, disabled);
-    onOpenChange(false);
   };
 
   return (
