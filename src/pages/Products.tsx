@@ -4,7 +4,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ProductList } from "@/components/products/ProductList";
 import type { Product, ProductFormData } from "@/types/product";
-import { fetchProducts, createProduct, updateProduct, deleteProduct } from "@/services/productService";
+import { fetchProducts, createProduct, updateProduct, deleteProduct, toggleProductStatus } from "@/services/productService";
 import { useCompany } from "@/hooks/useCompany";
 import { useNavigate, useParams } from "react-router-dom";
 import { CompanyHeader } from "@/components/companies/CompanyHeader";
@@ -85,7 +85,6 @@ const Products = () => {
 
   const handleToggleStatus = async (productId: string, disabled: boolean) => {
     try {
-      console.log("Toggling product status:", { productId, disabled });
       // Optimistically update the UI
       queryClient.setQueryData(["products", effectiveCompany?.id], (oldData: Product[] | undefined) => {
         if (!oldData) return [];
@@ -93,6 +92,9 @@ const Products = () => {
           product._id === productId ? { ...product, disabled } : product
         );
       });
+
+      // Make the API call
+      await toggleProductStatus(productId, disabled);
       
       toast({
         title: `Produto ${disabled ? "desativado" : "ativado"} com sucesso!`,
@@ -100,6 +102,7 @@ const Products = () => {
     } catch (error) {
       // Revert optimistic update on error
       queryClient.invalidateQueries({ queryKey: ["products", effectiveCompany?.id] });
+      console.error('Error toggling product status:', error);
       toast({
         title: "Erro ao alterar status do produto",
         variant: "destructive",

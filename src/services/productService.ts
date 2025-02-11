@@ -87,6 +87,31 @@ export const updateProduct = async (productId: string, product: ProductFormData)
   };
 };
 
+export const toggleProductStatus = async (productId: string, disabled: boolean): Promise<Product> => {
+  const { data, error } = await supabase
+    .from('products')
+    .update({ disabled })
+    .eq('id', productId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error toggling product status:', error);
+    throw error;
+  }
+
+  return {
+    _id: data.id,
+    reference: data.reference,
+    name: data.name,
+    image: data.image_url,
+    sizes: (data.sizes as Array<{size: string; value: number}>),
+    quantities: data.quantities,
+    disabled: data.disabled,
+    companyId: data.company_id
+  };
+};
+
 export const deleteProduct = async (productId: string): Promise<void> => {
   const { error } = await supabase
     .from('products')
