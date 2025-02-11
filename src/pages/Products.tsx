@@ -10,6 +10,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { CompanyHeader } from "@/components/companies/CompanyHeader";
 import { ProductsHeader } from "@/components/products/ProductsHeader";
 import { usePublicCompany } from "@/hooks/usePublicCompany";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -19,6 +21,7 @@ const Products = () => {
   const { company } = useCompany();
   const { companyId } = useParams();
   const { publicCompany, isLoading } = usePublicCompany(companyId);
+  const navigate = useNavigate();
 
   const effectiveCompany = company || publicCompany;
   const isPublicView = !company && !!publicCompany;
@@ -114,6 +117,19 @@ const Products = () => {
 
   return (
     <div className="container mx-auto py-10">
+      {!isPublicView && (
+        <div className="flex items-center justify-between mb-8">
+          <Button
+            variant="ghost"
+            className="text-primary hover:text-primary/80"
+            onClick={() => navigate('/admin')}
+          >
+            <ArrowLeft className="h-5 w-5 mr-2" />
+            Voltar para o painel
+          </Button>
+        </div>
+      )}
+
       <CompanyHeader 
         logo_url={effectiveCompany.logo_url}
         name={effectiveCompany.name}

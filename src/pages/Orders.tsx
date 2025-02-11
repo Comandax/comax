@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -11,10 +12,11 @@ import {
 } from "@/components/ui/table";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 import type { Order } from "@/types/order";
 import { useCompany } from "@/hooks/useCompany";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
 
 const OrderDetails = ({ order }: { order: Order }) => {
   return (
@@ -111,6 +113,17 @@ const Orders = () => {
 
   return (
     <div className="container mx-auto py-10">
+      <div className="flex items-center justify-between mb-8">
+        <Button
+          variant="ghost"
+          className="text-primary hover:text-primary/80"
+          onClick={() => navigate('/admin')}
+        >
+          <ArrowLeft className="h-5 w-5 mr-2" />
+          Voltar para o painel
+        </Button>
+      </div>
+
       <Card 
         className="p-6 mb-8 bg-white/90 cursor-pointer hover:bg-white/95 transition-colors"
         onClick={() => navigate("/admin")}
