@@ -75,8 +75,8 @@ export default function Companies() {
     fetchCompanies();
   };
 
-  const copyToClipboard = async (companyId: string) => {
-    const url = `${window.location.origin}/${companyId}`;
+  const copyToClipboard = async (shortName: string) => {
+    const url = `${window.location.origin}/company/${shortName}`;
     await navigator.clipboard.writeText(url);
     toast({
       title: "Link copiado!",
@@ -108,7 +108,6 @@ export default function Companies() {
           </h1>
         </div>
 
-        {/* Mostrar o formulário apenas se for superusuário ou se o usuário não tiver empresas */}
         {(isSuperuser || companies.length === 0) && (
           <CompanyForm onSubmitSuccess={fetchCompanies} />
         )}
@@ -126,11 +125,11 @@ export default function Companies() {
               <div className="flex gap-2">
                 <Input
                   readOnly
-                  value={`${window.location.origin}/${companies[0].id}`}
+                  value={`${window.location.origin}/company/${companies[0].short_name}`}
                   className="flex-1"
                 />
                 <Button
-                  onClick={() => copyToClipboard(companies[0].id)}
+                  onClick={() => copyToClipboard(companies[0].short_name)}
                   variant="outline"
                 >
                   <Copy className="h-4 w-4" />
