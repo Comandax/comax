@@ -20,6 +20,7 @@ export type Database = {
           owner_id: string
           phone: string
           responsible: string
+          short_name: string
         }
         Insert: {
           active?: boolean
@@ -31,6 +32,7 @@ export type Database = {
           owner_id: string
           phone: string
           responsible: string
+          short_name?: string
         }
         Update: {
           active?: boolean
@@ -42,6 +44,7 @@ export type Database = {
           owner_id?: string
           phone?: string
           responsible?: string
+          short_name?: string
         }
         Relationships: []
       }
@@ -201,6 +204,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_short_name: {
+        Args: {
+          name: string
+        }
+        Returns: string
+      }
       has_role: {
         Args: {
           _user_id: string
