@@ -42,7 +42,8 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
     name: "sizes",
   });
 
-  const { fields: quantityFields, append: appendQuantity, remove: removeQuantity } = useFieldArray({
+  // Especificar o tipo correto para o useFieldArray de quantities
+  const { fields: quantityFields, append: appendQuantity, remove: removeQuantity } = useFieldArray<ProductFormData>({
     control: form.control,
     name: "quantities",
   });
@@ -231,7 +232,9 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => appendQuantity(0)}
+              onClick={() => {
+                appendQuantity(0); // Agora appendQuantity espera um number
+              }}
             >
               <Plus className="mr-2 h-4 w-4" />
               Adicionar Quantidade
