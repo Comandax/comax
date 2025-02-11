@@ -19,6 +19,20 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
     setSelectedProduct(product);
   };
 
+  const handleToggleStatus = async (productId: string, disabled: boolean) => {
+    if (onToggleStatus) {
+      await onToggleStatus(productId, disabled);
+      
+      // Atualiza o estado do produto selecionado após a mudança de status
+      if (selectedProduct && selectedProduct._id === productId) {
+        setSelectedProduct({
+          ...selectedProduct,
+          disabled: disabled
+        });
+      }
+    }
+  };
+
   return (
     <>
       <ProductTable
@@ -26,7 +40,7 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
         onEdit={onEdit}
         onDelete={onDelete}
         onSubmit={onSubmit}
-        onToggleStatus={onToggleStatus}
+        onToggleStatus={handleToggleStatus}
         onProductClick={handleProductClick}
       />
 
@@ -37,7 +51,7 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
         onEdit={onEdit}
         onDelete={onDelete}
         onSubmit={onSubmit}
-        onToggleStatus={onToggleStatus}
+        onToggleStatus={handleToggleStatus}
       />
     </>
   );
