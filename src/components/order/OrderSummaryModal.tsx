@@ -80,7 +80,7 @@ export const OrderSummaryModal = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
+      <DialogContent className="max-w-3xl w-[95%] md:w-full max-h-[90vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileText className="w-5 h-5" />
@@ -115,7 +115,10 @@ export const OrderSummaryModal = ({
                         {item.sizes.map((size, idx) => (
                           <div key={idx} className="text-sm flex items-center justify-between">
                             <span>
-                              {size.size}: {size.quantity} un x R$ {size.price.toFixed(2)}
+                              {size.size}: {size.quantity} un x {new Intl.NumberFormat('pt-BR', {
+                                style: 'currency',
+                                currency: 'BRL'
+                              }).format(size.price)}
                             </span>
                             {onRemoveItem && (
                               <Button
