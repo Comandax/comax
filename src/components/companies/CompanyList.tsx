@@ -34,16 +34,18 @@ export function CompanyList({
     return sortOrder === 'asc' ? <ChevronUp className="inline w-4 h-4" /> : <ChevronDown className="inline w-4 h-4" />;
   };
 
-  if (companies.length === 0) {
+  if (companies.length === 0 && isSuperuser) {
     return (
       <Card className="p-4">
         <p className="text-center text-gray-500">
-          {isSuperuser 
-            ? "Nenhuma empresa cadastrada ainda."
-            : "Você ainda não cadastrou sua empresa."}
+          Nenhuma empresa cadastrada ainda.
         </p>
       </Card>
     );
+  }
+
+  if (companies.length === 0) {
+    return null;
   }
 
   return (
