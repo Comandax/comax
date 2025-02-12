@@ -216,23 +216,23 @@ const Orders = () => {
         </div>
       </Card>
 
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col gap-4 mb-6">
         <h1 className="text-3xl font-bold">Relatório de Pedidos</h1>
-        <div className="flex gap-4 items-center">
+        <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
             <Input
               placeholder="Buscar por cliente..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 w-64"
+              className="pl-10 w-full md:w-64"
             />
           </div>
           <Select
             value={pageSize.toString()}
             onValueChange={(value) => setPageSize(Number(value))}
           >
-            <SelectTrigger className="w-32">
+            <SelectTrigger className="w-full md:w-32">
               <SelectValue placeholder="Itens por página" />
             </SelectTrigger>
             <SelectContent>
