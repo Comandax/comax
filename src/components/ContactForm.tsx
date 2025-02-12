@@ -82,6 +82,22 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
     }
   };
 
+  const formatCEP = (value: string) => {
+    // Remove todos os caracteres não numéricos
+    const numbers = value.replace(/\D/g, '');
+    
+    // Aplica a máscara
+    if (numbers.length <= 2) {
+      return numbers;
+    } else if (numbers.length <= 5) {
+      return `${numbers.slice(0, 2)}.${numbers.slice(2)}`;
+    } else if (numbers.length <= 8) {
+      return `${numbers.slice(0, 2)}.${numbers.slice(2, 5)}-${numbers.slice(5)}`;
+    } else {
+      return `${numbers.slice(0, 2)}.${numbers.slice(2, 5)}-${numbers.slice(5, 8)}`;
+    }
+  };
+
   const handleInputChange = (field: keyof ContactFormData, value: string) => {
     if (field === 'whatsapp') {
       // Para o WhatsApp, primeiro formatamos o valor
@@ -92,10 +108,11 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
         [field]: formattedValue
       }));
     } else if (field === 'zipCode') {
-      value = value.replace(/\D/g, '');
+      // Para o CEP, aplicamos a formatação
+      const formattedValue = formatCEP(value);
       setFormData(prev => ({
         ...prev,
-        [field]: value
+        [field]: formattedValue
       }));
     } else {
       setFormData(prev => ({
@@ -115,10 +132,11 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
   // Update effect to automatically submit form data when it changes
   useEffect(() => {
     if (formData.name && formData.whatsapp && formData.city && formData.zipCode) {
-      // Ao enviar o formulário, remova a formatação do WhatsApp
+      // Ao enviar o formulário, remova a formatação do WhatsApp e CEP
       const cleanFormData = {
         ...formData,
-        whatsapp: formData.whatsapp.replace(/\D/g, '')
+        whatsapp: formData.whatsapp.replace(/\D/g, ''),
+        zipCode: formData.zipCode.replace(/\D/g, '')
       };
       onSubmit(cleanFormData);
     }
@@ -205,6 +223,7 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
             inputMode="numeric"
             value={formData.zipCode}
             onChange={(e) => handleInputChange("zipCode", e.target.value)}
+            placeholder="00.000-000"
             required
             className="md:text-sm"
           />
