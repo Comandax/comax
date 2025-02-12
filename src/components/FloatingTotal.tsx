@@ -45,7 +45,7 @@ export const FloatingTotal = ({
           
           <Button 
             variant="secondary" 
-            className="w-full flex items-center gap-2"
+            className="w-full flex items-center gap-2 bg-white hover:bg-white/90 text-[#8B5CF6] font-medium"
             onClick={() => setIsModalOpen(true)}
           >
             <ListCheck className="w-4 h-4" />

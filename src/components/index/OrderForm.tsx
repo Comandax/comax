@@ -1,12 +1,12 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { ContactForm, type ContactFormData } from "@/components/ContactForm";
 import { ProductList } from "@/components/order/ProductList";
-import { OrderNotes } from "@/components/OrderNotes";
 import { FloatingTotal } from "@/components/FloatingTotal";
+import { Button } from "@/components/ui/button";
+import { FileText } from "lucide-react";
 import type { Product } from "@/types/product";
 import type { OrderItem } from "@/types/order";
 import type { Json } from "@/integrations/supabase/types";
@@ -29,6 +29,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
   const [contactData, setContactData] = useState<ContactFormData | null>(null);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleContactSubmit = (data: ContactFormData) => {
     setContactData(data);
@@ -162,7 +163,17 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
     <>
       <ContactForm onSubmit={handleContactSubmit} />
       <ProductList products={products} onQuantitySelect={handleQuantitySelect} />
-      <OrderNotes value={notes} onChange={setNotes} />
+      
+      <div className="mt-8 text-center">
+        <Button
+          variant="link"
+          className="text-[#8B5CF6] font-medium text-lg flex items-center gap-2 mx-auto"
+          onClick={() => setIsModalOpen(true)}
+        >
+          <FileText className="w-5 h-5" />
+          Para finalizar, confira o resumo do pedido
+        </Button>
+      </div>
 
       <FloatingTotal 
         total={calculateTotal()} 
