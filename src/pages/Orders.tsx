@@ -69,9 +69,9 @@ const OrderDetails = ({ order }: { order: Order }) => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {order.items.map((item) => (
-              <TableRow key={item._id}>
-                <TableCell>{item.code}</TableCell>
+            {order.items.map((item, index) => (
+              <TableRow key={item._id} className={index % 2 === 0 ? 'bg-gray-50' : ''}>
+                <TableCell>{`${item.productId} - ${item.size}`}</TableCell>
                 <TableCell>{item.quantity}</TableCell>
                 <TableCell className="text-right">
                   R$ {item.subtotal.toFixed(2)}
