@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -13,7 +12,28 @@ import {
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  ArrowLeft,
+  ArrowUpDown,
+  Search,
+} from "lucide-react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
 import type { Order } from "@/types/order";
 import { useCompany } from "@/hooks/useCompany";
 import { supabase } from "@/integrations/supabase/client";
@@ -72,40 +92,82 @@ const OrderDetails = ({ order }: { order: Order }) => {
   );
 };
 
+type SortConfig = {
+  column: 'customerName' | 'date' | 'total';
+  direction: 'asc' | 'desc';
+};
+
+const PAGE_SIZES = [10, 20, 50, 100];
+
 const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [sortConfig, setSortConfig] = useState<SortConfig>({
+    column: 'date',
+    direction: 'desc'
+  });
+  
   const { company } = useCompany();
   const navigate = useNavigate();
 
-  const { data: orders = [] } = useQuery({
-    queryKey: ["orders", company?.id],
+  const { data: orders = [], isLoading } = useQuery({
+    queryKey: ["orders", company?.id, searchTerm, sortConfig, currentPage, pageSize],
     queryFn: async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("orders")
-        .select("*")
-        .eq("company_id", company?.id)
-        .order("created_at", { ascending: false });
+        .select("*", { count: 'exact' })
+        .eq("company_id", company?.id);
+
+      // Apply search filter if search term exists
+      if (searchTerm) {
+        query = query.ilike('customer_name', `%${searchTerm}%`);
+      }
+
+      // Apply sorting
+      const column = sortConfig.column === 'customerName' ? 'customer_name' : 
+                    sortConfig.column === 'date' ? 'date' : 'total';
+      query = query.order(column, { ascending: sortConfig.direction === 'asc' });
+
+      // Apply pagination
+      const from = (currentPage - 1) * pageSize;
+      query = query.range(from, from + pageSize - 1);
+
+      const { data, error, count } = await query;
 
       if (error) {
         console.error("Error fetching orders:", error);
         throw error;
       }
 
-      return data.map((order: any) => ({
-        _id: order.id,
-        customerName: order.customer_name,
-        customerPhone: order.customer_phone,
-        customerCity: order.customer_city,
-        customerZipCode: order.customer_zip_code,
-        date: new Date(order.date).toLocaleDateString(),
-        time: order.time,
-        items: order.items,
-        total: order.total,
-        companyId: order.company_id,
-      }));
+      return {
+        orders: data.map((order: any) => ({
+          _id: order.id,
+          customerName: order.customer_name,
+          customerPhone: order.customer_phone,
+          customerCity: order.customer_city,
+          customerZipCode: order.customer_zip_code,
+          date: new Date(order.date).toLocaleDateString(),
+          time: order.time,
+          items: order.items,
+          total: order.total,
+          companyId: order.company_id,
+        })),
+        totalCount: count || 0,
+      };
     },
     enabled: !!company?.id,
   });
+
+  const totalPages = Math.ceil((orders.totalCount || 0) / pageSize);
+
+  const handleSort = (column: SortConfig['column']) => {
+    setSortConfig(current => ({
+      column,
+      direction: current.column === column && current.direction === 'asc' ? 'desc' : 'asc'
+    }));
+  };
 
   if (!company) {
     return <div>Loading...</div>;
@@ -142,19 +204,74 @@ const Orders = () => {
         </div>
       </Card>
 
-      <h1 className="text-3xl font-bold mb-6">Relatório de Pedidos</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold">Relatório de Pedidos</h1>
+        <div className="flex gap-4 items-center">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+            <Input
+              placeholder="Buscar por cliente..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 w-64"
+            />
+          </div>
+          <Select
+            value={pageSize.toString()}
+            onValueChange={(value) => setPageSize(Number(value))}
+          >
+            <SelectTrigger className="w-32">
+              <SelectValue placeholder="Itens por página" />
+            </SelectTrigger>
+            <SelectContent>
+              {PAGE_SIZES.map((size) => (
+                <SelectItem key={size} value={size.toString()}>
+                  {size} itens
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead>ID</TableHead>
-            <TableHead>Cliente</TableHead>
-            <TableHead>Data</TableHead>
-            <TableHead className="text-right">Total</TableHead>
+            <TableHead>
+              <Button
+                variant="ghost"
+                onClick={() => handleSort('customerName')}
+                className="hover:bg-transparent"
+              >
+                Cliente
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              </Button>
+            </TableHead>
+            <TableHead>
+              <Button
+                variant="ghost"
+                onClick={() => handleSort('date')}
+                className="hover:bg-transparent"
+              >
+                Data
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              </Button>
+            </TableHead>
+            <TableHead className="text-right">
+              <Button
+                variant="ghost"
+                onClick={() => handleSort('total')}
+                className="hover:bg-transparent"
+              >
+                Total
+                <ArrowUpDown className="ml-2 h-4 w-4" />
+              </Button>
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {orders.map((order) => (
+          {orders.orders?.map((order) => (
             <TableRow
               key={order._id}
               className="cursor-pointer hover:bg-muted/50"
@@ -170,6 +287,35 @@ const Orders = () => {
           ))}
         </TableBody>
       </Table>
+
+      <div className="mt-4">
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+            {[...Array(totalPages)].map((_, i) => (
+              <PaginationItem key={i}>
+                <PaginationLink
+                  onClick={() => setCurrentPage(i + 1)}
+                  isActive={currentPage === i + 1}
+                >
+                  {i + 1}
+                </PaginationLink>
+              </PaginationItem>
+            ))}
+            <PaginationItem>
+              <PaginationNext
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
+      </div>
 
       <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
         <DialogContent className="max-w-4xl">
