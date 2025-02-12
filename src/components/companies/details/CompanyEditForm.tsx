@@ -44,7 +44,7 @@ export function CompanyEditForm({ company, onCancel, onSave }: CompanyEditFormPr
               type="file"
               accept="image/*"
               onChange={handleLogoChange}
-              className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/80"
+              className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary file:text-white hover:file:bg-primary/80"
             />
             {(logoFile || editData.logo_url) && (
               <span className="text-sm text-gray-500">
