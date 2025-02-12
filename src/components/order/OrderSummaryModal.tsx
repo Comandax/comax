@@ -15,7 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { OrderNotes } from "@/components/OrderNotes";
-import { FileText, Loader } from "lucide-react";
+import { FileText, Loader, X } from "lucide-react";
 import type { OrderItem } from "@/types/order";
 import { useState } from "react";
 
@@ -27,6 +27,7 @@ interface OrderSummaryModalProps {
   notes: string;
   onNotesChange: (notes: string) => void;
   onSubmit: () => Promise<void>;
+  onRemoveItem?: (productId: string, size: string) => void;
 }
 
 export const OrderSummaryModal = ({
@@ -37,6 +38,7 @@ export const OrderSummaryModal = ({
   notes,
   onNotesChange,
   onSubmit,
+  onRemoveItem,
 }: OrderSummaryModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formattedTotal = new Intl.NumberFormat('pt-BR', {
@@ -50,7 +52,6 @@ export const OrderSummaryModal = ({
       await onSubmit();
       onOpenChange(false);
     } catch (error) {
-      // Se houver erro, o modal permanecerá aberto
       console.error('Error submitting order:', error);
     } finally {
       setIsSubmitting(false);
@@ -98,8 +99,21 @@ export const OrderSummaryModal = ({
                     <TableCell>
                       <div className="space-y-1">
                         {item.sizes.map((size, idx) => (
-                          <div key={idx} className="text-sm">
-                            {size.size}: {size.quantity} un x R$ {size.price.toFixed(2)}
+                          <div key={idx} className="text-sm flex items-center justify-between">
+                            <span>
+                              {size.size}: {size.quantity} un x R$ {size.price.toFixed(2)}
+                            </span>
+                            {onRemoveItem && (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-6 px-2 text-red-500 hover:text-red-700 hover:bg-red-50"
+                                onClick={() => onRemoveItem(item.productId, size.size)}
+                              >
+                                <X className="w-4 h-4 mr-1" />
+                                Remover
+                              </Button>
+                            )}
                           </div>
                         ))}
                       </div>

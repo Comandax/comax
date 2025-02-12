@@ -13,6 +13,7 @@ interface FloatingTotalProps {
   onSubmitOrder: () => void;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
+  onRemoveItem?: (productId: string, size: string) => void;
 }
 
 export const FloatingTotal = ({ 
@@ -22,13 +23,13 @@ export const FloatingTotal = ({
   onNotesChange,
   onSubmitOrder,
   isOpen,
-  onOpenChange
+  onOpenChange,
+  onRemoveItem
 }: FloatingTotalProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleOpenModal = () => {
     setIsLoading(true);
-    // Simular um pequeno delay antes de abrir o modal
     setTimeout(() => {
       onOpenChange(true);
       setIsLoading(false);
@@ -85,6 +86,7 @@ export const FloatingTotal = ({
             resolve();
           });
         }}
+        onRemoveItem={onRemoveItem}
       />
     </>
   );
