@@ -13,6 +13,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -54,59 +55,61 @@ const OrderDetails = ({ order }: { order: Order }) => {
   }, {} as Record<string, { code: string; name: string; items: typeof order.items }>);
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <h3 className="font-semibold mb-2">Pedido</h3>
-          <p>Código: {order._id}</p>
-          <p>Data: {order.date}</p>
-          <p>Hora: {order.time}</p>
+    <ScrollArea className="h-[80vh]">
+      <div className="space-y-6">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <h3 className="font-semibold mb-2">Pedido</h3>
+            <p>Código: {order._id}</p>
+            <p>Data: {order.date}</p>
+            <p>Hora: {order.time}</p>
+          </div>
+          <div>
+            <h3 className="font-semibold mb-2">Cliente</h3>
+            <p>Nome: {order.customerName}</p>
+            <p>Telefone: {order.customerPhone}</p>
+            <p>Cidade: {order.customerCity}</p>
+            <p>CEP: {order.customerZipCode}</p>
+          </div>
         </div>
-        <div>
-          <h3 className="font-semibold mb-2">Cliente</h3>
-          <p>Nome: {order.customerName}</p>
-          <p>Telefone: {order.customerPhone}</p>
-          <p>Cidade: {order.customerCity}</p>
-          <p>CEP: {order.customerZipCode}</p>
-        </div>
-      </div>
 
-      <div>
-        <h3 className="font-semibold mb-4">Itens do pedido</h3>
-        <div className="space-y-4">
-          {Object.entries(groupedItems).map(([code, group]) => (
-            <div key={`group-${code}`} className="border rounded-lg overflow-hidden">
-              <div className="bg-gray-100 p-3 font-semibold">
-                {code} - {group.name}
-              </div>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Código - Tamanho</TableHead>
-                    <TableHead>Quantidade</TableHead>
-                    <TableHead className="text-right">Subtotal</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {group.items.map((item, index) => (
-                    <TableRow key={`${item._id}-${item.size}-${index}`}>
-                      <TableCell>{`${item.code} - ${item.size}`}</TableCell>
-                      <TableCell>{item.quantity}</TableCell>
-                      <TableCell className="text-right">
-                        R$ {item.subtotal.toFixed(2)}
-                      </TableCell>
+        <div>
+          <h3 className="font-semibold mb-4">Itens do pedido</h3>
+          <div className="space-y-4">
+            {Object.entries(groupedItems).map(([code, group]) => (
+              <div key={`group-${code}`} className="border rounded-lg overflow-hidden">
+                <div className="bg-gray-100 p-3 font-semibold">
+                  {code} - {group.name}
+                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Código - Tamanho</TableHead>
+                      <TableHead>Quantidade</TableHead>
+                      <TableHead className="text-right">Subtotal</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          ))}
-        </div>
-        <div className="mt-4 text-right font-semibold">
-          Total do pedido: R$ {order.total.toFixed(2)}
+                  </TableHeader>
+                  <TableBody>
+                    {group.items.map((item, index) => (
+                      <TableRow key={`${item._id}-${item.size}-${index}`}>
+                        <TableCell>{`${item.code} - ${item.size}`}</TableCell>
+                        <TableCell>{item.quantity}</TableCell>
+                        <TableCell className="text-right">
+                          R$ {item.subtotal.toFixed(2)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 text-right font-semibold">
+            Total do pedido: R$ {order.total.toFixed(2)}
+          </div>
         </div>
       </div>
-    </div>
+    </ScrollArea>
   );
 };
 
