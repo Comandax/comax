@@ -56,7 +56,7 @@ export default function UserEdit() {
             className="mr-4"
           >
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar ao Painel
+            Voltar para o Painel
           </Button>
           <h1 className="text-2xl font-bold">Editar Usuário</h1>
         </div>
