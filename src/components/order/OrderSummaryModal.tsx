@@ -93,10 +93,10 @@ export const OrderSummaryModal = ({
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Referência</TableHead>
-                  <TableHead>Produto</TableHead>
+                  <TableHead className="w-20">Ref.</TableHead>
+                  <TableHead className="w-24">Produto</TableHead>
                   <TableHead>Tamanhos</TableHead>
-                  <TableHead className="text-right">Subtotal</TableHead>
+                  <TableHead className="w-24 text-right">Subtotal</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -109,44 +109,49 @@ export const OrderSummaryModal = ({
 
                   return (
                     <TableRow key={item.productId}>
-                      <TableCell className="whitespace-nowrap">{item.reference}</TableCell>
-                      <TableCell className="whitespace-nowrap">{item.name}</TableCell>
+                      <TableCell className="whitespace-nowrap text-sm">{item.reference}</TableCell>
+                      <TableCell className="whitespace-nowrap text-sm">{item.name}</TableCell>
                       <TableCell>
-                        <div className="space-y-1">
+                        <div className="space-y-0">
                           {item.sizes.map((size, idx) => (
-                            <div key={idx} className="text-sm flex flex-wrap items-center justify-between gap-2">
-                              <span className="whitespace-nowrap">
-                                {size.size}: {size.quantity} un x {new Intl.NumberFormat('pt-BR', {
-                                  style: 'currency',
-                                  currency: 'BRL'
-                                }).format(size.price)}
-                              </span>
-                              {onRemoveItem && (
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  className="h-6 px-2 text-red-500 hover:text-red-700 hover:bg-red-50 min-w-[90px]"
-                                  onClick={() => handleRemoveItem(item.productId, size.size)}
-                                  disabled={isRemoving(item.productId, size.size)}
-                                >
-                                  {isRemoving(item.productId, size.size) ? (
-                                    <>
-                                      <Loader className="w-4 h-4 mr-1 animate-spin" />
-                                      Removendo...
-                                    </>
-                                  ) : (
-                                    <>
-                                      <X className="w-4 h-4 mr-1" />
-                                      Remover
-                                    </>
-                                  )}
-                                </Button>
+                            <div key={idx}>
+                              <div className="text-sm flex flex-wrap items-center justify-between gap-2 py-2">
+                                <span className="whitespace-nowrap">
+                                  {size.size}: {size.quantity} un x {new Intl.NumberFormat('pt-BR', {
+                                    style: 'currency',
+                                    currency: 'BRL'
+                                  }).format(size.price)}
+                                </span>
+                                {onRemoveItem && (
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-6 px-2 text-red-500 hover:text-red-700 hover:bg-red-50 min-w-[90px]"
+                                    onClick={() => handleRemoveItem(item.productId, size.size)}
+                                    disabled={isRemoving(item.productId, size.size)}
+                                  >
+                                    {isRemoving(item.productId, size.size) ? (
+                                      <>
+                                        <Loader className="w-4 h-4 mr-1 animate-spin" />
+                                        Removendo...
+                                      </>
+                                    ) : (
+                                      <>
+                                        <X className="w-4 h-4 mr-1" />
+                                        Remover
+                                      </>
+                                    )}
+                                  </Button>
+                                )}
+                              </div>
+                              {idx < item.sizes.length - 1 && (
+                                <div className="border-b border-gray-200"></div>
                               )}
                             </div>
                           ))}
                         </div>
                       </TableCell>
-                      <TableCell className="text-right whitespace-nowrap">
+                      <TableCell className="text-right whitespace-nowrap text-sm">
                         {formattedSubtotal}
                       </TableCell>
                     </TableRow>
