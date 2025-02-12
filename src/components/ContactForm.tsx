@@ -64,15 +64,45 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
     enabled: !!selectedState,
   });
 
-  const handleInputChange = (field: keyof ContactFormData, value: string) => {
-    if (field === 'whatsapp' || field === 'zipCode') {
-      value = value.replace(/\D/g, '');
-    }
+  const formatWhatsApp = (value: string) => {
+    // Remove todos os caracteres não numéricos
+    const numbers = value.replace(/\D/g, '');
     
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    // Aplica a máscara
+    if (numbers.length <= 2) {
+      return numbers;
+    } else if (numbers.length <= 3) {
+      return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
+    } else if (numbers.length <= 7) {
+      return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 3)} ${numbers.slice(3)}`;
+    } else if (numbers.length <= 11) {
+      return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 3)} ${numbers.slice(3, 7)}-${numbers.slice(7)}`;
+    } else {
+      return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 3)} ${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
+    }
+  };
+
+  const handleInputChange = (field: keyof ContactFormData, value: string) => {
+    if (field === 'whatsapp') {
+      // Para o WhatsApp, primeiro formatamos o valor
+      const formattedValue = formatWhatsApp(value);
+      // Salvamos o valor formatado para exibição
+      setFormData(prev => ({
+        ...prev,
+        [field]: formattedValue
+      }));
+    } else if (field === 'zipCode') {
+      value = value.replace(/\D/g, '');
+      setFormData(prev => ({
+        ...prev,
+        [field]: value
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [field]: value
+      }));
+    }
   };
 
   const handleStateChange = (value: string) => {
@@ -85,7 +115,12 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
   // Update effect to automatically submit form data when it changes
   useEffect(() => {
     if (formData.name && formData.whatsapp && formData.city && formData.zipCode) {
-      onSubmit(formData);
+      // Ao enviar o formulário, remova a formatação do WhatsApp
+      const cleanFormData = {
+        ...formData,
+        whatsapp: formData.whatsapp.replace(/\D/g, '')
+      };
+      onSubmit(cleanFormData);
     }
   }, [formData, onSubmit]);
 
@@ -114,6 +149,7 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
             inputMode="numeric"
             value={formData.whatsapp}
             onChange={(e) => handleInputChange("whatsapp", e.target.value)}
+            placeholder="(00) 0 0000-0000"
             required
             className="md:text-sm"
           />
