@@ -1,7 +1,8 @@
 
-import { ShoppingBag, ListCheck } from "lucide-react";
+import { ShoppingBag, ListCheck, Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OrderSummaryModal } from "@/components/order/OrderSummaryModal";
+import { useState } from "react";
 import type { OrderItem } from "@/types/order";
 
 interface FloatingTotalProps {
@@ -23,6 +24,17 @@ export const FloatingTotal = ({
   isOpen,
   onOpenChange
 }: FloatingTotalProps) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsLoading(true);
+    // Simular um pequeno delay antes de abrir o modal
+    setTimeout(() => {
+      onOpenChange(true);
+      setIsLoading(false);
+    }, 500);
+  };
+
   if (total <= 0) return null;
 
   const formattedTotal = new Intl.NumberFormat('pt-BR', {
@@ -47,10 +59,15 @@ export const FloatingTotal = ({
           <Button 
             variant="secondary" 
             className="w-full flex items-center gap-2 bg-white hover:bg-white/90 text-[#8B5CF6] font-medium"
-            onClick={() => onOpenChange(true)}
+            onClick={handleOpenModal}
+            disabled={isLoading}
           >
-            <ListCheck className="w-4 h-4" />
-            Ver produtos selecionados
+            {isLoading ? (
+              <Loader className="w-4 h-4 animate-spin" />
+            ) : (
+              <ListCheck className="w-4 h-4" />
+            )}
+            {isLoading ? "Carregando..." : "Ver produtos selecionados"}
           </Button>
         </div>
       </div>

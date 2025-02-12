@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -7,7 +6,7 @@ import { ContactForm, type ContactFormData } from "@/components/ContactForm";
 import { ProductList } from "@/components/order/ProductList";
 import { FloatingTotal } from "@/components/FloatingTotal";
 import { Button } from "@/components/ui/button";
-import { ListCheck } from "lucide-react";
+import { ListCheck, Loader } from "lucide-react";
 import type { Product } from "@/types/product";
 import type { OrderItem } from "@/types/order";
 import type { Json } from "@/integrations/supabase/types";
@@ -31,6 +30,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleContactSubmit = (data: ContactFormData) => {
     setContactData(data);
@@ -160,6 +160,14 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
     }
   };
 
+  const handleOpenModal = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsModalOpen(true);
+      setIsLoading(false);
+    }, 500);
+  };
+
   return (
     <>
       <ContactForm onSubmit={handleContactSubmit} />
@@ -169,10 +177,15 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
         <Button 
           variant="secondary" 
           className="flex items-center gap-2 bg-white hover:bg-white/90 text-[#8B5CF6] font-medium"
-          onClick={() => setIsModalOpen(true)}
+          onClick={handleOpenModal}
+          disabled={isLoading}
         >
-          <ListCheck className="w-4 h-4" />
-          Para finalizar, confira o resumo do pedido
+          {isLoading ? (
+            <Loader className="w-4 h-4 animate-spin" />
+          ) : (
+            <ListCheck className="w-4 h-4" />
+          )}
+          {isLoading ? "Carregando..." : "Para finalizar, confira o resumo do pedido"}
         </Button>
       </div>
 
