@@ -7,7 +7,6 @@ import { ContactForm, type ContactFormData } from "@/components/ContactForm";
 import { ProductList } from "@/components/order/ProductList";
 import { OrderNotes } from "@/components/OrderNotes";
 import { FloatingTotal } from "@/components/FloatingTotal";
-import { Button } from "@/components/ui/button";
 import type { Product } from "@/types/product";
 import type { OrderItem } from "@/types/order";
 import type { Json } from "@/integrations/supabase/types";
@@ -165,17 +164,13 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
       <ProductList products={products} onQuantitySelect={handleQuantitySelect} />
       <OrderNotes value={notes} onChange={setNotes} />
 
-      <div className="text-center">
-        <Button
-          onClick={handleSubmitOrder}
-          size="lg"
-          className="bg-white text-primary hover:bg-white/90"
-        >
-          Enviar pedido
-        </Button>
-      </div>
-
-      <FloatingTotal total={calculateTotal()} />
+      <FloatingTotal 
+        total={calculateTotal()} 
+        items={prepareOrderItems()}
+        notes={notes}
+        onNotesChange={setNotes}
+        onSubmitOrder={handleSubmitOrder}
+      />
     </>
   );
 };
