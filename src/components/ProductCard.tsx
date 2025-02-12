@@ -60,8 +60,8 @@ export const ProductCard = ({ product, onQuantitySelect }: ProductCardProps) => 
           
           {product.sizes.map((size, index) => (
             <div key={size.label}>
-              <div className={`mb-4 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100 transition-colors rounded-lg p-2`}>
-                <div className="grid grid-cols-[80px_1fr_60px] gap-4 items-center">
+              <div className={`mb-4 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100 transition-colors`}>
+                <div className="grid grid-cols-[80px_1fr_60px] gap-4 items-center p-2">
                   <div>
                     <span className="font-medium text-sm">{size.label}</span>
                     <div className="text-xs text-gray-500">R$ {size.price.toFixed(2)}</div>
