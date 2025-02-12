@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -54,8 +53,6 @@ const OrderDetails = ({ order }: { order: Order }) => {
     return groups;
   }, {} as Record<string, { code: string; name: string; items: typeof order.items }>);
 
-  console.log('Grouped Items:', groupedItems); // Para debug
-
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
@@ -77,36 +74,33 @@ const OrderDetails = ({ order }: { order: Order }) => {
       <div>
         <h3 className="font-semibold mb-4">Itens do pedido</h3>
         <div className="space-y-4">
-          {Object.entries(groupedItems).map(([code, group]) => {
-            console.log('Rendering group:', code, group); // Para debug
-            return (
-              <div key={code} className="border rounded-lg overflow-hidden">
-                <div className="bg-gray-100 p-3 font-semibold">
-                  {group.code} - {group.name}
-                </div>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Código - Tamanho</TableHead>
-                      <TableHead>Quantidade</TableHead>
-                      <TableHead className="text-right">Subtotal</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {group.items.map((item) => (
-                      <TableRow key={`${item.code}-${item.size}`}>
-                        <TableCell>{`${item.code} - ${item.size}`}</TableCell>
-                        <TableCell>{item.quantity}</TableCell>
-                        <TableCell className="text-right">
-                          R$ {item.subtotal.toFixed(2)}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+          {Object.entries(groupedItems).map(([code, group]) => (
+            <div key={`group-${code}`} className="border rounded-lg overflow-hidden">
+              <div className="bg-gray-100 p-3 font-semibold">
+                {code} - {group.name}
               </div>
-            );
-          })}
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Código - Tamanho</TableHead>
+                    <TableHead>Quantidade</TableHead>
+                    <TableHead className="text-right">Subtotal</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {group.items.map((item, index) => (
+                    <TableRow key={`${item._id}-${item.size}-${index}`}>
+                      <TableCell>{`${item.code} - ${item.size}`}</TableCell>
+                      <TableCell>{item.quantity}</TableCell>
+                      <TableCell className="text-right">
+                        R$ {item.subtotal.toFixed(2)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          ))}
         </div>
         <div className="mt-4 text-right font-semibold">
           Total do pedido: R$ {order.total.toFixed(2)}
