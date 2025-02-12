@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -97,6 +98,11 @@ type SortConfig = {
   direction: 'asc' | 'desc';
 };
 
+type OrdersQueryResult = {
+  orders: Order[];
+  totalCount: number;
+};
+
 const PAGE_SIZES = [10, 20, 50, 100];
 
 const Orders = () => {
@@ -112,7 +118,7 @@ const Orders = () => {
   const { company } = useCompany();
   const navigate = useNavigate();
 
-  const { data: orders = [], isLoading } = useQuery({
+  const { data: ordersData } = useQuery<OrdersQueryResult>({
     queryKey: ["orders", company?.id, searchTerm, sortConfig, currentPage, pageSize],
     queryFn: async () => {
       let query = supabase
@@ -160,7 +166,7 @@ const Orders = () => {
     enabled: !!company?.id,
   });
 
-  const totalPages = Math.ceil((orders.totalCount || 0) / pageSize);
+  const totalPages = Math.ceil((ordersData?.totalCount || 0) / pageSize);
 
   const handleSort = (column: SortConfig['column']) => {
     setSortConfig(current => ({
@@ -271,7 +277,7 @@ const Orders = () => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {orders.orders?.map((order) => (
+          {ordersData?.orders.map((order) => (
             <TableRow
               key={order._id}
               className="cursor-pointer hover:bg-muted/50"
