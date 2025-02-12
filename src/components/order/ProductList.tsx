@@ -18,7 +18,12 @@ export const ProductList = ({ products, onQuantitySelect }: ProductListProps) =>
   };
 
   if (!products.length) {
-    return <LoadingState />;
+    return (
+      <div className="space-y-6">
+        <h2 className="text-2xl font-semibold text-white">Itens para pedido</h2>
+        <LoadingState />
+      </div>
+    );
   }
 
   return (
