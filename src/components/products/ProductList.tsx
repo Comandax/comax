@@ -6,6 +6,7 @@ import { ProductDetailsModal } from "./details/ProductDetailsModal";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -163,10 +164,13 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
           <Pagination>
             <PaginationContent>
               <PaginationItem>
-                <PaginationPrevious
+                <Button
+                  variant="ghost"
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                   disabled={currentPage === 1}
-                />
+                >
+                  <PaginationPrevious />
+                </Button>
               </PaginationItem>
               
               {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
@@ -185,10 +189,13 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
               ))}
 
               <PaginationItem>
-                <PaginationNext
+                <Button
+                  variant="ghost"
                   onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                   disabled={currentPage === totalPages}
-                />
+                >
+                  <PaginationNext />
+                </Button>
               </PaginationItem>
             </PaginationContent>
           </Pagination>
