@@ -1,23 +1,13 @@
 
-import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { useState } from "react";
 import { ContactForm, type ContactFormData } from "@/components/ContactForm";
 import { ProductList } from "@/components/order/ProductList";
 import { FloatingTotal } from "@/components/FloatingTotal";
-import { Button } from "@/components/ui/button";
-import { ListCheck, Loader } from "lucide-react";
+import { OrderSummaryButton } from "./OrderSummaryButton";
+import { useOrderCalculations } from "./hooks/useOrderCalculations";
+import { useOrderSubmission } from "./hooks/useOrderSubmission";
 import type { Product } from "@/types/product";
-import type { OrderItem } from "@/types/order";
-import type { Json } from "@/integrations/supabase/types";
-
-interface SelectedItem {
-  productId: string;
-  size: string;
-  quantity: number;
-  price: number;
-}
+import type { SelectedItem, ResetItem } from "./types";
 
 interface OrderFormProps {
   companyId: string;
@@ -28,11 +18,12 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
   const [notes, setNotes] = useState("");
   const [contactData, setContactData] = useState<ContactFormData | null>(null);
-  const { toast } = useToast();
-  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [resetItem, setResetItem] = useState<{ size: string; productId: string; } | null>(null);
+  const [resetItem, setResetItem] = useState<ResetItem | null>(null);
+
+  const { total, orderItems } = useOrderCalculations(selectedItems, products);
+  const { submitOrder } = useOrderSubmission();
 
   const handleContactSubmit = (data: ContactFormData) => {
     setContactData(data);
@@ -50,120 +41,15 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
     });
   };
 
-  const calculateTotal = () => {
-    return selectedItems.reduce((total, item) => {
-      return total + (item.quantity * item.price);
-    }, 0);
-  };
-
-  const prepareOrderItems = () => {
-    const groupedItems = selectedItems.reduce((acc, item) => {
-      const product = products.find(p => p._id === item.productId);
-      if (!product) return acc;
-
-      const existingItem = acc.find(i => i.productId === item.productId);
-      if (existingItem) {
-        existingItem.sizes.push({
-          size: item.size,
-          price: item.price,
-          quantity: item.quantity,
-          subtotal: item.quantity * item.price
-        });
-      } else {
-        acc.push({
-          productId: item.productId,
-          reference: product.reference,
-          name: product.name,
-          sizes: [{
-            size: item.size,
-            price: item.price,
-            quantity: item.quantity,
-            subtotal: item.quantity * item.price
-          }]
-        });
-      }
-      return acc;
-    }, [] as OrderItem[]);
-
-    return groupedItems;
-  };
-
-  // Memoizar os resultados de calculateTotal e prepareOrderItems
-  const memoizedTotal = useMemo(() => calculateTotal(), [selectedItems]);
-  const memoizedOrderItems = useMemo(() => prepareOrderItems(), [selectedItems, products]);
-
   const handleSubmitOrder = async () => {
-    if (!companyId) {
-      toast({
-        title: "Erro ao enviar pedido",
-        description: "Empresa não especificada.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!contactData) {
-      toast({
-        title: "Erro ao enviar pedido",
-        description: "Por favor, preencha seus dados de contato.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (selectedItems.length === 0) {
-      toast({
-        title: "Erro ao enviar pedido",
-        description: "Selecione pelo menos um produto.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    try {
-      const { data: companyData } = await supabase
-        .from('companies')
-        .select('short_name')
-        .eq('id', companyId)
-        .single();
-
-      if (!companyData?.short_name) {
-        throw new Error('Empresa não encontrada');
-      }
-
-      const now = new Date();
-      const orderItems = memoizedOrderItems;
-
-      const orderData = {
-        company_id: companyId,
-        customer_name: contactData.name,
-        customer_phone: contactData.whatsapp,
-        customer_city: contactData.city,
-        customer_zip_code: contactData.zipCode,
-        items: orderItems as unknown as Json,
-        total: memoizedTotal,
-        notes: notes || null,
-        date: now.toISOString().split('T')[0],
-        time: now.toTimeString().split(' ')[0]
-      };
-
-      const { error: insertError } = await supabase
-        .from('orders')
-        .insert([orderData]);
-
-      if (insertError) {
-        throw insertError;
-      }
-
-      navigate(`/company/${companyData.short_name}/success`);
-    } catch (error) {
-      console.error('Error submitting order:', error);
-      toast({
-        title: "Erro ao enviar pedido",
-        description: "Ocorreu um erro ao salvar seu pedido. Por favor, tente novamente.",
-        variant: "destructive",
-      });
-    }
+    await submitOrder({
+      companyId,
+      contactData,
+      selectedItems,
+      orderItems,
+      total,
+      notes
+    });
   };
 
   const handleRemoveItem = (productId: string, size: string) => {
@@ -182,25 +68,16 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
       
       {selectedItems.length > 0 && (
         <div className="mt-8 flex justify-end">
-          <Button 
-            variant="secondary" 
-            className="flex items-center gap-2 bg-white hover:bg-white/90 text-[#8B5CF6] font-medium"
+          <OrderSummaryButton 
             onClick={() => setIsModalOpen(true)}
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <Loader className="w-4 h-4 animate-spin" />
-            ) : (
-              <ListCheck className="w-4 h-4" />
-            )}
-            {isLoading ? "Carregando..." : "Para finalizar, confira o resumo do pedido"}
-          </Button>
+            isLoading={isLoading}
+          />
         </div>
       )}
 
       <FloatingTotal 
-        total={memoizedTotal}
-        items={memoizedOrderItems}
+        total={total}
+        items={orderItems}
         notes={notes}
         onNotesChange={setNotes}
         onSubmitOrder={handleSubmitOrder}
