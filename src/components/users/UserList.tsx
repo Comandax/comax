@@ -13,7 +13,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
-import { Plus, Pencil, Trash2, ArrowUpDown, Search } from "lucide-react";
+import { Plus, Pencil, Trash2, ArrowUpDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "../ui/input";
 import {
@@ -152,7 +152,6 @@ export function UserList() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="max-w-sm"
-            icon={<Search className="size-4" />}
           />
         </div>
         <div className="flex items-center gap-2">
@@ -233,32 +232,34 @@ export function UserList() {
         <Pagination className="mt-4">
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious
+              <Button
+                variant="outline"
                 onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
                 disabled={currentPage === 1}
               >
                 Anterior
-              </PaginationPrevious>
+              </Button>
             </PaginationItem>
             
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
               <PaginationItem key={page}>
-                <PaginationLink
+                <Button
+                  variant={currentPage === page ? "default" : "outline"}
                   onClick={() => setCurrentPage(page)}
-                  isActive={currentPage === page}
                 >
                   {page}
-                </PaginationLink>
+                </Button>
               </PaginationItem>
             ))}
 
             <PaginationItem>
-              <PaginationNext
+              <Button
+                variant="outline"
                 onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
                 disabled={currentPage === totalPages}
               >
                 Próximo
-              </PaginationNext>
+              </Button>
             </PaginationItem>
           </PaginationContent>
         </Pagination>

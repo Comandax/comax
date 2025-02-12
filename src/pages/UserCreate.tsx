@@ -1,5 +1,4 @@
 
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProfile } from "@/services/profileService";
@@ -11,27 +10,8 @@ import { useToast } from "@/components/ui/use-toast";
 export default function UserCreate() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
-
-  useEffect(() => {
-    const handleLogoutIfLoggedIn = async () => {
-      // Verifica se o usuário está logado e não é superusuário
-      if (user && !user.roles?.includes('superuser')) {
-        try {
-          await logout();
-          toast({
-            title: "Logout realizado",
-            description: "Por favor, crie uma nova conta.",
-          });
-        } catch (error) {
-          console.error('Erro ao fazer logout:', error);
-        }
-      }
-    };
-
-    handleLogoutIfLoggedIn();
-  }, [user, logout, toast]);
 
   const { mutate: createUserProfile, isPending: isCreating } = useMutation({
     mutationFn: createProfile,
@@ -39,9 +19,18 @@ export default function UserCreate() {
       queryClient.invalidateQueries({ queryKey: ['profiles'] });
       toast({
         title: "Conta criada com sucesso!",
-        description: "Você será redirecionado para a página de login.",
+        description: user?.roles?.includes('superuser')
+          ? "Redirecionando para a lista de usuários."
+          : "Você será redirecionado para a página de login.",
       });
-      navigate('/login');
+      
+      // Se for superusuário, redireciona para a lista de usuários
+      // Caso contrário, redireciona para o login
+      if (user?.roles?.includes('superuser')) {
+        navigate('/users');
+      } else {
+        navigate('/login');
+      }
     },
   });
 
