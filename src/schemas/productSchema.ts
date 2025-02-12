@@ -13,3 +13,5 @@ export const productFormSchema = z.object({
   ),
   quantities: z.array(z.number().min(0)),
 });
+
+export type ProductFormSchemaType = z.infer<typeof productFormSchema>;

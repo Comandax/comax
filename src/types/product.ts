@@ -13,7 +13,7 @@ export interface Product {
   companyId: string;
 }
 
-export interface ProductFormData {
+export type ProductFormData = {
   reference: string;
   name: string;
   image?: string;
@@ -23,4 +23,3 @@ export interface ProductFormData {
   }>;
   quantities: number[];
 }
-

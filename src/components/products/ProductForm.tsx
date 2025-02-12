@@ -1,4 +1,4 @@
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, UseFieldArrayReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,10 +41,10 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
     name: "sizes",
   });
 
-  const { fields: quantityFields, append: appendQuantity, remove: removeQuantity } = useFieldArray<ProductFormData, "quantities", "id">({
+  const { fields: quantityFields, append: appendQuantity, remove: removeQuantity } = useFieldArray({
     control: form.control,
     name: "quantities",
-  });
+  } as const);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
