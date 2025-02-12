@@ -40,6 +40,20 @@ import { useCompany } from "@/hooks/useCompany";
 import { supabase } from "@/integrations/supabase/client";
 
 const OrderDetails = ({ order }: { order: Order }) => {
+  // Agrupar itens por código do produto
+  const groupedItems = order.items.reduce((groups, item) => {
+    const key = item.code;
+    if (!groups[key]) {
+      groups[key] = {
+        code: item.code,
+        name: item.name,
+        items: []
+      };
+    }
+    groups[key].items.push(item);
+    return groups;
+  }, {} as Record<string, { code: string; name: string; items: typeof order.items }>);
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
@@ -60,34 +74,38 @@ const OrderDetails = ({ order }: { order: Order }) => {
 
       <div>
         <h3 className="font-semibold mb-4">Itens do pedido</h3>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Código - Tamanho</TableHead>
-              <TableHead>Quantidade</TableHead>
-              <TableHead className="text-right">Subtotal</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {order.items.map((item, index) => (
-              <TableRow key={item._id} className={index % 2 === 0 ? 'bg-gray-50' : ''}>
-                <TableCell>{`${item.productId} - ${item.size}`}</TableCell>
-                <TableCell>{item.quantity}</TableCell>
-                <TableCell className="text-right">
-                  R$ {item.subtotal.toFixed(2)}
-                </TableCell>
-              </TableRow>
-            ))}
-            <TableRow>
-              <TableCell colSpan={2} className="text-right font-semibold">
-                Total do pedido:
-              </TableCell>
-              <TableCell className="text-right font-semibold">
-                R$ {order.total.toFixed(2)}
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+        <div className="space-y-4">
+          {Object.entries(groupedItems).map(([code, group]) => (
+            <div key={code} className="border rounded-lg overflow-hidden">
+              <div className="bg-gray-100 p-3 font-semibold">
+                {code} - {group.name}
+              </div>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Código - Tamanho</TableHead>
+                    <TableHead>Quantidade</TableHead>
+                    <TableHead className="text-right">Subtotal</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {group.items.map((item) => (
+                    <TableRow key={`${item.code}-${item.size}`}>
+                      <TableCell>{`${item.code} - ${item.size}`}</TableCell>
+                      <TableCell>{item.quantity}</TableCell>
+                      <TableCell className="text-right">
+                        R$ {item.subtotal.toFixed(2)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          ))}
+        </div>
+        <div className="mt-4 text-right font-semibold">
+          Total do pedido: R$ {order.total.toFixed(2)}
+        </div>
       </div>
     </div>
   );

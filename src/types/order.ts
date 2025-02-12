@@ -20,4 +20,3 @@ export interface Order {
   total: number;
   companyId: string;
 }
-
