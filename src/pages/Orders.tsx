@@ -176,7 +176,7 @@ const Orders = () => {
   };
 
   if (!company) {
-    return <div>Loading...</div>;
+    return <div>Carregando...</div>;
   }
 
   return (
@@ -200,7 +200,7 @@ const Orders = () => {
           {company.logo_url && (
             <img 
               src={company.logo_url} 
-              alt={`${company.name} logo`}
+              alt={`Logo ${company.name}`}
               className="w-16 h-16 object-contain rounded-lg"
             />
           )}
@@ -243,7 +243,7 @@ const Orders = () => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>ID</TableHead>
+            <TableHead>Código</TableHead>
             <TableHead>
               <Button
                 variant="ghost"
