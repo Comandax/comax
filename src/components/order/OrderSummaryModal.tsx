@@ -1,4 +1,3 @@
-
 import {
   Dialog,
   DialogContent,
@@ -117,10 +116,7 @@ export const OrderSummaryModal = ({
                             <div key={idx}>
                               <div className="text-sm flex flex-wrap items-center justify-between gap-2 py-2">
                                 <span className="whitespace-nowrap">
-                                  {size.size}: {size.quantity} un x {new Intl.NumberFormat('pt-BR', {
-                                    style: 'currency',
-                                    currency: 'BRL'
-                                  }).format(size.price)}
+                                  {size.size}: {size.quantity} un
                                 </span>
                                 {onRemoveItem && (
                                   <Button
