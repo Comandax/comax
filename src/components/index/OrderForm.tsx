@@ -167,7 +167,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
       <div className="mt-8 text-center">
         <Button
           variant="link"
-          className="text-[#8B5CF6] font-medium text-lg flex items-center gap-2 mx-auto"
+          className="text-white font-medium text-lg flex items-center gap-2 mx-auto"
           onClick={() => setIsModalOpen(true)}
         >
           <FileText className="w-5 h-5" />
