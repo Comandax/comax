@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Plus, Upload } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -60,10 +60,10 @@ export function CompanyForm({ onSubmitSuccess }: CompanyFormProps) {
       return;
     }
 
-    if (!newCompany.name || !newCompany.responsible || !newCompany.email || !newCompany.phone) {
+    if (!newCompany.name) {
       toast({
         title: "Erro",
-        description: "Por favor, preencha todos os campos obrigatórios.",
+        description: "Por favor, preencha o nome da empresa.",
         variant: "destructive",
       });
       return;
@@ -86,9 +86,6 @@ export function CompanyForm({ onSubmitSuccess }: CompanyFormProps) {
       .from('companies')
       .insert([{
         name: newCompany.name,
-        responsible: newCompany.responsible,
-        email: newCompany.email,
-        phone: newCompany.phone,
         logo_url: logoUrl,
         owner_id: user.id
       }]);
@@ -114,7 +111,7 @@ export function CompanyForm({ onSubmitSuccess }: CompanyFormProps) {
   return (
     <Card className="p-6">
       <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <div className="space-y-2">
             <Label htmlFor="name">Nome da Empresa</Label>
             <Input
@@ -125,34 +122,6 @@ export function CompanyForm({ onSubmitSuccess }: CompanyFormProps) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="responsible">Responsável</Label>
-            <Input
-              id="responsible"
-              value={newCompany.responsible || ""}
-              onChange={(e) => setNewCompany({ ...newCompany, responsible: e.target.value })}
-              placeholder="Nome do responsável"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={newCompany.email || ""}
-              onChange={(e) => setNewCompany({ ...newCompany, email: e.target.value })}
-              placeholder="email@empresa.com"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="phone">Telefone</Label>
-            <Input
-              id="phone"
-              value={newCompany.phone || ""}
-              onChange={(e) => setNewCompany({ ...newCompany, phone: e.target.value })}
-              placeholder="(00) 00000-0000"
-            />
-          </div>
-          <div className="space-y-2 md:col-span-2">
             <Label htmlFor="logo">Logo da Empresa</Label>
             <div className="flex items-center gap-2">
               <Input

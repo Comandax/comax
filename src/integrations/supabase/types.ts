@@ -13,37 +13,28 @@ export type Database = {
         Row: {
           active: boolean
           created_at: string
-          email: string
           id: string
           logo_url: string | null
           name: string
           owner_id: string
-          phone: string
-          responsible: string
           short_name: string
         }
         Insert: {
           active?: boolean
           created_at?: string
-          email: string
           id?: string
           logo_url?: string | null
           name: string
           owner_id: string
-          phone: string
-          responsible: string
           short_name?: string
         }
         Update: {
           active?: boolean
           created_at?: string
-          email?: string
           id?: string
           logo_url?: string | null
           name?: string
           owner_id?: string
-          phone?: string
-          responsible?: string
           short_name?: string
         }
         Relationships: []

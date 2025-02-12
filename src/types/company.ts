@@ -2,9 +2,6 @@
 export interface Company {
   id: string;
   name: string;
-  responsible: string;
-  email: string;
-  phone: string;
   active: boolean;
   logo_url?: string;
   created_at: string;
@@ -12,5 +9,5 @@ export interface Company {
   short_name: string;
 }
 
-export type SortField = "name" | "responsible" | "created_at";
+export type SortField = "name" | "created_at";
 export type SortOrder = "asc" | "desc";

@@ -21,10 +21,7 @@ export function CompanyView({ company, onEditClick }: CompanyViewProps) {
             />
           </div>
         )}
-        <div className="flex-1 space-y-2">
-          <p><strong>Responsável:</strong> {company.responsible}</p>
-          <p><strong>Email:</strong> {company.email}</p>
-          <p><strong>Telefone:</strong> {company.phone}</p>
+        <div className="flex-1">
           <p><strong>Status:</strong> {company.active ? "Ativo" : "Inativo"}</p>
         </div>
       </div>
