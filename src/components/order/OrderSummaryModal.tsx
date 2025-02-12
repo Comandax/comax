@@ -1,3 +1,4 @@
+
 import {
   Dialog,
   DialogContent,
@@ -87,15 +88,15 @@ export const OrderSummaryModal = ({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6 w-full overflow-x-auto">
+        <div className="space-y-6 w-full md:overflow-x-auto">
           <div className="min-w-full">
             <Table>
               <TableHeader>
                 <TableRow>
                   <TableHead className="hidden md:table-cell w-20">Ref.</TableHead>
-                  <TableHead className="w-24">Produto</TableHead>
-                  <TableHead>Tamanhos</TableHead>
-                  <TableHead className="w-24 text-right">Subtotal</TableHead>
+                  <TableHead className="w-24 md:w-auto">Produto</TableHead>
+                  <TableHead className="w-auto">Tamanhos</TableHead>
+                  <TableHead className="w-20 text-right">Subtotal</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -109,8 +110,8 @@ export const OrderSummaryModal = ({
                   return (
                     <TableRow key={item.productId}>
                       <TableCell className="hidden md:table-cell whitespace-nowrap text-sm">{item.reference}</TableCell>
-                      <TableCell className="whitespace-nowrap text-sm">{item.name}</TableCell>
-                      <TableCell>
+                      <TableCell className="whitespace-normal md:whitespace-nowrap text-sm break-words">{item.name}</TableCell>
+                      <TableCell className="min-w-[120px]">
                         <div className="space-y-0">
                           {item.sizes.map((size, idx) => (
                             <div key={idx}>
