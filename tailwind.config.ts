@@ -26,33 +26,12 @@ export default {
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#2C3E50", // Azul Industrial
-          light: "#34495E",
-          dark: "#243342",
+          DEFAULT: "#1A365D", // Deep professional blue
           foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "#2980B9", // Azul Dinâmico
-          light: "#3498DB",
-          dark: "#2471A3",
+          DEFAULT: "#2C5282", // Rich complementary blue
           foreground: "hsl(var(--secondary-foreground))",
-        },
-        panel: {
-          DEFAULT: "#ECF0F1", // Cinza Claro
-          light: "#F4F6F7",
-          dark: "#BDC3C7",
-        },
-        success: {
-          DEFAULT: "#27AE60", // Verde Sucesso
-          light: "#2ECC71",
-          dark: "#229954",
-          foreground: "#FFFFFF",
-        },
-        highlight: {
-          DEFAULT: "#E67E22", // Laranja de Destaque
-          light: "#F39C12",
-          dark: "#D35400",
-          foreground: "#FFFFFF",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
