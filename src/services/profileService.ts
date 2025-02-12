@@ -41,16 +41,16 @@ export async function updateProfile(id: string, profile: ProfileFormData): Promi
 }
 
 export async function createProfile(profile: ProfileFormData): Promise<Profile> {
-  // First sign up the user with email confirmation enabled
+  // Primeiro cria o usuário na autenticação
   const { data: authData, error: signUpError } = await supabase.auth.signUp({
     email: profile.email,
     password: profile.password,
     options: {
+      emailRedirectTo: `${window.location.origin}/login`,
       data: {
         first_name: profile.first_name,
         last_name: profile.last_name
-      },
-      emailRedirectTo: `${window.location.origin}/login`
+      }
     }
   });
 
@@ -62,29 +62,25 @@ export async function createProfile(profile: ProfileFormData): Promise<Profile> 
     throw new Error('Falha ao criar usuário');
   }
 
-  // Wait a moment for the auth session to be established
+  // Espera um momento para garantir que o trigger de criação do perfil seja executado
   await new Promise(resolve => setTimeout(resolve, 1000));
 
-  // Create the profile with the user's ID
+  // Atualiza o perfil com as informações adicionais
   const { data, error } = await supabase
     .from('profiles')
-    .insert({
-      id: authData.user.id,
+    .update({
       first_name: profile.first_name,
       last_name: profile.last_name,
-      email: profile.email,
       phone: profile.phone
     })
+    .eq('id', authData.user.id)
     .select()
     .single();
 
   if (error) {
-    console.error('Profile creation error:', error);
-    // If profile creation fails, we should probably clean up the auth user
-    // but Supabase doesn't provide a way to delete users via the client library
-    throw new Error('Erro ao criar perfil: ' + error.message);
+    console.error('Profile update error:', error);
+    throw new Error('Erro ao atualizar perfil: ' + error.message);
   }
 
   return data;
 }
-
