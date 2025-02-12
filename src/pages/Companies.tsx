@@ -11,7 +11,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Copy, ArrowLeft } from "lucide-react";
+import { Copy, ArrowLeft, ExternalLink } from "lucide-react";
 
 export default function Companies() {
   const [companies, setCompanies] = useState<Company[]>([]);
@@ -84,6 +84,11 @@ export default function Companies() {
     });
   };
 
+  const openInNewTab = (shortName: string) => {
+    const url = `${window.location.origin}/company/${shortName}`;
+    window.open(url, '_blank');
+  };
+
   if (!user) {
     return null;
   }
@@ -122,18 +127,35 @@ export default function Companies() {
             </Card>
             <Card className="p-6">
               <h2 className="text-xl font-semibold mb-4">Link para Pedidos</h2>
-              <div className="flex gap-2">
-                <Input
-                  readOnly
-                  value={`${window.location.origin}/company/${companies[0].short_name}`}
-                  className="flex-1"
-                />
-                <Button
-                  onClick={() => copyToClipboard(companies[0].short_name)}
-                  variant="outline"
-                >
-                  <Copy className="h-4 w-4" />
-                </Button>
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <Input
+                    readOnly
+                    value={`${window.location.origin}/company/${companies[0].short_name}`}
+                  />
+                </div>
+                <div className="flex gap-4">
+                  <div className="flex flex-col items-center">
+                    <Button
+                      onClick={() => copyToClipboard(companies[0].short_name)}
+                      variant="outline"
+                      size="icon"
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                    <span className="text-xs mt-1">Copiar</span>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <Button
+                      onClick={() => openInNewTab(companies[0].short_name)}
+                      variant="outline"
+                      size="icon"
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                    <span className="text-xs mt-1">Abrir</span>
+                  </div>
+                </div>
               </div>
               <p className="text-sm text-muted-foreground mt-2">
                 Compartilhe este link com seus clientes para que eles possam fazer pedidos.
