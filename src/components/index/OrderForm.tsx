@@ -7,7 +7,7 @@ import { ContactForm, type ContactFormData } from "@/components/ContactForm";
 import { ProductList } from "@/components/order/ProductList";
 import { FloatingTotal } from "@/components/FloatingTotal";
 import { Button } from "@/components/ui/button";
-import { FileText } from "lucide-react";
+import { ListCheck } from "lucide-react";
 import type { Product } from "@/types/product";
 import type { OrderItem } from "@/types/order";
 import type { Json } from "@/integrations/supabase/types";
@@ -166,12 +166,12 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
       <ProductList products={products} onQuantitySelect={handleQuantitySelect} />
       
       <div className="mt-8 text-center">
-        <Button
-          variant="link"
-          className="text-white font-medium text-lg flex items-center gap-2 mx-auto"
+        <Button 
+          variant="secondary" 
+          className="flex items-center gap-2 bg-white hover:bg-white/90 text-[#8B5CF6] font-medium"
           onClick={() => setIsModalOpen(true)}
         >
-          <FileText className="w-5 h-5" />
+          <ListCheck className="w-4 h-4" />
           Para finalizar, confira o resumo do pedido
         </Button>
       </div>
