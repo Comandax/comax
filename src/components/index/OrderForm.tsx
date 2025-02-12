@@ -182,6 +182,8 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
         notes={notes}
         onNotesChange={setNotes}
         onSubmitOrder={handleSubmitOrder}
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
       />
     </>
   );

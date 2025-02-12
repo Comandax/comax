@@ -2,7 +2,6 @@
 import { ShoppingBag, ListCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OrderSummaryModal } from "@/components/order/OrderSummaryModal";
-import { useState } from "react";
 import type { OrderItem } from "@/types/order";
 
 interface FloatingTotalProps {
@@ -11,6 +10,8 @@ interface FloatingTotalProps {
   notes: string;
   onNotesChange: (notes: string) => void;
   onSubmitOrder: () => void;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 export const FloatingTotal = ({ 
@@ -18,10 +19,10 @@ export const FloatingTotal = ({
   items,
   notes,
   onNotesChange,
-  onSubmitOrder
+  onSubmitOrder,
+  isOpen,
+  onOpenChange
 }: FloatingTotalProps) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   if (total <= 0) return null;
 
   const formattedTotal = new Intl.NumberFormat('pt-BR', {
@@ -46,7 +47,7 @@ export const FloatingTotal = ({
           <Button 
             variant="secondary" 
             className="w-full flex items-center gap-2 bg-white hover:bg-white/90 text-[#8B5CF6] font-medium"
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => onOpenChange(true)}
           >
             <ListCheck className="w-4 h-4" />
             Ver produtos selecionados
@@ -55,14 +56,14 @@ export const FloatingTotal = ({
       </div>
 
       <OrderSummaryModal
-        isOpen={isModalOpen}
-        onOpenChange={setIsModalOpen}
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
         items={items}
         total={total}
         notes={notes}
         onNotesChange={onNotesChange}
         onSubmit={() => {
-          setIsModalOpen(false);
+          onOpenChange(false);
           onSubmitOrder();
         }}
       />
