@@ -41,9 +41,9 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
     name: "sizes",
   });
 
-  const { fields: quantityFields, append: appendQuantity, remove: removeQuantity } = useFieldArray({
+  const { fields: quantityFields, append: appendQuantity, remove: removeQuantity } = useFieldArray<ProductFormData, "quantities", "id">({
     control: form.control,
-    name: "quantities" as const,
+    name: "quantities",
   });
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -230,10 +230,7 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
               type="button"
               variant="outline"
               size="sm"
-              onClick={() => {
-                const newQuantity = { quantities: 0 };
-                appendQuantity(newQuantity as any);
-              }}
+              onClick={() => appendQuantity(0)}
             >
               <Plus className="mr-2 h-4 w-4" />
               Adicionar Quantidade
