@@ -79,9 +79,11 @@ export const FloatingTotal = ({
         total={total}
         notes={notes}
         onNotesChange={onNotesChange}
-        onSubmit={() => {
-          onOpenChange(false);
-          onSubmitOrder();
+        onSubmit={async () => {
+          return new Promise<void>((resolve) => {
+            onSubmitOrder();
+            resolve();
+          });
         }}
       />
     </>
