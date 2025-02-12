@@ -7,7 +7,6 @@ export interface OrderItemSize {
 }
 
 export interface OrderItem {
-  _id: string;
   productId: string;
   reference: string;
   name: string;

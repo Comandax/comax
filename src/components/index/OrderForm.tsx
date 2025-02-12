@@ -9,6 +9,7 @@ import { OrderNotes } from "@/components/OrderNotes";
 import { FloatingTotal } from "@/components/FloatingTotal";
 import { Button } from "@/components/ui/button";
 import type { Product } from "@/types/product";
+import type { OrderItem } from "@/types/order";
 
 interface SelectedItem {
   productId: string;
@@ -51,6 +52,38 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
     }, 0);
   };
 
+  const prepareOrderItems = (): OrderItem[] => {
+    const groupedItems = selectedItems.reduce((acc, item) => {
+      const product = products.find(p => p._id === item.productId);
+      if (!product) return acc;
+
+      const existingItem = acc.find(i => i.productId === item.productId);
+      if (existingItem) {
+        existingItem.sizes.push({
+          size: item.size,
+          price: item.price,
+          quantity: item.quantity,
+          subtotal: item.quantity * item.price
+        });
+      } else {
+        acc.push({
+          productId: item.productId,
+          reference: product.reference,
+          name: product.name,
+          sizes: [{
+            size: item.size,
+            price: item.price,
+            quantity: item.quantity,
+            subtotal: item.quantity * item.price
+          }]
+        });
+      }
+      return acc;
+    }, [] as OrderItem[]);
+
+    return groupedItems;
+  };
+
   const handleSubmitOrder = async () => {
     if (!companyId) {
       toast({
@@ -90,42 +123,13 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
         throw new Error('Empresa não encontrada');
       }
 
-      // Reorganizar os itens na estrutura desejada
-      const groupedItems = selectedItems.reduce((acc, item) => {
-        const product = products.find(p => p._id === item.productId);
-        if (!product) return acc;
-
-        const existingItem = acc.find(i => i.productId === item.productId);
-        if (existingItem) {
-          existingItem.sizes.push({
-            size: item.size,
-            price: item.price,
-            quantity: item.quantity,
-            subtotal: item.quantity * item.price
-          });
-        } else {
-          acc.push({
-            productId: item.productId,
-            reference: product.reference,
-            name: product.name,
-            sizes: [{
-              size: item.size,
-              price: item.price,
-              quantity: item.quantity,
-              subtotal: item.quantity * item.price
-            }]
-          });
-        }
-        return acc;
-      }, [] as any[]);
-
       const orderData = {
         company_id: companyId,
         customer_name: contactData.name,
         customer_phone: contactData.whatsapp,
         customer_city: contactData.city,
         customer_zip_code: contactData.zipCode,
-        items: groupedItems,
+        items: prepareOrderItems(),
         total: calculateTotal(),
         notes: notes
       };
