@@ -84,7 +84,8 @@ export const OrderSummaryModal = ({
       if (contentRef.current && e.target instanceof HTMLTextAreaElement) {
         // Aguarda o teclado aparecer
         setTimeout(() => {
-          e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          const element = e.target as HTMLTextAreaElement;
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 100);
       }
     };
