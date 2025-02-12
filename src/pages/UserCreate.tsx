@@ -16,7 +16,8 @@ export default function UserCreate() {
 
   useEffect(() => {
     const handleLogoutIfLoggedIn = async () => {
-      if (user) {
+      // Verifica se o usuário está logado e não é superusuário
+      if (user && !user.roles?.includes('superuser')) {
         try {
           await logout();
           toast({
