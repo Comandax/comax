@@ -1,6 +1,5 @@
 import type { Product } from "@/types/product";
 
-// Mock data moved from Index.tsx
 const mockData = {
   "products": [
     {
@@ -13,7 +12,11 @@ const mockData = {
         {"size": "G", "value": 5.76},
         {"size": "GG", "value": 5.76}
       ],
-      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
+      "quantities": [
+        {"value": 6}, {"value": 12}, {"value": 18}, {"value": 24}, 
+        {"value": 36}, {"value": 48}, {"value": 60}, {"value": 72}, 
+        {"value": 84}, {"value": 96}, {"value": 108}, {"value": 120}
+      ],
       "disabled": false,
       "companyId": "1"
     },
@@ -27,7 +30,11 @@ const mockData = {
         {"size": "G", "value": 7.54},
         {"size": "GG", "value": 7.54}
       ],
-      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
+      "quantities": [
+        {"value": 6}, {"value": 12}, {"value": 18}, {"value": 24}, 
+        {"value": 36}, {"value": 48}, {"value": 60}, {"value": 72}, 
+        {"value": 84}, {"value": 96}, {"value": 108}, {"value": 120}
+      ],
       "disabled": false
     },
     {
@@ -40,7 +47,11 @@ const mockData = {
         {"size": "M", "value": 12.5},
         {"size": "G", "value": 12.5}
       ],
-      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
+      "quantities": [
+        {"value": 6}, {"value": 12}, {"value": 18}, {"value": 24}, 
+        {"value": 36}, {"value": 48}, {"value": 60}, {"value": 72}, 
+        {"value": 84}, {"value": 96}, {"value": 108}, {"value": 120}
+      ],
       "disabled": false
     },
     {
@@ -54,7 +65,11 @@ const mockData = {
         {"size": "G", "value": 5.96},
         {"size": "GG", "value": 5.96}
       ],
-      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
+      "quantities": [
+        {"value": 6}, {"value": 12}, {"value": 18}, {"value": 24}, 
+        {"value": 36}, {"value": 48}, {"value": 60}, {"value": 72}, 
+        {"value": 84}, {"value": 96}, {"value": 108}, {"value": 120}
+      ],
       "disabled": false
     },
     {
@@ -68,7 +83,11 @@ const mockData = {
         {"size": "G", "value": 5.86},
         {"size": "GG", "value": 5.86}
       ],
-      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
+      "quantities": [
+        {"value": 6}, {"value": 12}, {"value": 18}, {"value": 24}, 
+        {"value": 36}, {"value": 48}, {"value": 60}, {"value": 72}, 
+        {"value": 84}, {"value": 96}, {"value": 108}, {"value": 120}
+      ],
       "disabled": false
     },
     {
@@ -82,7 +101,11 @@ const mockData = {
         {"size": "G", "value": 5.76},
         {"size": "GG", "value": 5.76}
       ],
-      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
+      "quantities": [
+        {"value": 6}, {"value": 12}, {"value": 18}, {"value": 24}, 
+        {"value": 36}, {"value": 48}, {"value": 60}, {"value": 72}, 
+        {"value": 84}, {"value": 96}, {"value": 108}, {"value": 120}
+      ],
       "disabled": false
     },
     {
@@ -94,7 +117,11 @@ const mockData = {
         {"size": "M", "value": 6.96},
         {"size": "G", "value": 6.96}
       ],
-      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
+      "quantities": [
+        {"value": 6}, {"value": 12}, {"value": 18}, {"value": 24}, 
+        {"value": 36}, {"value": 48}, {"value": 60}, {"value": 72}, 
+        {"value": 84}, {"value": 96}, {"value": 108}, {"value": 120}
+      ],
       "disabled": false
     },
     {
@@ -106,7 +133,11 @@ const mockData = {
         {"size": "M", "value": 7.1},
         {"size": "G", "value": 7.1}
       ],
-      "quantities": [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 120],
+      "quantities": [
+        {"value": 6}, {"value": 12}, {"value": 18}, {"value": 24}, 
+        {"value": 36}, {"value": 48}, {"value": 60}, {"value": 72}, 
+        {"value": 84}, {"value": 96}, {"value": 120}
+      ],
       "disabled": true
     }
   ]

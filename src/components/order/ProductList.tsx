@@ -30,7 +30,7 @@ export const ProductList = ({ products, onQuantitySelect }: ProductListProps) =>
             sizes: product.sizes.map(size => ({
               label: size.size,
               price: size.value,
-              quantities: [0, ...product.quantities]
+              quantities: [0, ...product.quantities.map(q => q.value)]
             }))
           }}
           onQuantitySelect={(size, quantity, price) => 

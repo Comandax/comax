@@ -19,7 +19,9 @@ export const fetchProducts = async (companyId: string): Promise<Product[]> => {
     name: product.name,
     image: product.image_url,
     sizes: (product.sizes as Array<{size: string; value: number}>),
-    quantities: product.quantities,
+    quantities: Array.isArray(product.quantities) 
+      ? product.quantities.map(q => typeof q === 'number' ? { value: q } : q)
+      : [],
     disabled: product.disabled,
     companyId: product.company_id
   }));
@@ -32,8 +34,8 @@ export const createProduct = async (product: ProductFormData, companyId: string)
       reference: product.reference,
       name: product.name,
       image_url: product.image,
-      sizes: product.sizes as Array<{size: string; value: number}>,
-      quantities: product.quantities,
+      sizes: product.sizes,
+      quantities: product.quantities.map(q => q.value),
       company_id: companyId
     })
     .select()
@@ -50,7 +52,7 @@ export const createProduct = async (product: ProductFormData, companyId: string)
     name: data.name,
     image: data.image_url,
     sizes: (data.sizes as Array<{size: string; value: number}>),
-    quantities: data.quantities,
+    quantities: data.quantities.map(q => typeof q === 'number' ? { value: q } : q),
     disabled: data.disabled,
     companyId: data.company_id
   };
@@ -63,8 +65,8 @@ export const updateProduct = async (productId: string, product: ProductFormData)
       reference: product.reference,
       name: product.name,
       image_url: product.image,
-      sizes: product.sizes as Array<{size: string; value: number}>,
-      quantities: product.quantities,
+      sizes: product.sizes,
+      quantities: product.quantities.map(q => q.value),
     })
     .eq('id', productId)
     .select()
@@ -81,7 +83,7 @@ export const updateProduct = async (productId: string, product: ProductFormData)
     name: data.name,
     image: data.image_url,
     sizes: (data.sizes as Array<{size: string; value: number}>),
-    quantities: data.quantities,
+    quantities: data.quantities.map(q => typeof q === 'number' ? { value: q } : q),
     disabled: data.disabled,
     companyId: data.company_id
   };
@@ -106,7 +108,7 @@ export const toggleProductStatus = async (productId: string, disabled: boolean):
     name: data.name,
     image: data.image_url,
     sizes: (data.sizes as Array<{size: string; value: number}>),
-    quantities: data.quantities,
+    quantities: data.quantities.map(q => typeof q === 'number' ? { value: q } : q),
     disabled: data.disabled,
     companyId: data.company_id
   };
