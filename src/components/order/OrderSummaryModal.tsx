@@ -15,8 +15,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { OrderNotes } from "@/components/OrderNotes";
-import { FileText } from "lucide-react";
+import { FileText, Loader } from "lucide-react";
 import type { OrderItem } from "@/types/order";
+import { useState } from "react";
 
 interface OrderSummaryModalProps {
   isOpen: boolean;
@@ -37,10 +38,17 @@ export const OrderSummaryModal = ({
   onNotesChange,
   onSubmit,
 }: OrderSummaryModalProps) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const formattedTotal = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL'
   }).format(total);
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    await onSubmit();
+    setIsSubmitting(false);
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -103,8 +111,20 @@ export const OrderSummaryModal = ({
           <OrderNotes value={notes} onChange={onNotesChange} />
 
           <div className="flex justify-end">
-            <Button onClick={onSubmit} size="lg">
-              Enviar Pedido
+            <Button 
+              onClick={handleSubmit} 
+              size="lg" 
+              disabled={isSubmitting}
+              className="flex items-center gap-2"
+            >
+              {isSubmitting ? (
+                <>
+                  <Loader className="w-4 h-4 animate-spin" />
+                  Enviando pedido
+                </>
+              ) : (
+                "Enviar Pedido"
+              )}
             </Button>
           </div>
         </div>
