@@ -165,7 +165,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
       <ContactForm onSubmit={handleContactSubmit} />
       <ProductList products={products} onQuantitySelect={handleQuantitySelect} />
       
-      <div className="mt-8 text-center">
+      <div className="mt-8 flex justify-end">
         <Button 
           variant="secondary" 
           className="flex items-center gap-2 bg-white hover:bg-white/90 text-[#8B5CF6] font-medium"
