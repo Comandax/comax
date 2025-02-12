@@ -16,7 +16,6 @@ interface OrderFormProps {
 
 export const OrderForm = ({ companyId, products }: OrderFormProps) => {
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
-  const [notes, setNotes] = useState("");
   const [contactData, setContactData] = useState<ContactFormData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +40,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
     });
   };
 
-  const handleSubmitOrder = async () => {
+  const handleSubmitOrder = async (notes: string) => {
     await submitOrder({
       companyId,
       contactData,
@@ -78,8 +77,6 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
       <FloatingTotal 
         total={total}
         items={orderItems}
-        notes={notes}
-        onNotesChange={setNotes}
         onSubmitOrder={handleSubmitOrder}
         isOpen={isModalOpen}
         onOpenChange={setIsModalOpen}
