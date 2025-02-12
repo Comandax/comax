@@ -52,7 +52,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
     }, 0);
   };
 
-  const prepareOrderItems = (): OrderItem[] => {
+  const prepareOrderItems = () => {
     const groupedItems = selectedItems.reduce((acc, item) => {
       const product = products.find(p => p._id === item.productId);
       if (!product) return acc;
@@ -123,15 +123,20 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
         throw new Error('Empresa não encontrada');
       }
 
+      const now = new Date();
+      const orderItems = prepareOrderItems();
+
       const orderData = {
         company_id: companyId,
         customer_name: contactData.name,
         customer_phone: contactData.whatsapp,
         customer_city: contactData.city,
         customer_zip_code: contactData.zipCode,
-        items: prepareOrderItems(),
+        items: orderItems as unknown as Json,
         total: calculateTotal(),
-        notes: notes
+        notes: notes || null,
+        date: now.toISOString().split('T')[0],
+        time: now.toTimeString().split(' ')[0]
       };
 
       const { error: insertError } = await supabase
