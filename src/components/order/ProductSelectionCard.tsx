@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Package } from "lucide-react";
 
 interface ProductSelectionCardProps {
@@ -35,35 +35,10 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
     }
   }, [resetItem, product.id]);
 
-  const handleQuantityChange = async (size: string, quantity: number, price: number) => {
-    // Atualizar estado local imediatamente
-    setSelectedQuantities(prev => ({
-      ...prev,
-      [size]: quantity
-    }));
-    
-    // Marcar este tamanho como carregando
-    setLoading(prev => ({
-      ...prev,
-      [size]: true
-    }));
-
-    // Notificar o componente pai sobre a mudança
-    onQuantitySelect(size, quantity, price);
-
-    // Remover estado de carregamento após um breve delay
-    setTimeout(() => {
-      setLoading(prev => ({
-        ...prev,
-        [size]: false
-      }));
-    }, 300);
-  };
-
-  const calculateSubtotal = (size: string, price: number) => {
+  const calculateSubtotal = useCallback((size: string, price: number) => {
     const quantity = selectedQuantities[size] || 0;
     return quantity * price;
-  };
+  }, [selectedQuantities]);
 
   const formatCurrency = (value: number) => {
     return value.toLocaleString('pt-BR', {
@@ -71,6 +46,27 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
       currency: 'BRL'
     });
   };
+
+  const handleQuantityChange = useCallback((size: string, quantity: number, price: number) => {
+    // Prevenir múltiplas seleções simultâneas
+    if (loading[size]) return;
+
+    // Marcar como carregando antes da atualização
+    setLoading(prev => ({ ...prev, [size]: true }));
+
+    // Atualizar estado local
+    setSelectedQuantities(prev => ({ ...prev, [size]: quantity }));
+
+    // Notificar componente pai
+    onQuantitySelect(size, quantity, price);
+
+    // Remover loading após breve delay
+    const timer = setTimeout(() => {
+      setLoading(prev => ({ ...prev, [size]: false }));
+    }, 200);
+
+    return () => clearTimeout(timer);
+  }, [loading, onQuantitySelect]);
 
   return (
     <Card className="p-6 bg-white/90 shadow-md">
