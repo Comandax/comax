@@ -1,6 +1,6 @@
 
 interface ProductQuantitiesProps {
-  quantities: number[];
+  quantities: Array<{ value: number; }>;
 }
 
 export function ProductQuantities({ quantities }: ProductQuantitiesProps) {
@@ -13,7 +13,7 @@ export function ProductQuantities({ quantities }: ProductQuantitiesProps) {
             key={index}
             className="px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary"
           >
-            {qty} un
+            {qty.value} un
           </span>
         ))}
       </div>

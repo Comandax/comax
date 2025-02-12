@@ -22,7 +22,7 @@ export function ProductQuantities({ form, quantityArray }: ProductQuantitiesProp
           type="button"
           variant="outline"
           size="sm"
-          onClick={() => append(0)}
+          onClick={() => append({ value: 0 })}
         >
           <Plus className="mr-2 h-4 w-4" />
           Adicionar Quantidade
@@ -34,7 +34,7 @@ export function ProductQuantities({ form, quantityArray }: ProductQuantitiesProp
           <div key={field.id} className="flex gap-2 items-start">
             <FormField
               control={form.control}
-              name={`quantities.${index}`}
+              name={`quantities.${index}.value`}
               render={({ field }) => (
                 <FormItem className="flex-1">
                   <FormControl>

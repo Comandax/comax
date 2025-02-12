@@ -11,7 +11,11 @@ export const productFormSchema = z.object({
       value: z.number().min(0),
     })
   ),
-  quantities: z.array(z.number().min(0)),
+  quantities: z.array(
+    z.object({
+      value: z.number().min(0),
+    })
+  ),
 });
 
 export type ProductFormSchemaType = z.infer<typeof productFormSchema>;

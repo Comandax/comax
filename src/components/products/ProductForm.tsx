@@ -26,7 +26,22 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
       name: initialData?.name || "",
       image: initialData?.image || "",
       sizes: initialData?.sizes || [{ size: "", value: 0 }],
-      quantities: initialData?.quantities || [6, 12, 18, 24, 36, 48, 60, 72, 84, 96, 108, 120],
+      quantities: initialData?.quantities 
+        ? initialData.quantities.map(q => typeof q === 'number' ? { value: q } : q)
+        : [
+            { value: 6 },
+            { value: 12 },
+            { value: 18 },
+            { value: 24 },
+            { value: 36 },
+            { value: 48 },
+            { value: 60 },
+            { value: 72 },
+            { value: 84 },
+            { value: 96 },
+            { value: 108 },
+            { value: 120 },
+          ],
     },
   });
 
@@ -35,9 +50,9 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
     name: "sizes",
   });
 
-  const quantityArray = useFieldArray<ProductFormData>({
+  const quantityArray = useFieldArray({
     control: form.control,
-    name: "quantities" as const,
+    name: "quantities",
   });
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

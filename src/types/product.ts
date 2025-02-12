@@ -8,7 +8,9 @@ export interface Product {
     size: string;
     value: number;
   }>;
-  quantities: number[];
+  quantities: Array<{
+    value: number;
+  }>;
   disabled: boolean;
   companyId: string;
 }
@@ -21,5 +23,7 @@ export type ProductFormData = {
     size: string;
     value: number;
   }>;
-  quantities: number[];
+  quantities: Array<{
+    value: number;
+  }>;
 }
