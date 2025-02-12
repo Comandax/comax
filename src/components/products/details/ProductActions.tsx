@@ -1,6 +1,7 @@
 
 import { Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Dialog,
   DialogContent,
@@ -50,11 +51,13 @@ export function ProductActions({
           <DialogHeader>
             <DialogTitle>Editar Produto</DialogTitle>
           </DialogHeader>
-          <ProductForm 
-            onSubmit={onSubmit} 
-            initialData={product} 
-            onComplete={() => onOpenChange(false)}
-          />
+          <ScrollArea className="h-[80vh] pr-4">
+            <ProductForm 
+              onSubmit={onSubmit} 
+              initialData={product} 
+              onComplete={() => onOpenChange(false)}
+            />
+          </ScrollArea>
         </DialogContent>
       </Dialog>
 
