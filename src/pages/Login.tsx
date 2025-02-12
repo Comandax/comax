@@ -21,12 +21,18 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      await login(email, password);
+      const user = await login(email, password);
       toast({
         title: "Login realizado com sucesso",
-        description: "Você será redirecionado para o painel administrativo.",
+        description: "Você será redirecionado para o painel.",
       });
-      navigate("/admin");
+      
+      // Se for superusuário, redireciona para a página de usuários
+      if (user?.roles?.includes('superuser')) {
+        navigate("/users");
+      } else {
+        navigate("/admin");
+      }
     } catch (error) {
       toast({
         variant: "destructive",

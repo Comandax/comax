@@ -6,7 +6,7 @@ import type { AuthProvider, User } from '../types/auth';
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
   logout: () => Promise<void>;
 }
 
@@ -37,6 +37,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   async function login(email: string, password: string) {
     const user = await authProvider.login(email, password);
     setUser(user);
+    return user;
   }
 
   async function logout() {
