@@ -26,7 +26,7 @@ interface OrderSummaryModalProps {
   total: number;
   notes: string;
   onNotesChange: (notes: string) => void;
-  onSubmit: () => void;
+  onSubmit: () => Promise<void>;
 }
 
 export const OrderSummaryModal = ({
@@ -46,12 +46,25 @@ export const OrderSummaryModal = ({
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    await onSubmit();
-    setIsSubmitting(false);
+    try {
+      await onSubmit();
+      onOpenChange(false);
+    } catch (error) {
+      // Se houver erro, o modal permanecerá aberto
+      console.error('Error submitting order:', error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    if (!isSubmitting) {
+      onOpenChange(open);
+    }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto" onOpenAutoFocus={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
