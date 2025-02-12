@@ -8,19 +8,19 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
   Pagination,
   PaginationContent,
   PaginationItem,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface ProductListProps {
   products: Product[];
@@ -56,6 +56,15 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
           disabled: disabled
         });
       }
+    }
+  };
+
+  const handleSort = (field: SortField) => {
+    if (field === sortField) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortOrder('asc');
     }
   };
 
@@ -105,32 +114,6 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
           </div>
 
           <Select
-            value={sortField}
-            onValueChange={(value: SortField) => setSortField(value)}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Ordenar por" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="reference">Referência</SelectItem>
-              <SelectItem value="name">Nome</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={sortOrder}
-            onValueChange={(value: SortOrder) => setSortOrder(value)}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Ordem" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="asc">Crescente</SelectItem>
-              <SelectItem value="desc">Decrescente</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select
             value={String(itemsPerPage)}
             onValueChange={(value) => {
               setItemsPerPage(Number(value));
@@ -157,6 +140,9 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
         onSubmit={onSubmit}
         onToggleStatus={handleToggleStatus}
         onProductClick={handleProductClick}
+        sortField={sortField}
+        sortOrder={sortOrder}
+        onSort={handleSort}
       />
 
       {totalPages > 1 && (

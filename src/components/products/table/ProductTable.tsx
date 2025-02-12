@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/table";
 import type { Product, ProductFormData } from "@/types/product";
 import { ProductTableActions } from "./ProductTableActions";
+import { ArrowDown, ArrowUp } from "lucide-react";
 
 interface ProductTableProps {
   products: Product[];
@@ -18,6 +19,9 @@ interface ProductTableProps {
   onSubmit: (data: ProductFormData) => Promise<void>;
   onToggleStatus: (productId: string, disabled: boolean) => Promise<void>;
   onProductClick: (product: Product) => void;
+  sortField?: 'reference' | 'name';
+  sortOrder?: 'asc' | 'desc';
+  onSort?: (field: 'reference' | 'name') => void;
 }
 
 export function ProductTable({ 
@@ -26,11 +30,25 @@ export function ProductTable({
   onDelete, 
   onSubmit, 
   onToggleStatus,
-  onProductClick 
+  onProductClick,
+  sortField,
+  sortOrder,
+  onSort
 }: ProductTableProps) {
   const handleToggleStatus = async (productId: string, disabled: boolean, event?: React.MouseEvent) => {
     event?.stopPropagation();
     await onToggleStatus(productId, disabled);
+  };
+
+  const SortIcon = ({ field }: { field: 'reference' | 'name' }) => {
+    if (field !== sortField) return null;
+    return sortOrder === 'asc' ? <ArrowUp className="inline w-4 h-4 ml-1" /> : <ArrowDown className="inline w-4 h-4 ml-1" />;
+  };
+
+  const handleSort = (field: 'reference' | 'name') => {
+    if (onSort) {
+      onSort(field);
+    }
   };
 
   return (
@@ -38,8 +56,20 @@ export function ProductTable({
       <TableHeader>
         <TableRow>
           <TableHead>Imagem</TableHead>
-          <TableHead>Referência</TableHead>
-          <TableHead>Nome</TableHead>
+          <TableHead 
+            className="cursor-pointer hover:text-primary"
+            onClick={() => handleSort('reference')}
+          >
+            Referência
+            <SortIcon field="reference" />
+          </TableHead>
+          <TableHead 
+            className="cursor-pointer hover:text-primary"
+            onClick={() => handleSort('name')}
+          >
+            Nome
+            <SortIcon field="name" />
+          </TableHead>
           <TableHead>Status</TableHead>
           <TableHead className="text-right">Ações</TableHead>
         </TableRow>
