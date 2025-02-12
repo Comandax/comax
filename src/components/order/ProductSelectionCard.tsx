@@ -48,25 +48,17 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
   };
 
   const handleQuantityChange = useCallback((size: string, quantity: number, price: number) => {
-    // Prevenir múltiplas seleções simultâneas
-    if (loading[size]) return;
-
-    // Marcar como carregando antes da atualização
-    setLoading(prev => ({ ...prev, [size]: true }));
-
-    // Atualizar estado local
-    setSelectedQuantities(prev => ({ ...prev, [size]: quantity }));
-
-    // Notificar componente pai
-    onQuantitySelect(size, quantity, price);
-
-    // Remover loading após breve delay
-    const timer = setTimeout(() => {
-      setLoading(prev => ({ ...prev, [size]: false }));
+    // Atualizar estado local imediatamente para resposta instantânea do UI
+    setSelectedQuantities(prev => ({
+      ...prev,
+      [size]: quantity
+    }));
+    
+    // Simular um pequeno delay antes de notificar o componente pai
+    setTimeout(() => {
+      onQuantitySelect(size, quantity, price);
     }, 200);
-
-    return () => clearTimeout(timer);
-  }, [loading, onQuantitySelect]);
+  }, [onQuantitySelect]);
 
   return (
     <Card className="p-6 bg-white/90 shadow-md">
@@ -117,8 +109,7 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
                         <RadioGroupItem 
                           value={qty.toString()} 
                           id={`${product.id}-${size.label}-${qty}`}
-                          className={`md:scale-75 scale-125 transition-opacity ${loading[size.label] ? 'opacity-50' : ''}`}
-                          disabled={loading[size.label]}
+                          className="md:scale-75 scale-125"
                         />
                         <Label 
                           htmlFor={`${product.id}-${size.label}-${qty}`} 
