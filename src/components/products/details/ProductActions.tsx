@@ -41,7 +41,7 @@ export function ProductActions({
     <div className="flex justify-end gap-2">
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="outline" onClick={() => onEdit(product)}>
+          <Button variant="outline" onClick={(e) => e.stopPropagation()}>
             <Edit className="h-4 w-4 mr-2" />
             Editar
           </Button>
