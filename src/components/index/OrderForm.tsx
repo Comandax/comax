@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -88,6 +88,10 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
     return groupedItems;
   };
 
+  // Memoizar os resultados de calculateTotal e prepareOrderItems
+  const memoizedTotal = useMemo(() => calculateTotal(), [selectedItems]);
+  const memoizedOrderItems = useMemo(() => prepareOrderItems(), [selectedItems, products]);
+
   const handleSubmitOrder = async () => {
     if (!companyId) {
       toast({
@@ -128,7 +132,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
       }
 
       const now = new Date();
-      const orderItems = prepareOrderItems();
+      const orderItems = memoizedOrderItems;
 
       const orderData = {
         company_id: companyId,
@@ -137,7 +141,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
         customer_city: contactData.city,
         customer_zip_code: contactData.zipCode,
         items: orderItems as unknown as Json,
-        total: calculateTotal(),
+        total: memoizedTotal,
         notes: notes || null,
         date: now.toISOString().split('T')[0],
         time: now.toTimeString().split(' ')[0]
@@ -195,8 +199,8 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
       )}
 
       <FloatingTotal 
-        total={calculateTotal()} 
-        items={prepareOrderItems()}
+        total={memoizedTotal}
+        items={memoizedOrderItems}
         notes={notes}
         onNotesChange={setNotes}
         onSubmitOrder={handleSubmitOrder}
