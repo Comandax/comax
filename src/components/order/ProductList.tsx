@@ -2,6 +2,7 @@
 import type { Product } from "@/types/product";
 import { ProductCard } from "@/components/ProductCard";
 import { supabase } from "@/integrations/supabase/client";
+import { LoadingState } from "@/components/index/LoadingState";
 
 interface ProductListProps {
   products: Product[];
@@ -15,6 +16,10 @@ export const ProductList = ({ products, onQuantitySelect }: ProductListProps) =>
       .getPublicUrl(`${reference}.jpeg`);
     return data.publicUrl;
   };
+
+  if (!products.length) {
+    return <LoadingState />;
+  }
 
   return (
     <div className="space-y-6">
