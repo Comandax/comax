@@ -81,6 +81,14 @@ const App = () => (
                 </ProtectedRoute>
               } 
             />
+            <Route 
+              path="/profile/:id" 
+              element={
+                <ProtectedRoute>
+                  <UserEdit />
+                </ProtectedRoute>
+              } 
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
