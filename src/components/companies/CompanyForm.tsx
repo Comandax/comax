@@ -113,7 +113,7 @@ export function CompanyForm({ onSubmitSuccess }: CompanyFormProps) {
 
   return (
     <Card className="p-6">
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="space-y-2">
             <Label htmlFor="name">Nome da Empresa</Label>
@@ -152,7 +152,7 @@ export function CompanyForm({ onSubmitSuccess }: CompanyFormProps) {
               placeholder="(00) 00000-0000"
             />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2 md:col-span-2">
             <Label htmlFor="logo">Logo da Empresa</Label>
             <div className="flex items-center gap-2">
               <Input
@@ -170,9 +170,11 @@ export function CompanyForm({ onSubmitSuccess }: CompanyFormProps) {
             </div>
           </div>
         </div>
-        <Button type="submit" className="w-full">
-          <Plus className="mr-2 h-4 w-4" /> Adicionar Empresa
-        </Button>
+        <div className="pt-4">
+          <Button type="submit" className="w-full">
+            <Plus className="mr-2 h-4 w-4" /> Adicionar Empresa
+          </Button>
+        </div>
       </form>
     </Card>
   );
