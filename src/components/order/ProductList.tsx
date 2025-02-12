@@ -7,9 +7,10 @@ import { LoadingState } from "@/components/index/LoadingState";
 interface ProductListProps {
   products: Product[];
   onQuantitySelect: (productId: string, size: string, quantity: number, price: number) => void;
+  resetItem?: { size: string; productId: string; };
 }
 
-export const ProductList = ({ products, onQuantitySelect }: ProductListProps) => {
+export const ProductList = ({ products, onQuantitySelect, resetItem }: ProductListProps) => {
   const getImageUrl = async (reference: string) => {
     const { data } = supabase.storage
       .from('products')
@@ -46,6 +47,7 @@ export const ProductList = ({ products, onQuantitySelect }: ProductListProps) =>
           onQuantitySelect={(size, quantity, price) => 
             onQuantitySelect(product._id, size, quantity, price)
           }
+          resetItem={resetItem && resetItem.productId === product._id ? resetItem : undefined}
         />
       ))}
     </div>

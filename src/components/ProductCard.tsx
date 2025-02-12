@@ -3,7 +3,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Package } from "lucide-react";
 
 interface ProductCardProps {
@@ -19,10 +19,20 @@ interface ProductCardProps {
     }>;
   };
   onQuantitySelect: (size: string, quantity: number, price: number) => void;
+  resetItem?: { size: string; productId: string; };
 }
 
-export const ProductCard = ({ product, onQuantitySelect }: ProductCardProps) => {
+export const ProductCard = ({ product, onQuantitySelect, resetItem }: ProductCardProps) => {
   const [selectedQuantities, setSelectedQuantities] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    if (resetItem && resetItem.productId === product.id) {
+      setSelectedQuantities(prev => ({
+        ...prev,
+        [resetItem.size]: 0
+      }));
+    }
+  }, [resetItem, product.id]);
 
   const handleQuantityChange = (size: string, quantity: number, price: number) => {
     setSelectedQuantities(prev => ({
@@ -75,7 +85,7 @@ export const ProductCard = ({ product, onQuantitySelect }: ProductCardProps) => 
                   </div>
                   
                   <RadioGroup
-                    value={selectedQuantities[size.label]?.toString()}
+                    value={selectedQuantities[size.label]?.toString() || "0"}
                     onValueChange={(value) => {
                       handleQuantityChange(size.label, Number(value), size.price);
                     }}

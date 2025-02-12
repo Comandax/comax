@@ -32,6 +32,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [resetItem, setResetItem] = useState<{ size: string; productId: string; } | null>(null);
 
   const handleContactSubmit = (data: ContactFormData) => {
     setContactData(data);
@@ -162,13 +163,18 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
   };
 
   const handleRemoveItem = (productId: string, size: string) => {
+    setResetItem({ productId, size });
     handleQuantitySelect(productId, size, 0, 0);
   };
 
   return (
     <>
       <ContactForm onSubmit={handleContactSubmit} />
-      <ProductList products={products} onQuantitySelect={handleQuantitySelect} />
+      <ProductList 
+        products={products} 
+        onQuantitySelect={handleQuantitySelect} 
+        resetItem={resetItem}
+      />
       
       {selectedItems.length > 0 && (
         <div className="mt-8 flex justify-end">
