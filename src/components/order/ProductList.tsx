@@ -1,6 +1,6 @@
 
 import type { Product } from "@/types/product";
-import { ProductCard } from "@/components/ProductCard";
+import { ProductSelectionCard } from "@/components/order/ProductSelectionCard";
 import { supabase } from "@/integrations/supabase/client";
 import { LoadingState } from "@/components/index/LoadingState";
 
@@ -31,7 +31,7 @@ export const ProductList = ({ products, onQuantitySelect, resetItem }: ProductLi
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold text-white">Itens para pedido</h2>
       {products.filter(product => !product.disabled).map((product) => (
-        <ProductCard
+        <ProductSelectionCard
           key={product._id}
           product={{
             id: product._id,
