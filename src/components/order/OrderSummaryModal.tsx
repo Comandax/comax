@@ -94,9 +94,9 @@ export const OrderSummaryModal = ({
               <TableHeader>
                 <TableRow>
                   <TableHead className="w-20">Ref.</TableHead>
-                  <TableHead className="w-12 md:w-[200px]">Produto</TableHead>
-                  <TableHead className="w-[70%]">Tamanhos</TableHead>
-                  <TableHead className="w-[16px] text-right">Subtotal</TableHead>
+                  <TableHead className="w-24">Produto</TableHead>
+                  <TableHead>Tamanhos</TableHead>
+                  <TableHead className="w-24 text-right">Subtotal</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -110,8 +110,8 @@ export const OrderSummaryModal = ({
                   return (
                     <TableRow key={item.productId}>
                       <TableCell className="whitespace-nowrap text-sm">{item.reference}</TableCell>
-                      <TableCell className="text-sm break-words w-12 md:w-[200px]">{item.name}</TableCell>
-                      <TableCell className="w-[70%]">
+                      <TableCell className="whitespace-nowrap text-sm">{item.name}</TableCell>
+                      <TableCell>
                         <div className="space-y-0">
                           {item.sizes.map((size, idx) => (
                             <div key={idx}>
@@ -151,7 +151,7 @@ export const OrderSummaryModal = ({
                           ))}
                         </div>
                       </TableCell>
-                      <TableCell className="text-right whitespace-nowrap text-sm w-[16px]">
+                      <TableCell className="text-right whitespace-nowrap text-sm">
                         {formattedSubtotal}
                       </TableCell>
                     </TableRow>
