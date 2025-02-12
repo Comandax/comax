@@ -6,7 +6,7 @@ import { Check } from "lucide-react";
 
 const OrderSuccess = () => {
   const navigate = useNavigate();
-  const { companyId } = useParams<{ companyId?: string }>();
+  const { shortName } = useParams<{ shortName?: string }>();
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8 flex items-center justify-center">
@@ -25,7 +25,7 @@ const OrderSuccess = () => {
         
         <div className="flex justify-center">
           <Button 
-            onClick={() => navigate(`/${companyId}`)}
+            onClick={() => navigate(`/company/${shortName}`)}
             className="bg-primary text-white hover:bg-primary/90"
           >
             Fazer Novo Pedido
