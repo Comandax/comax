@@ -93,7 +93,11 @@ export const ProductCard = ({ product, onQuantitySelect, resetItem }: ProductCar
                   >
                     {size.quantities.map((qty) => (
                       <div key={qty} className="flex flex-col items-center gap-1">
-                        <RadioGroupItem value={qty.toString()} id={`${size.label}-${qty}`} className="scale-75" />
+                        <RadioGroupItem 
+                          value={qty.toString()} 
+                          id={`${size.label}-${qty}`} 
+                          className="md:scale-75 scale-125"
+                        />
                         <Label htmlFor={`${size.label}-${qty}`} className="text-xs">{qty}</Label>
                       </div>
                     ))}
