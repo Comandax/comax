@@ -41,6 +41,7 @@ export const OrderSummaryModal = ({
   onRemoveItem,
 }: OrderSummaryModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [removingItem, setRemovingItem] = useState<{ productId: string; size: string } | null>(null);
   const formattedTotal = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL'
@@ -62,6 +63,19 @@ export const OrderSummaryModal = ({
     if (!isSubmitting) {
       onOpenChange(open);
     }
+  };
+
+  const handleRemoveItem = async (productId: string, size: string) => {
+    setRemovingItem({ productId, size });
+    if (onRemoveItem) {
+      await new Promise(resolve => setTimeout(resolve, 500)); // Pequeno delay para mostrar o loading
+      onRemoveItem(productId, size);
+    }
+    setRemovingItem(null);
+  };
+
+  const isRemoving = (productId: string, size: string) => {
+    return removingItem?.productId === productId && removingItem?.size === size;
   };
 
   return (
@@ -107,11 +121,21 @@ export const OrderSummaryModal = ({
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-6 px-2 text-red-500 hover:text-red-700 hover:bg-red-50"
-                                onClick={() => onRemoveItem(item.productId, size.size)}
+                                className="h-6 px-2 text-red-500 hover:text-red-700 hover:bg-red-50 min-w-[90px]"
+                                onClick={() => handleRemoveItem(item.productId, size.size)}
+                                disabled={isRemoving(item.productId, size.size)}
                               >
-                                <X className="w-4 h-4 mr-1" />
-                                Remover
+                                {isRemoving(item.productId, size.size) ? (
+                                  <>
+                                    <Loader className="w-4 h-4 mr-1 animate-spin" />
+                                    Removendo...
+                                  </>
+                                ) : (
+                                  <>
+                                    <X className="w-4 h-4 mr-1" />
+                                    Remover
+                                  </>
+                                )}
                               </Button>
                             )}
                           </div>
