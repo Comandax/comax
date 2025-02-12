@@ -8,9 +8,7 @@ import type { OrderItem } from "@/types/order";
 interface FloatingTotalProps {
   total: number;
   items: OrderItem[];
-  notes: string;
-  onNotesChange: (notes: string) => void;
-  onSubmitOrder: () => void;
+  onSubmitOrder: (notes: string) => Promise<void> | void;
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   onRemoveItem?: (productId: string, size: string) => void;
@@ -19,14 +17,13 @@ interface FloatingTotalProps {
 export const FloatingTotal = ({ 
   total,
   items,
-  notes,
-  onNotesChange,
   onSubmitOrder,
   isOpen,
   onOpenChange,
   onRemoveItem
 }: FloatingTotalProps) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [notes, setNotes] = useState("");
 
   const handleOpenModal = () => {
     setIsLoading(true);
@@ -79,12 +76,9 @@ export const FloatingTotal = ({
         items={items}
         total={total}
         notes={notes}
-        onNotesChange={onNotesChange}
+        onNotesChange={setNotes}
         onSubmit={async () => {
-          return new Promise<void>((resolve) => {
-            onSubmitOrder();
-            resolve();
-          });
+          await onSubmitOrder(notes);
         }}
         onRemoveItem={onRemoveItem}
       />
