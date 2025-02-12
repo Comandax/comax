@@ -51,10 +51,7 @@ export function ProductTableActions({
           <Button
             variant="ghost"
             size="icon"
-            onClick={(e) => {
-              e.stopPropagation();
-              onEdit(product);
-            }}
+            onClick={(e) => e.stopPropagation()}
           >
             <Edit className="h-4 w-4" />
           </Button>
