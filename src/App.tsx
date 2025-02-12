@@ -67,7 +67,7 @@ const App = () => (
             <Route 
               path="/users" 
               element={
-                <ProtectedRoute>
+                <ProtectedRoute superUserOnly>
                   <Users />
                 </ProtectedRoute>
               } 
@@ -75,7 +75,7 @@ const App = () => (
             <Route 
               path="/users/create" 
               element={
-                <ProtectedRoute>
+                <ProtectedRoute superUserOnly>
                   <UserCreate />
                 </ProtectedRoute>
               } 
