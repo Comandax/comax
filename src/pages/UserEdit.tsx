@@ -4,6 +4,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProfile, updateProfile } from "@/services/profileService";
 import { UserForm } from "@/components/users/UserForm";
 import { ProfileFormData } from "@/types/profile";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 export default function UserEdit() {
   const { id } = useParams<{ id: string }>();
@@ -47,7 +49,17 @@ export default function UserEdit() {
   return (
     <div className="container mx-auto py-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Editar Usuário</h1>
+        <div className="flex items-center mb-6">
+          <Button 
+            variant="ghost" 
+            onClick={() => navigate('/admin')} 
+            className="mr-4"
+          >
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Voltar ao Painel
+          </Button>
+          <h1 className="text-2xl font-bold">Editar Usuário</h1>
+        </div>
         <UserForm
           initialData={initialData}
           onSubmit={handleSubmit}
