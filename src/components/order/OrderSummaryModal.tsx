@@ -17,7 +17,7 @@ import {
 import { OrderNotes } from "@/components/OrderNotes";
 import { FileText, Loader, X } from "lucide-react";
 import type { OrderItem } from "@/types/order";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 interface OrderSummaryModalProps {
   isOpen: boolean;
@@ -42,6 +42,7 @@ export const OrderSummaryModal = ({
 }: OrderSummaryModalProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [removingItem, setRemovingItem] = useState<{ productId: string; size: string } | null>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const formattedTotal = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL'
@@ -78,9 +79,30 @@ export const OrderSummaryModal = ({
     return removingItem?.productId === productId && removingItem?.size === size;
   };
 
+  useEffect(() => {
+    const handleFocus = (e: FocusEvent) => {
+      if (contentRef.current && e.target instanceof HTMLTextAreaElement) {
+        // Aguarda o teclado aparecer
+        setTimeout(() => {
+          e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+      }
+    };
+
+    const content = contentRef.current;
+    if (content) {
+      content.addEventListener('focusin', handleFocus);
+      return () => content.removeEventListener('focusin', handleFocus);
+    }
+  }, []);
+
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-3xl w-[95%] md:w-full max-h-[90vh] overflow-y-auto p-2 md:p-6" onOpenAutoFocus={(e) => e.preventDefault()}>
+      <DialogContent 
+        ref={contentRef}
+        className="max-w-3xl w-[95%] md:w-full max-h-[90vh] overflow-y-auto p-2 md:p-6" 
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <FileText className="w-5 h-5" />
