@@ -45,6 +45,20 @@ const Admin = () => {
     enabled: !!user,
   });
 
+  const { data: userRoles } = useQuery({
+    queryKey: ['user_roles', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user?.id);
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+
   const { data: userProfile } = useQuery({
     queryKey: ['profile', user?.id],
     queryFn: async () => {
@@ -84,8 +98,7 @@ const Admin = () => {
     `${userProfile.first_name} ${userProfile.last_name}` : 
     'Usuário';
 
-  const isSuperuser = user?.roles?.includes('superuser');
-  const showCompanyButton = isSuperuser || userCompany !== null;
+  const isSuperuser = userRoles?.some(role => role.role === 'superuser');
 
   return (
     <div className="container mx-auto py-10">
@@ -110,15 +123,11 @@ const Admin = () => {
                 <User className="mr-2 h-4 w-4" />
                 Meu Perfil
               </DropdownMenuItem>
-              {showCompanyButton && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate('/companies')}>
-                    <Building2 className="mr-2 h-4 w-4" />
-                    {isSuperuser ? "Gerenciar Empresas" : userCompany ? "Minha Empresa" : "Criar Empresa"}
-                  </DropdownMenuItem>
-                </>
-              )}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => navigate('/companies')}>
+                <Building2 className="mr-2 h-4 w-4" />
+                {isSuperuser ? "Gerenciar Empresas" : userCompany ? "Minha Empresa" : "Criar Empresa"}
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                 <LogOut className="mr-2 h-4 w-4" />
