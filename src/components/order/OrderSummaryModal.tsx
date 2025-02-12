@@ -155,10 +155,10 @@ export const OrderSummaryModal = ({
                   );
                 })}
                 <TableRow>
-                  <TableCell colSpan={3} className="text-right font-bold">
-                    Total do Pedido
+                  <TableCell colSpan={3} className="text-right font-bold whitespace-normal px-2">
+                    <span className="inline-block">Total do Pedido</span>
                   </TableCell>
-                  <TableCell className="text-right font-bold whitespace-nowrap">
+                  <TableCell className="text-right font-bold whitespace-nowrap px-2">
                     {formattedTotal}
                   </TableCell>
                 </TableRow>
