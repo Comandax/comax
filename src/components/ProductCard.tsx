@@ -4,6 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
+import { Package } from "lucide-react";
 
 interface ProductCardProps {
   product: {
@@ -40,11 +41,17 @@ export const ProductCard = ({ product, onQuantitySelect }: ProductCardProps) => 
     <Card className="p-6 bg-white/90 shadow-md">
       <div className="flex flex-col md:flex-row gap-6">
         <div className="md:w-1/2">
-          <img 
-            src={product.image} 
-            alt={product.name}
-            className="w-full rounded-lg object-cover"
-          />
+          {product.image ? (
+            <img 
+              src={product.image} 
+              alt={product.name}
+              className="w-full rounded-lg object-cover"
+            />
+          ) : (
+            <div className="w-full aspect-square bg-gray-100 rounded-lg border flex items-center justify-center text-gray-400">
+              <Package className="w-16 h-16" />
+            </div>
+          )}
           <div className="mt-2 text-center">
             <h3 className="text-lg font-semibold">Ref: {product.ref}</h3>
             <p className="text-gray-600">{product.name}</p>

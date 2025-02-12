@@ -1,4 +1,6 @@
 
+import { Package } from "lucide-react";
+
 interface ProductImageProps {
   image?: string;
   name: string;
@@ -17,7 +19,7 @@ export function ProductImage({ image, name }: ProductImageProps) {
 
   return (
     <div className="w-48 h-48 bg-gray-100 rounded-lg border flex items-center justify-center text-gray-400">
-      No Image
+      <Package className="w-16 h-16" />
     </div>
   );
 }
