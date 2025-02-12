@@ -12,6 +12,7 @@ interface FloatingTotalProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
   onRemoveItem?: (productId: string, size: string) => void;
+  isCalculating?: boolean;
 }
 
 export const FloatingTotal = ({ 
@@ -20,16 +21,17 @@ export const FloatingTotal = ({
   onSubmitOrder,
   isOpen,
   onOpenChange,
-  onRemoveItem
+  onRemoveItem,
+  isCalculating = false
 }: FloatingTotalProps) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isModalLoading, setIsModalLoading] = useState(false);
   const [notes, setNotes] = useState("");
 
   const handleOpenModal = () => {
-    setIsLoading(true);
+    setIsModalLoading(true);
     setTimeout(() => {
       onOpenChange(true);
-      setIsLoading(false);
+      setIsModalLoading(false);
     }, 500);
   };
 
@@ -45,7 +47,7 @@ export const FloatingTotal = ({
       <div className="fixed top-4 right-4 bg-[#8B5CF6] shadow-lg rounded-lg p-4 animate-float-in text-white">
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
-            {isLoading ? (
+            {isCalculating ? (
               <Loader className="w-6 h-6 animate-spin" />
             ) : (
               <ShoppingBag className="w-6 h-6" />
@@ -53,7 +55,14 @@ export const FloatingTotal = ({
             <div>
               <div className="text-lg font-semibold">Total do Pedido</div>
               <div className="text-2xl font-bold">
-                {formattedTotal}
+                {isCalculating ? (
+                  <div className="flex items-center gap-2">
+                    <Loader className="w-4 h-4 animate-spin" />
+                    Calculando...
+                  </div>
+                ) : (
+                  formattedTotal
+                )}
               </div>
             </div>
           </div>
@@ -62,14 +71,14 @@ export const FloatingTotal = ({
             variant="secondary" 
             className="w-full flex items-center gap-2 bg-white hover:bg-white/90 text-[#8B5CF6] font-medium"
             onClick={handleOpenModal}
-            disabled={isLoading}
+            disabled={isModalLoading || isCalculating}
           >
-            {isLoading ? (
+            {isModalLoading ? (
               <Loader className="w-4 h-4 animate-spin" />
             ) : (
               <ListCheck className="w-4 h-4" />
             )}
-            {isLoading ? "Carregando..." : "Ver produtos selecionados"}
+            {isModalLoading ? "Carregando..." : "Ver produtos selecionados"}
           </Button>
         </div>
       </div>

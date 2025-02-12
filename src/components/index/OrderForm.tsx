@@ -18,7 +18,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
   const [contactData, setContactData] = useState<ContactFormData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isCalculating, setIsCalculating] = useState(false);
   const [resetItem, setResetItem] = useState<ResetItem | null>(null);
 
   const { total, orderItems } = useOrderCalculations(selectedItems, products);
@@ -29,6 +29,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
   };
 
   const handleQuantitySelect = (productId: string, size: string, quantity: number, price: number) => {
+    setIsCalculating(true);
     setSelectedItems(prev => {
       const filtered = prev.filter(item => !(item.productId === productId && item.size === size));
       
@@ -38,6 +39,11 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
       
       return filtered;
     });
+    
+    // Simular um pequeno delay antes de finalizar o cálculo
+    setTimeout(() => {
+      setIsCalculating(false);
+    }, 500);
   };
 
   const handleSubmitOrder = async (notes: string) => {
@@ -69,7 +75,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
         <div className="mt-8 flex justify-end">
           <OrderSummaryButton 
             onClick={() => setIsModalOpen(true)}
-            isLoading={isLoading}
+            isLoading={isCalculating}
           />
         </div>
       )}
@@ -81,6 +87,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
         isOpen={isModalOpen}
         onOpenChange={setIsModalOpen}
         onRemoveItem={handleRemoveItem}
+        isCalculating={isCalculating}
       />
     </>
   );
