@@ -13,6 +13,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
 const Admin = () => {
@@ -91,15 +92,6 @@ const Admin = () => {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Painel Administrativo</h1>
         <div className="flex items-center gap-4">
-          {showCompanyButton && (
-            <Button variant="outline" asChild>
-              <Link to="/companies" className="flex items-center gap-2">
-                <Building2 className="w-4 h-4" />
-                {isSuperuser ? "Gerenciar Empresas" : userCompany ? "Minha Empresa" : "Criar Empresa"}
-              </Link>
-            </Button>
-          )}
-
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-10 w-10 rounded-full">
@@ -118,6 +110,16 @@ const Admin = () => {
                 <User className="mr-2 h-4 w-4" />
                 Meu Perfil
               </DropdownMenuItem>
+              {showCompanyButton && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/companies')}>
+                    <Building2 className="mr-2 h-4 w-4" />
+                    {isSuperuser ? "Gerenciar Empresas" : userCompany ? "Minha Empresa" : "Criar Empresa"}
+                  </DropdownMenuItem>
+                </>
+              )}
+              <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleLogout} className="text-red-600">
                 <LogOut className="mr-2 h-4 w-4" />
                 Sair
