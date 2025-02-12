@@ -57,9 +57,6 @@ export function CompanyList({
               <th className="text-left p-2 cursor-pointer" onClick={() => onToggleSort('name')}>
                 Nome <SortIcon field="name" />
               </th>
-              <th className="text-left p-2 cursor-pointer" onClick={() => onToggleSort('responsible')}>
-                Responsável <SortIcon field="responsible" />
-              </th>
               <th className="text-left p-2 cursor-pointer" onClick={() => onToggleSort('created_at')}>
                 Data de Criação <SortIcon field="created_at" />
               </th>
@@ -75,7 +72,6 @@ export function CompanyList({
                   onClick={() => setExpandedCompanyId(expandedCompanyId === company.id ? null : company.id)}
                 >
                   <td className="p-2">{company.name}</td>
-                  <td className="p-2">{company.responsible}</td>
                   <td className="p-2">{format(new Date(company.created_at), 'dd/MM/yyyy HH:mm')}</td>
                   <td className="p-2 text-right">
                     <div className="flex items-center justify-end space-x-2" onClick={(e) => e.stopPropagation()}>

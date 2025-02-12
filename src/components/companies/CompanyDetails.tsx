@@ -28,10 +28,10 @@ export function CompanyDetails({ company, onUpdateSuccess }: CompanyDetailsProps
       return;
     }
 
-    if (!editData.name || !editData.responsible || !editData.email || !editData.phone) {
+    if (!editData.name) {
       toast({
         title: "Erro",
-        description: "Por favor, preencha todos os campos obrigatórios.",
+        description: "Por favor, preencha o nome da empresa.",
         variant: "destructive",
       });
       return;
@@ -54,9 +54,6 @@ export function CompanyDetails({ company, onUpdateSuccess }: CompanyDetailsProps
       .from('companies')
       .update({
         name: editData.name,
-        responsible: editData.responsible,
-        email: editData.email,
-        phone: editData.phone,
         logo_url: logoUrl,
         active: editData.active,
       })
