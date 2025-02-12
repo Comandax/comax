@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/table";
 import type { Product, ProductFormData } from "@/types/product";
 import { ProductTableActions } from "./ProductTableActions";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown } from "lucide-react";
 
 interface ProductTableProps {
   products: Product[];
@@ -41,7 +41,9 @@ export function ProductTable({
   };
 
   const SortIcon = ({ field }: { field: 'reference' | 'name' }) => {
-    if (field !== sortField) return null;
+    if (field !== sortField) {
+      return <ArrowUpDown className="inline w-4 h-4 ml-1 text-muted-foreground" />;
+    }
     return sortOrder === 'asc' ? <ArrowUp className="inline w-4 h-4 ml-1" /> : <ArrowDown className="inline w-4 h-4 ml-1" />;
   };
 
