@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -173,21 +174,23 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
       <ContactForm onSubmit={handleContactSubmit} />
       <ProductList products={products} onQuantitySelect={handleQuantitySelect} />
       
-      <div className="mt-8 flex justify-end">
-        <Button 
-          variant="secondary" 
-          className="flex items-center gap-2 bg-white hover:bg-white/90 text-[#8B5CF6] font-medium"
-          onClick={handleOpenModal}
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <Loader className="w-4 h-4 animate-spin" />
-          ) : (
-            <ListCheck className="w-4 h-4" />
-          )}
-          {isLoading ? "Carregando..." : "Para finalizar, confira o resumo do pedido"}
-        </Button>
-      </div>
+      {selectedItems.length > 0 && (
+        <div className="mt-8 flex justify-end">
+          <Button 
+            variant="secondary" 
+            className="flex items-center gap-2 bg-white hover:bg-white/90 text-[#8B5CF6] font-medium"
+            onClick={handleOpenModal}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Loader className="w-4 h-4 animate-spin" />
+            ) : (
+              <ListCheck className="w-4 h-4" />
+            )}
+            {isLoading ? "Carregando..." : "Para finalizar, confira o resumo do pedido"}
+          </Button>
+        </div>
+      )}
 
       <FloatingTotal 
         total={calculateTotal()} 
