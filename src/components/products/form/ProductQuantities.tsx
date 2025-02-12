@@ -8,7 +8,7 @@ import { ProductFormData } from "@/types/product";
 
 interface ProductQuantitiesProps {
   form: UseFormReturn<ProductFormData>;
-  quantityArray: UseFieldArrayReturn<ProductFormData, "quantities">;
+  quantityArray: UseFieldArrayReturn<ProductFormData, "quantities", "id">;
 }
 
 export function ProductQuantities({ form, quantityArray }: ProductQuantitiesProps) {

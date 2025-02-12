@@ -1,4 +1,3 @@
-
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -36,9 +35,9 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
     name: "sizes",
   });
 
-  const quantityArray = useFieldArray({
+  const quantityArray = useFieldArray<ProductFormData>({
     control: form.control,
-    name: "quantities",
+    name: "quantities" as const,
   });
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
