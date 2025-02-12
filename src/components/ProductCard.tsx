@@ -89,7 +89,7 @@ export const ProductCard = ({ product, onQuantitySelect, resetItem }: ProductCar
                     onValueChange={(value) => {
                       handleQuantityChange(size.label, Number(value), size.price);
                     }}
-                    className="grid grid-cols-6 gap-2"
+                    className="grid grid-cols-6 gap-3"
                   >
                     {size.quantities.map((qty) => (
                       <div key={qty} className="flex flex-col items-center gap-1">
