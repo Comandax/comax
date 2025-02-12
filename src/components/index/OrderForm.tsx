@@ -161,12 +161,8 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
     }
   };
 
-  const handleOpenModal = () => {
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsModalOpen(true);
-      setIsLoading(false);
-    }, 500);
+  const handleRemoveItem = (productId: string, size: string) => {
+    handleQuantitySelect(productId, size, 0, 0);
   };
 
   return (
@@ -179,7 +175,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
           <Button 
             variant="secondary" 
             className="flex items-center gap-2 bg-white hover:bg-white/90 text-[#8B5CF6] font-medium"
-            onClick={handleOpenModal}
+            onClick={() => setIsModalOpen(true)}
             disabled={isLoading}
           >
             {isLoading ? (
@@ -200,6 +196,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
         onSubmitOrder={handleSubmitOrder}
         isOpen={isModalOpen}
         onOpenChange={setIsModalOpen}
+        onRemoveItem={handleRemoveItem}
       />
     </>
   );
