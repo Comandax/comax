@@ -110,6 +110,8 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
           <Input
             id="whatsapp"
             name="whatsapp"
+            type="tel"
+            inputMode="numeric"
             value={formData.whatsapp}
             onChange={(e) => handleInputChange("whatsapp", e.target.value)}
             required
@@ -163,6 +165,8 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
           <Input
             id="zipCode"
             name="zipCode"
+            type="tel"
+            inputMode="numeric"
             value={formData.zipCode}
             onChange={(e) => handleInputChange("zipCode", e.target.value)}
             required
