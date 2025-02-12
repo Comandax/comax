@@ -10,6 +10,7 @@ import { FloatingTotal } from "@/components/FloatingTotal";
 import { Button } from "@/components/ui/button";
 import type { Product } from "@/types/product";
 import type { OrderItem } from "@/types/order";
+import type { Json } from "@/integrations/supabase/types";
 
 interface SelectedItem {
   productId: string;
