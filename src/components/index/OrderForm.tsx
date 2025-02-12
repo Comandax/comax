@@ -80,6 +80,16 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
     }
 
     try {
+      const { data: companyData } = await supabase
+        .from('companies')
+        .select('short_name')
+        .eq('id', companyId)
+        .single();
+
+      if (!companyData?.short_name) {
+        throw new Error('Empresa não encontrada');
+      }
+
       const orderData = {
         company_id: companyId,
         customer_name: contactData.name,
@@ -105,7 +115,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
         throw insertError;
       }
 
-      navigate(`/${companyId}/success`);
+      navigate(`/company/${companyData.short_name}/success`);
     } catch (error) {
       console.error('Error submitting order:', error);
       toast({
@@ -136,4 +146,3 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
     </>
   );
 };
-
