@@ -1,5 +1,5 @@
 
-import { LayoutDashboard, Package, Building2, LogOut } from "lucide-react";
+import { LayoutDashboard, Package, Building2, LogOut, User } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
@@ -7,6 +7,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Admin = () => {
   const { user, logout } = useAuth();
@@ -37,6 +44,21 @@ const Admin = () => {
     enabled: !!user,
   });
 
+  const { data: userProfile } = useQuery({
+    queryKey: ['profile', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user?.id)
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -54,6 +76,13 @@ const Admin = () => {
     }
   };
 
+  const userInitials = userProfile ? 
+    `${userProfile.first_name[0]}${userProfile.last_name[0]}`.toUpperCase() : 
+    'U';
+  const userName = userProfile ? 
+    `${userProfile.first_name} ${userProfile.last_name}` : 
+    'Usuário';
+
   const isSuperuser = user?.roles?.includes('superuser');
   const showCompanyButton = isSuperuser || userCompany !== null;
 
@@ -62,16 +91,39 @@ const Admin = () => {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Painel Administrativo</h1>
         <div className="flex items-center gap-4">
-          <Button variant="outline" asChild>
-            <Link to="/companies" className="flex items-center gap-2">
-              <Building2 className="w-4 h-4" />
-              {isSuperuser ? "Gerenciar Empresas" : userCompany ? "Minha Empresa" : "Criar Empresa"}
-            </Link>
-          </Button>
-          <Button variant="destructive" onClick={handleLogout} className="flex items-center gap-2">
-            <LogOut className="w-4 h-4" />
-            Sair
-          </Button>
+          {showCompanyButton && (
+            <Button variant="outline" asChild>
+              <Link to="/companies" className="flex items-center gap-2">
+                <Building2 className="w-4 h-4" />
+                {isSuperuser ? "Gerenciar Empresas" : userCompany ? "Minha Empresa" : "Criar Empresa"}
+              </Link>
+            </Button>
+          )}
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                <Avatar className="h-10 w-10">
+                  <AvatarFallback className="bg-primary text-primary-foreground">
+                    {userInitials}
+                  </AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="end">
+              <DropdownMenuItem disabled className="font-semibold">
+                {userName}
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => navigate(`/users/${user.id}`)}>
+                <User className="mr-2 h-4 w-4" />
+                Meu Perfil
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                <LogOut className="mr-2 h-4 w-4" />
+                Sair
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       
