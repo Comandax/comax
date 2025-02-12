@@ -42,9 +42,9 @@ const Admin = () => {
       await logout();
       toast({
         title: "Logout realizado com sucesso",
-        description: "Você será redirecionado para a página inicial.",
+        description: "Você será redirecionado para a página de login.",
       });
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       toast({
         variant: "destructive",
@@ -103,4 +103,3 @@ const Admin = () => {
 };
 
 export default Admin;
-
