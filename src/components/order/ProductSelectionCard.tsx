@@ -24,6 +24,7 @@ interface ProductSelectionCardProps {
 
 export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: ProductSelectionCardProps) => {
   const [selectedQuantities, setSelectedQuantities] = useState<Record<string, number>>({});
+  const [loading, setLoading] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (resetItem && resetItem.productId === product.id) {
@@ -34,18 +35,29 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
     }
   }, [resetItem, product.id]);
 
-  const handleQuantityChange = (size: string, quantity: number, price: number) => {
-    // Atualizar estado local imediatamente para resposta instantânea do UI
+  const handleQuantityChange = async (size: string, quantity: number, price: number) => {
+    // Atualizar estado local imediatamente
     setSelectedQuantities(prev => ({
       ...prev,
       [size]: quantity
     }));
     
-    // Notificar o componente pai sobre a mudança após um pequeno delay
-    // para permitir que a UI atualize primeiro
+    // Marcar este tamanho como carregando
+    setLoading(prev => ({
+      ...prev,
+      [size]: true
+    }));
+
+    // Notificar o componente pai sobre a mudança
+    onQuantitySelect(size, quantity, price);
+
+    // Remover estado de carregamento após um breve delay
     setTimeout(() => {
-      onQuantitySelect(size, quantity, price);
-    }, 0);
+      setLoading(prev => ({
+        ...prev,
+        [size]: false
+      }));
+    }, 300);
   };
 
   const calculateSubtotal = (size: string, price: number) => {
@@ -109,7 +121,8 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
                         <RadioGroupItem 
                           value={qty.toString()} 
                           id={`${product.id}-${size.label}-${qty}`}
-                          className="md:scale-75 scale-125"
+                          className={`md:scale-75 scale-125 transition-opacity ${loading[size.label] ? 'opacity-50' : ''}`}
+                          disabled={loading[size.label]}
                         />
                         <Label 
                           htmlFor={`${product.id}-${size.label}-${qty}`} 
