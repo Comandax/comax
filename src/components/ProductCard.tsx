@@ -47,6 +47,13 @@ export const ProductCard = ({ product, onQuantitySelect, resetItem }: ProductCar
     return quantity * price;
   };
 
+  const formatCurrency = (value: number) => {
+    return value.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    });
+  };
+
   return (
     <Card className="p-6 bg-white/90 shadow-md">
       <div className="flex flex-col md:flex-row gap-6">
@@ -81,7 +88,7 @@ export const ProductCard = ({ product, onQuantitySelect, resetItem }: ProductCar
                 <div className="grid grid-cols-[80px_1fr_60px] gap-4 items-center p-2">
                   <div>
                     <span className="font-medium text-sm">{size.label}</span>
-                    <div className="text-xs text-gray-500">R$ {size.price.toFixed(2)}</div>
+                    <div className="text-xs text-gray-500">{formatCurrency(size.price)}</div>
                   </div>
                   
                   <RadioGroup
@@ -104,7 +111,7 @@ export const ProductCard = ({ product, onQuantitySelect, resetItem }: ProductCar
                   </RadioGroup>
                   
                   <div className="text-right text-xs font-medium text-gray-600">
-                    R$ {calculateSubtotal(size.label, size.price).toFixed(2)}
+                    {formatCurrency(calculateSubtotal(size.label, size.price))}
                   </div>
                 </div>
               </div>
