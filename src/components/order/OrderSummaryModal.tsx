@@ -88,79 +88,81 @@ export const OrderSummaryModal = ({
           </DialogTitle>
         </DialogHeader>
 
-        <div className="space-y-6">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Referência</TableHead>
-                <TableHead>Produto</TableHead>
-                <TableHead>Tamanhos</TableHead>
-                <TableHead className="text-right">Subtotal</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {items.map((item) => {
-                const itemTotal = item.sizes.reduce((acc, size) => acc + size.subtotal, 0);
-                const formattedSubtotal = new Intl.NumberFormat('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL'
-                }).format(itemTotal);
+        <div className="space-y-6 w-full overflow-x-auto">
+          <div className="min-w-full">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Referência</TableHead>
+                  <TableHead>Produto</TableHead>
+                  <TableHead>Tamanhos</TableHead>
+                  <TableHead className="text-right">Subtotal</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {items.map((item) => {
+                  const itemTotal = item.sizes.reduce((acc, size) => acc + size.subtotal, 0);
+                  const formattedSubtotal = new Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                  }).format(itemTotal);
 
-                return (
-                  <TableRow key={item.productId}>
-                    <TableCell>{item.reference}</TableCell>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>
-                      <div className="space-y-1">
-                        {item.sizes.map((size, idx) => (
-                          <div key={idx} className="text-sm flex items-center justify-between">
-                            <span>
-                              {size.size}: {size.quantity} un x {new Intl.NumberFormat('pt-BR', {
-                                style: 'currency',
-                                currency: 'BRL'
-                              }).format(size.price)}
-                            </span>
-                            {onRemoveItem && (
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-6 px-2 text-red-500 hover:text-red-700 hover:bg-red-50 min-w-[90px]"
-                                onClick={() => handleRemoveItem(item.productId, size.size)}
-                                disabled={isRemoving(item.productId, size.size)}
-                              >
-                                {isRemoving(item.productId, size.size) ? (
-                                  <>
-                                    <Loader className="w-4 h-4 mr-1 animate-spin" />
-                                    Removendo...
-                                  </>
-                                ) : (
-                                  <>
-                                    <X className="w-4 h-4 mr-1" />
-                                    Remover
-                                  </>
-                                )}
-                              </Button>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-right font-medium">
-                      {formattedSubtotal}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-              <TableRow>
-                <TableCell colSpan={3} className="text-right font-bold">
-                  Total do Pedido
-                </TableCell>
-                <TableCell className="text-right font-bold">
-                  {formattedTotal}
-                </TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
+                  return (
+                    <TableRow key={item.productId}>
+                      <TableCell className="whitespace-nowrap">{item.reference}</TableCell>
+                      <TableCell className="whitespace-nowrap">{item.name}</TableCell>
+                      <TableCell>
+                        <div className="space-y-1">
+                          {item.sizes.map((size, idx) => (
+                            <div key={idx} className="text-sm flex flex-wrap items-center justify-between gap-2">
+                              <span className="whitespace-nowrap">
+                                {size.size}: {size.quantity} un x {new Intl.NumberFormat('pt-BR', {
+                                  style: 'currency',
+                                  currency: 'BRL'
+                                }).format(size.price)}
+                              </span>
+                              {onRemoveItem && (
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-6 px-2 text-red-500 hover:text-red-700 hover:bg-red-50 min-w-[90px]"
+                                  onClick={() => handleRemoveItem(item.productId, size.size)}
+                                  disabled={isRemoving(item.productId, size.size)}
+                                >
+                                  {isRemoving(item.productId, size.size) ? (
+                                    <>
+                                      <Loader className="w-4 h-4 mr-1 animate-spin" />
+                                      Removendo...
+                                    </>
+                                  ) : (
+                                    <>
+                                      <X className="w-4 h-4 mr-1" />
+                                      Remover
+                                    </>
+                                  )}
+                                </Button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-right whitespace-nowrap">
+                        {formattedSubtotal}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+                <TableRow>
+                  <TableCell colSpan={3} className="text-right font-bold">
+                    Total do Pedido
+                  </TableCell>
+                  <TableCell className="text-right font-bold whitespace-nowrap">
+                    {formattedTotal}
+                  </TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </div>
 
           <OrderNotes value={notes} onChange={onNotesChange} />
 
