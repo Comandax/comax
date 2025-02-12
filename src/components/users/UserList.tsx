@@ -14,12 +14,37 @@ import { ptBR } from "date-fns/locale";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 import { Plus, Pencil, Trash2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 export function UserList() {
   const navigate = useNavigate();
   const { data: profiles, isLoading } = useQuery({
     queryKey: ['profiles'],
-    queryFn: getProfiles,
+    queryFn: async () => {
+      // Primeiro, busca os perfis
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('*');
+
+      if (profilesError) throw profilesError;
+
+      // Depois, busca as empresas para cada perfil
+      const { data: companies, error: companiesError } = await supabase
+        .from('companies')
+        .select('name, owner_id');
+
+      if (companiesError) throw companiesError;
+
+      // Mapeia os perfis com as informações das empresas
+      return profiles.map(profile => {
+        const company = companies.find(company => company.owner_id === profile.id);
+        return {
+          ...profile,
+          companyName: company?.name || "Empresa não cadastrada",
+          fullName: `${profile.first_name} ${profile.last_name}`,
+        };
+      });
+    },
   });
 
   if (isLoading) return <div>Carregando...</div>;
@@ -37,26 +62,22 @@ export function UserList() {
         <TableHeader>
           <TableRow>
             <TableHead>Nome</TableHead>
-            <TableHead>Sobrenome</TableHead>
+            <TableHead>Empresa</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Celular</TableHead>
             <TableHead>Criado em</TableHead>
-            <TableHead>Atualizado em</TableHead>
             <TableHead className="text-right">Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {profiles?.map((profile) => (
             <TableRow key={profile.id}>
-              <TableCell>{profile.first_name}</TableCell>
-              <TableCell>{profile.last_name}</TableCell>
+              <TableCell>{profile.fullName}</TableCell>
+              <TableCell>{profile.companyName}</TableCell>
               <TableCell>{profile.email}</TableCell>
               <TableCell>{profile.phone}</TableCell>
               <TableCell>
                 {format(new Date(profile.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
-              </TableCell>
-              <TableCell>
-                {format(new Date(profile.updated_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
               </TableCell>
               <TableCell className="text-right space-x-2">
                 <Button
