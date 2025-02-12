@@ -40,20 +40,6 @@ import { useCompany } from "@/hooks/useCompany";
 import { supabase } from "@/integrations/supabase/client";
 
 const OrderDetails = ({ order }: { order: Order }) => {
-  // Agrupar itens por código do produto
-  const groupedItems = order.items.reduce((groups, item) => {
-    const key = item.code;
-    if (!groups[key]) {
-      groups[key] = {
-        code: item.code,
-        name: item.name,
-        items: []
-      };
-    }
-    groups[key].items.push(item);
-    return groups;
-  }, {} as Record<string, { code: string; name: string; items: typeof order.items }>);
-
   return (
     <ScrollArea className="h-[80vh]">
       <div className="space-y-6">
@@ -76,26 +62,26 @@ const OrderDetails = ({ order }: { order: Order }) => {
         <div>
           <h3 className="font-semibold mb-4">Itens do pedido</h3>
           <div className="space-y-4">
-            {Object.entries(groupedItems).map(([code, group]) => (
-              <div key={`group-${code}`} className="border rounded-lg overflow-hidden">
+            {order.items.map((item) => (
+              <div key={item._id} className="border rounded-lg overflow-hidden">
                 <div className="bg-gray-100 p-3 font-semibold">
-                  {code} - {group.name}
+                  {item.reference} - {item.name}
                 </div>
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Código - Tamanho</TableHead>
+                      <TableHead>Tamanho</TableHead>
                       <TableHead>Quantidade</TableHead>
                       <TableHead className="text-right">Subtotal</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {group.items.map((item, index) => (
-                      <TableRow key={`${item._id}-${item.size}-${index}`}>
-                        <TableCell>{`${item.code} - ${item.size}`}</TableCell>
-                        <TableCell>{item.quantity}</TableCell>
+                    {item.sizes.map((size, index) => (
+                      <TableRow key={`${item._id}-${size.size}-${index}`}>
+                        <TableCell>{size.size}</TableCell>
+                        <TableCell>{size.quantity}</TableCell>
                         <TableCell className="text-right">
-                          R$ {item.subtotal.toFixed(2)}
+                          R$ {size.subtotal.toFixed(2)}
                         </TableCell>
                       </TableRow>
                     ))}

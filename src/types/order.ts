@@ -1,11 +1,17 @@
 
-export interface OrderItem {
-  _id: string;
-  code: string;
-  name: string;
+export interface OrderItemSize {
   size: string;
+  price: number;
   quantity: number;
   subtotal: number;
+}
+
+export interface OrderItem {
+  _id: string;
+  productId: string;
+  reference: string;
+  name: string;
+  sizes: OrderItemSize[];
 }
 
 export interface Order {

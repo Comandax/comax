@@ -90,19 +90,42 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
         throw new Error('Empresa não encontrada');
       }
 
+      // Reorganizar os itens na estrutura desejada
+      const groupedItems = selectedItems.reduce((acc, item) => {
+        const product = products.find(p => p._id === item.productId);
+        if (!product) return acc;
+
+        const existingItem = acc.find(i => i.productId === item.productId);
+        if (existingItem) {
+          existingItem.sizes.push({
+            size: item.size,
+            price: item.price,
+            quantity: item.quantity,
+            subtotal: item.quantity * item.price
+          });
+        } else {
+          acc.push({
+            productId: item.productId,
+            reference: product.reference,
+            name: product.name,
+            sizes: [{
+              size: item.size,
+              price: item.price,
+              quantity: item.quantity,
+              subtotal: item.quantity * item.price
+            }]
+          });
+        }
+        return acc;
+      }, [] as any[]);
+
       const orderData = {
         company_id: companyId,
         customer_name: contactData.name,
         customer_phone: contactData.whatsapp,
         customer_city: contactData.city,
         customer_zip_code: contactData.zipCode,
-        items: selectedItems.map(item => ({
-          productId: item.productId,
-          size: item.size,
-          quantity: item.quantity,
-          price: item.price,
-          subtotal: item.quantity * item.price
-        })),
+        items: groupedItems,
         total: calculateTotal(),
         notes: notes
       };
