@@ -119,7 +119,7 @@ const Admin = () => {
               <DropdownMenuItem disabled className="font-semibold">
                 {userName}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => navigate(`/users/${user.id}`)}>
+              <DropdownMenuItem onClick={() => navigate(`/profile/${user.id}`)}>
                 <User className="mr-2 h-4 w-4" />
                 Meu Perfil
               </DropdownMenuItem>
