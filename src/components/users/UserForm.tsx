@@ -142,6 +142,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
               <FormControl>
                 <Input
                   type="tel"
+                  inputMode="numeric"
                   placeholder="(00) 0 0000-0000"
                   {...field}
                   onChange={(e) => {
