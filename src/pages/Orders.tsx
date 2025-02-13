@@ -132,7 +132,7 @@ const Orders = () => {
   const { toast } = useToast();
 
   const handleCopyLink = () => {
-    const link = `${window.location.origin}/company/${company?.short_name}`;
+    const link = `${window.location.origin}/${company?.short_name}`;
     navigator.clipboard.writeText(link);
     toast({
       title: "Link copiado!",
@@ -141,7 +141,7 @@ const Orders = () => {
   };
 
   const handleOpenLink = () => {
-    window.open(`/company/${company?.short_name}`, '_blank');
+    window.open(`/${company?.short_name}`, '_blank');
   };
 
   const { data: ordersData } = useQuery<OrdersQueryResult>({
@@ -238,73 +238,89 @@ const Orders = () => {
   // Se não houver pedidos
   if (ordersData?.orders.length === 0) {
     return (
-      <div className="min-h-screen bg-background">
-        <div className="container mx-auto py-10">
-          <div className="flex items-center justify-between mb-8">
-            <Button
-              variant="ghost"
-              className="text-primary hover:text-primary/80"
-              onClick={() => navigate('/admin')}
-            >
-              <ArrowLeft className="h-5 w-5 mr-2" />
-              Voltar para o painel
-            </Button>
-          </div>
-
-          <Card 
-            className="p-6 mb-8 bg-white/90 cursor-pointer hover:bg-white/95 transition-colors"
-            onClick={() => navigate("/admin")}
-          >
-            <div className="flex items-center gap-4">
-              {company?.logo_url && (
+      <div className="min-h-screen bg-[#1A1F2C]">
+        <div className="bg-gray-900/50 shadow-md">
+          <div className="container mx-auto">
+            <div className="max-w-6xl mx-auto px-4">
+              <div className="py-1.5">
                 <img 
-                  src={company?.logo_url} 
-                  alt={`Logo ${company?.name}`}
-                  className="w-16 h-16 object-contain rounded-lg"
+                  src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
+                  alt="COMAX Logo" 
+                  className="h-8 w-auto"
                 />
-              )}
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">{company?.name}</h2>
               </div>
             </div>
-          </Card>
+          </div>
+        </div>
 
-          <div className="max-w-2xl mx-auto">
-            <Card className="p-8 text-center space-y-4">
-              <ShoppingBag className="w-12 h-12 mx-auto text-primary" />
-              <h2 className="text-2xl font-semibold">Nenhum pedido realizado</h2>
-              <p className="text-muted-foreground">
-                Compartilhe o link da sua página para começar a receber pedidos.
-              </p>
-              <div className="mt-4 p-4 bg-muted rounded-lg">
-                <p className="text-sm text-muted-foreground mb-2">Página de pedidos:</p>
-                <code className="text-sm">
-                  {window.location.origin}/company/{company?.short_name}
-                </code>
-                <div className="flex justify-center gap-4 mt-4">
-                  <div className="flex flex-col items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={handleCopyLink}
-                    >
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                    <span className="text-xs text-muted-foreground">Copiar</span>
-                  </div>
-                  <div className="flex flex-col items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={handleOpenLink}
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </Button>
-                    <span className="text-xs text-muted-foreground">Abrir</span>
-                  </div>
+        <div className="container mx-auto py-10">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="flex items-center justify-between mb-8">
+              <Button
+                variant="ghost"
+                className="text-primary hover:text-primary/80"
+                onClick={() => navigate('/admin')}
+              >
+                <ArrowLeft className="h-5 w-5 mr-2" />
+                Voltar para o painel
+              </Button>
+            </div>
+
+            <Card 
+              className="p-6 mb-8 bg-white/95 cursor-pointer hover:bg-white transition-colors"
+              onClick={() => navigate("/admin")}
+            >
+              <div className="flex items-center gap-4">
+                {company?.logo_url && (
+                  <img 
+                    src={company?.logo_url} 
+                    alt={`Logo ${company?.name}`}
+                    className="w-16 h-16 object-contain rounded-lg"
+                  />
+                )}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">{company?.name}</h2>
                 </div>
               </div>
             </Card>
+
+            <div className="max-w-2xl mx-auto">
+              <Card className="p-8 text-center space-y-4 bg-white/95">
+                <ShoppingBag className="w-12 h-12 mx-auto text-primary" />
+                <h2 className="text-2xl font-semibold">Nenhum pedido realizado</h2>
+                <p className="text-muted-foreground">
+                  Compartilhe o link da sua página para começar a receber pedidos.
+                </p>
+                <div className="mt-4 p-4 bg-muted rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-2">Página de pedidos:</p>
+                  <code className="text-sm">
+                    {window.location.origin}/{company?.short_name}
+                  </code>
+                  <div className="flex justify-center gap-4 mt-4">
+                    <div className="flex flex-col items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={handleCopyLink}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                      <span className="text-xs text-muted-foreground">Copiar</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={handleOpenLink}
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </Button>
+                      <span className="text-xs text-muted-foreground">Abrir</span>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </div>
           </div>
         </div>
       </div>
@@ -326,7 +342,7 @@ const Orders = () => {
         </div>
 
         <Card 
-          className="p-6 mb-8 bg-white/90 cursor-pointer hover:bg-white/95 transition-colors"
+          className="p-6 mb-8 bg-white/95 cursor-pointer hover:bg-white transition-colors"
           onClick={() => navigate("/admin")}
         >
           <div className="flex items-center gap-4">
