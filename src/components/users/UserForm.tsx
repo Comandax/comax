@@ -20,9 +20,16 @@ const formSchema = z.object({
   last_name: z.string().min(2, "Sobrenome deve ter pelo menos 2 caracteres"),
   email: z.string().email("Email inválido"),
   phone: z.string().min(10, "Celular deve ter pelo menos 10 dígitos"),
-  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
+  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres").optional().or(z.literal('')),
   confirmPassword: z.string()
-}).refine((data) => data.password === data.confirmPassword, {
+}).refine((data) => {
+  // Se a senha estiver vazia, não precisa validar a confirmação
+  if (!data.password || data.password.trim() === '') {
+    return true;
+  }
+  // Se a senha foi fornecida, precisa coincidir com a confirmação
+  return data.password === data.confirmPassword;
+}, {
   message: "As senhas não coincidem",
   path: ["confirmPassword"],
 });
@@ -57,14 +64,16 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
       await onSubmit(cleanedData);
       toast({
         title: "Sucesso",
-        description: "Um email de confirmação foi enviado para o seu endereço de email.",
+        description: initialData 
+          ? "Usuário atualizado com sucesso."
+          : "Um email de confirmação foi enviado para o seu endereço de email.",
       });
     } catch (error: any) {
       console.error('Form submission error:', error);
       toast({
         variant: "destructive",
         title: "Erro",
-        description: error?.message || "Erro ao criar usuário",
+        description: error?.message || "Erro ao processar usuário",
       });
     }
   };
@@ -160,7 +169,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Senha</FormLabel>
+              <FormLabel>{initialData ? "Nova senha (opcional)" : "Senha"}</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
@@ -173,7 +182,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirmar Senha</FormLabel>
+              <FormLabel>{initialData ? "Confirmar nova senha" : "Confirmar senha"}</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>

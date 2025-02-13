@@ -24,6 +24,18 @@ export async function getProfile(id: string): Promise<Profile | null> {
 }
 
 export async function updateProfile(id: string, profile: ProfileFormData): Promise<Profile> {
+  // Se uma nova senha foi fornecida, atualiza a senha no auth
+  if (profile.password && profile.password.trim() !== '') {
+    const { error: passwordError } = await supabase.auth.updateUser({
+      password: profile.password
+    });
+
+    if (passwordError) {
+      throw new Error('Erro ao atualizar senha: ' + passwordError.message);
+    }
+  }
+
+  // Atualiza os outros dados do perfil
   const { data, error } = await supabase
     .from('profiles')
     .update({
