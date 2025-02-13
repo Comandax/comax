@@ -36,10 +36,10 @@ export function ProductDetailsModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="max-w-3xl" aria-describedby="product-details-description">
         <DialogHeader>
           <DialogTitle>Detalhes do Produto</DialogTitle>
-          <DialogDescription>
+          <DialogDescription id="product-details-description">
             Informações detalhadas sobre o produto selecionado
           </DialogDescription>
         </DialogHeader>

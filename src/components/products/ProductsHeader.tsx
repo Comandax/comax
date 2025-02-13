@@ -26,12 +26,15 @@ export const ProductsHeader = ({
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogContent>
+      <DialogContent aria-describedby="product-form-description">
         <DialogHeader>
           <DialogTitle>
             {selectedProduct ? "Editar Produto" : "Novo Produto"}
           </DialogTitle>
         </DialogHeader>
+        <div id="product-form-description" className="sr-only">
+          Formulário para {selectedProduct ? "edição" : "criação"} de produto, incluindo campos para referência, nome, imagem, tamanhos e quantidades
+        </div>
         <ProductForm 
           onSubmit={onSubmit} 
           initialData={selectedProduct || undefined} 
@@ -44,4 +47,3 @@ export const ProductsHeader = ({
     </Dialog>
   );
 };
-

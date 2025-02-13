@@ -85,7 +85,12 @@ export const OrderSummaryModal = ({
         ref={contentRef}
         className="max-w-3xl w-[95%] md:w-full max-h-[90vh] overflow-y-auto p-2 md:p-6" 
         onOpenAutoFocus={(e) => e.preventDefault()}
+        aria-describedby="order-summary-description"
       >
+        <div id="order-summary-description" className="sr-only">
+          Resumo do pedido contendo lista de produtos selecionados, quantidades, tamanhos e valor total
+        </div>
+        
         <OrderSummaryHeader />
 
         <div className="space-y-6 w-full">
