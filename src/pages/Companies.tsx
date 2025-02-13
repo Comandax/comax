@@ -94,12 +94,12 @@ export default function Companies() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8">
+    <div className="min-h-screen bg-[#F1F0FB] p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="flex items-center justify-between">
           <Button
             variant="ghost"
-            className="text-white hover:text-white/80"
+            className="text-primary hover:text-primary/80"
             onClick={() => navigate('/admin')}
           >
             <ArrowLeft className="h-5 w-5 mr-2" />
@@ -108,7 +108,7 @@ export default function Companies() {
         </div>
 
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-white mb-8">
+          <h1 className="text-3xl font-bold text-primary mb-8">
             {isSuperuser ? "Administração de Empresas" : "Minha Empresa"}
           </h1>
         </div>
