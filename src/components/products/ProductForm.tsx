@@ -1,3 +1,4 @@
+
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -29,18 +30,8 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
       quantities: initialData?.quantities 
         ? initialData.quantities.map(q => typeof q === 'number' ? { value: q } : q)
         : [
-            { value: 6 },
-            { value: 12 },
-            { value: 18 },
-            { value: 24 },
-            { value: 36 },
-            { value: 48 },
-            { value: 60 },
-            { value: 72 },
-            { value: 84 },
-            { value: 96 },
-            { value: 108 },
-            { value: 120 },
+            { value: 5 },
+            { value: 10 },
           ],
     },
   });
