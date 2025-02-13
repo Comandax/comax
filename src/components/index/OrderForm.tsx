@@ -19,6 +19,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
   const [contactData, setContactData] = useState<ContactFormData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [resetItem, setResetItem] = useState<ResetItem | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { total, orderItems } = useOrderCalculations(selectedItems, products);
   const { submitOrder } = useOrderSubmission();
@@ -68,6 +69,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
         <div className="mt-8 flex justify-end">
           <OrderSummaryButton 
             onClick={() => setIsModalOpen(true)}
+            isLoading={isLoading}
           />
         </div>
       )}
