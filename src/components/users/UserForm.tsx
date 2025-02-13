@@ -49,7 +49,12 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
 
   const handleSubmit = async (data: ProfileFormData) => {
     try {
-      await onSubmit(data);
+      // Remove a formatação do telefone antes de enviar
+      const cleanedData = {
+        ...data,
+        phone: data.phone.replace(/\D/g, '')
+      };
+      await onSubmit(cleanedData);
       toast({
         title: "Sucesso",
         description: "Um email de confirmação foi enviado para o seu endereço de email.",
@@ -62,6 +67,28 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
         description: error?.message || "Erro ao criar usuário",
       });
     }
+  };
+
+  const formatPhoneNumber = (value: string) => {
+    // Remove todos os caracteres não numéricos
+    const cleaned = value.replace(/\D/g, '');
+    
+    // Aplica a máscara conforme o usuário digita
+    let formatted = cleaned;
+    if (cleaned.length > 0) {
+      if (cleaned.length <= 2) {
+        formatted = `(${cleaned}`;
+      } else if (cleaned.length <= 3) {
+        formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
+      } else if (cleaned.length <= 7) {
+        formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3)}`;
+      } else if (cleaned.length <= 11) {
+        formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)}-${cleaned.slice(7)}`;
+      } else {
+        formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)}-${cleaned.slice(7, 11)}`;
+      }
+    }
+    return formatted;
   };
 
   return (
@@ -113,7 +140,15 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
             <FormItem>
               <FormLabel>Celular</FormLabel>
               <FormControl>
-                <Input type="tel" {...field} />
+                <Input
+                  type="tel"
+                  placeholder="(00) 0 0000-0000"
+                  {...field}
+                  onChange={(e) => {
+                    const formatted = formatPhoneNumber(e.target.value);
+                    field.onChange(formatted);
+                  }}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
