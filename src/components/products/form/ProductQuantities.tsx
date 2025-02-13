@@ -29,7 +29,7 @@ export function ProductQuantities({ form, quantityArray }: ProductQuantitiesProp
         </Button>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         {fields.map((field, index) => (
           <div key={field.id} className="flex gap-2 items-start">
             <FormField
@@ -43,6 +43,7 @@ export function ProductQuantities({ form, quantityArray }: ProductQuantitiesProp
                       type="number"
                       min="0"
                       placeholder="Quantidade"
+                      className="w-full"
                       onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
                     />
                   </FormControl>
