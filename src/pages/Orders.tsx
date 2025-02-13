@@ -1,6 +1,23 @@
 import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import { User, Building2, LogOut, ArrowLeft } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { LoadingState } from "@/components/index/LoadingState";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import {
   Table,
   TableBody,
@@ -10,10 +27,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Select,
   SelectContent,
@@ -22,9 +35,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  ArrowLeft,
   ArrowUpDown,
-  Building2,
+  Building2 as Building2Icon,
   Copy,
   ExternalLink,
   Search,
@@ -39,11 +51,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { useToast } from "@/components/ui/use-toast";
 import type { Order } from "@/types/order";
 import { useCompany } from "@/hooks/useCompany";
-import { supabase } from "@/integrations/supabase/client";
-import { LoadingState } from "@/components/index/LoadingState";
 
 const OrderDetails = ({ order }: { order: Order }) => {
   return (
@@ -130,6 +139,7 @@ const Orders = () => {
   const { company } = useCompany();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user, userInitials, userName, handleLogout } = useAuth();
 
   const handleCopyLink = () => {
     const link = `${window.location.origin}/${company?.short_name}`;
