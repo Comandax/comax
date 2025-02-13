@@ -2,7 +2,19 @@ import { useState, useMemo } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { User, Building2, LogOut, ArrowLeft } from "lucide-react";
+import { 
+  User, 
+  Building2, 
+  LogOut, 
+  ArrowLeft,
+  ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
+  Copy, 
+  ExternalLink, 
+  Search, 
+  ShoppingBag 
+} from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,13 +46,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  ArrowUpDown,
-  Copy,
-  ExternalLink,
-  Search,
-  ShoppingBag,
-} from "lucide-react";
 import {
   Pagination,
   PaginationContent,
