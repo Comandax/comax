@@ -21,7 +21,7 @@ export default function UserCreate() {
         title: "Conta criada com sucesso!",
         description: user?.roles?.includes('superuser')
           ? "Redirecionando para a lista de usuários."
-          : "Você será redirecionado para a página de login.",
+          : "Um email de confirmação foi enviado. Por favor, verifique sua caixa de entrada.",
       });
       
       // Se for superusuário, redireciona para a lista de usuários

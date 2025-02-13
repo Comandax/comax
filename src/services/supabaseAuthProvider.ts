@@ -12,6 +12,11 @@ export class SupabaseAuthProvider implements AuthProvider {
     if (error) throw new Error(error.message);
     if (!data.user) throw new Error('No user data returned');
 
+    // Verifica se o email foi confirmado
+    if (!data.user.email_confirmed_at) {
+      throw new Error('Por favor, confirme seu email antes de fazer login.');
+    }
+
     const roles = await this.getUserRoles(data.user.id);
 
     return {
