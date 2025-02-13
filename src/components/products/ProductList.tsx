@@ -28,7 +28,7 @@ interface ProductListProps {
   products: Product[];
   onEdit?: (product: Product) => void;
   onDelete?: (productId: string) => Promise<void>;
-  onSubmit?: (data: ProductFormData) => Promise<void>;
+  onSubmit?: (data: ProductFormData, isEditing: boolean) => Promise<void>;
   onToggleStatus?: (productId: string, disabled: boolean) => Promise<void>;
 }
 
