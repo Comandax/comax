@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+import { Card, CardHeader, CardContent } from "@/components/ui/card";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -64,37 +65,38 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-primary p-4">
+      <Card className="w-full max-w-md mx-auto shadow-lg animate-fade-in">
+        <CardHeader>
+          <h2 className="text-3xl font-bold text-center text-gray-900">
             Login
           </h2>
-        </div>
-
-        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
-          <div className="rounded-md shadow-sm space-y-4">
-            <div>
-              <Input
-                type="email"
-                required
-                placeholder="E-mail"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-6">
+            <div className="space-y-4">
+              <div>
+                <Input
+                  type="email"
+                  required
+                  placeholder="E-mail"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full"
+                />
+              </div>
+              <div>
+                <Input
+                  type="password"
+                  required
+                  placeholder="Senha"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full"
+                />
+              </div>
             </div>
-            <div>
-              <Input
-                type="password"
-                required
-                placeholder="Senha"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
 
-          <div>
             <Button
               type="submit"
               className="w-full"
@@ -102,9 +104,9 @@ const Login = () => {
             >
               {isLoading ? "Entrando..." : "Entrar"}
             </Button>
-          </div>
-        </form>
-      </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };
