@@ -29,18 +29,20 @@ export default function Users() {
   };
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="flex items-center justify-end mb-8">
-        <Button
-          variant="outline"
-          onClick={handleLogout}
-          className="text-red-500 hover:text-red-600"
-        >
-          <LogOut className="h-5 w-5 mr-2" />
-          Sair
-        </Button>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto py-8">
+        <div className="flex items-center justify-end mb-8">
+          <Button
+            variant="outline"
+            onClick={handleLogout}
+            className="text-red-500 hover:text-red-600"
+          >
+            <LogOut className="h-5 w-5 mr-2" />
+            Sair
+          </Button>
+        </div>
+        <UserList />
       </div>
-      <UserList />
     </div>
   );
 }

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -119,42 +118,44 @@ const Products = () => {
   }
 
   return (
-    <div className="container mx-auto py-10">
-      {!isPublicView && (
-        <div className="flex items-center justify-between mb-8">
-          <Button
-            variant="ghost"
-            className="text-primary hover:text-primary/80"
-            onClick={() => navigate('/admin')}
-          >
-            <ArrowLeft className="h-5 w-5 mr-2" />
-            Voltar para o painel
-          </Button>
-        </div>
-      )}
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto py-10">
+        {!isPublicView && (
+          <div className="flex items-center justify-between mb-8">
+            <Button
+              variant="ghost"
+              className="text-primary hover:text-primary/80"
+              onClick={() => navigate('/admin')}
+            >
+              <ArrowLeft className="h-5 w-5 mr-2" />
+              Voltar para o painel
+            </Button>
+          </div>
+        )}
 
-      <CompanyHeader 
-        logo_url={effectiveCompany.logo_url}
-        name={effectiveCompany.name}
-        isPublicView={isPublicView}
-      />
+        <CompanyHeader 
+          logo_url={effectiveCompany.logo_url}
+          name={effectiveCompany.name}
+          isPublicView={isPublicView}
+        />
 
-      <ProductsHeader
-        isPublicView={isPublicView}
-        dialogOpen={dialogOpen}
-        setDialogOpen={setDialogOpen}
-        selectedProduct={selectedProduct}
-        setSelectedProduct={setSelectedProduct}
-        onSubmit={onSubmit}
-      />
+        <ProductsHeader
+          isPublicView={isPublicView}
+          dialogOpen={dialogOpen}
+          setDialogOpen={setDialogOpen}
+          selectedProduct={selectedProduct}
+          setSelectedProduct={setSelectedProduct}
+          onSubmit={onSubmit}
+        />
 
-      <ProductList
-        products={products}
-        onEdit={isPublicView ? undefined : handleEdit}
-        onDelete={isPublicView ? undefined : handleDelete}
-        onSubmit={isPublicView ? undefined : onSubmit}
-        onToggleStatus={isPublicView ? undefined : handleToggleStatus}
-      />
+        <ProductList
+          products={products}
+          onEdit={isPublicView ? undefined : handleEdit}
+          onDelete={isPublicView ? undefined : handleDelete}
+          onSubmit={isPublicView ? undefined : onSubmit}
+          onToggleStatus={isPublicView ? undefined : handleToggleStatus}
+        />
+      </div>
     </div>
   );
 };

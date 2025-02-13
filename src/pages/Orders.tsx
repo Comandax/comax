@@ -186,158 +186,160 @@ const Orders = () => {
   }
 
   return (
-    <div className="container mx-auto py-10">
-      <div className="flex items-center justify-between mb-8">
-        <Button
-          variant="ghost"
-          className="text-primary hover:text-primary/80"
-          onClick={() => navigate('/admin')}
-        >
-          <ArrowLeft className="h-5 w-5 mr-2" />
-          Voltar para o painel
-        </Button>
-      </div>
-
-      <Card 
-        className="p-6 mb-8 bg-white/90 cursor-pointer hover:bg-white/95 transition-colors"
-        onClick={() => navigate("/admin")}
-      >
-        <div className="flex items-center gap-4">
-          {company.logo_url && (
-            <img 
-              src={company.logo_url} 
-              alt={`Logo ${company.name}`}
-              className="w-16 h-16 object-contain rounded-lg"
-            />
-          )}
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">{company.name}</h2>
-          </div>
-        </div>
-      </Card>
-
-      <div className="flex flex-col gap-4 mb-6">
-        <h1 className="text-3xl font-bold">Relatório de Pedidos</h1>
-        <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
-            <Input
-              placeholder="Buscar por cliente..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 w-full md:w-64"
-            />
-          </div>
-          <Select
-            value={pageSize.toString()}
-            onValueChange={(value) => setPageSize(Number(value))}
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto py-10">
+        <div className="flex items-center justify-between mb-8">
+          <Button
+            variant="ghost"
+            className="text-primary hover:text-primary/80"
+            onClick={() => navigate('/admin')}
           >
-            <SelectTrigger className="w-full md:w-32">
-              <SelectValue placeholder="Itens por página" />
-            </SelectTrigger>
-            <SelectContent>
-              {PAGE_SIZES.map((size) => (
-                <SelectItem key={size} value={size.toString()}>
-                  {size} itens
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <ArrowLeft className="h-5 w-5 mr-2" />
+            Voltar para o painel
+          </Button>
         </div>
-      </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Código</TableHead>
-            <TableHead>
-              <Button
-                variant="ghost"
-                onClick={() => handleSort('customerName')}
-                className="hover:bg-transparent"
-              >
-                Cliente
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-              </Button>
-            </TableHead>
-            <TableHead>
-              <Button
-                variant="ghost"
-                onClick={() => handleSort('date')}
-                className="hover:bg-transparent"
-              >
-                Data
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-              </Button>
-            </TableHead>
-            <TableHead className="text-right">
-              <Button
-                variant="ghost"
-                onClick={() => handleSort('total')}
-                className="hover:bg-transparent"
-              >
-                Total
-                <ArrowUpDown className="ml-2 h-4 w-4" />
-              </Button>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {ordersData?.orders.map((order) => (
-            <TableRow
-              key={order._id}
-              className="cursor-pointer hover:bg-muted/50"
-              onClick={() => setSelectedOrder(order)}
+        <Card 
+          className="p-6 mb-8 bg-white/90 cursor-pointer hover:bg-white/95 transition-colors"
+          onClick={() => navigate("/admin")}
+        >
+          <div className="flex items-center gap-4">
+            {company.logo_url && (
+              <img 
+                src={company.logo_url} 
+                alt={`Logo ${company.name}`}
+                className="w-16 h-16 object-contain rounded-lg"
+              />
+            )}
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">{company.name}</h2>
+            </div>
+          </div>
+        </Card>
+
+        <div className="flex flex-col gap-4 mb-6">
+          <h1 className="text-3xl font-bold">Relatório de Pedidos</h1>
+          <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+              <Input
+                placeholder="Buscar por cliente..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 w-full md:w-64"
+              />
+            </div>
+            <Select
+              value={pageSize.toString()}
+              onValueChange={(value) => setPageSize(Number(value))}
             >
-              <TableCell>{order._id}</TableCell>
-              <TableCell>{order.customerName}</TableCell>
-              <TableCell>{order.date}</TableCell>
-              <TableCell className="text-right">
-                R$ {order.total.toFixed(2)}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+              <SelectTrigger className="w-full md:w-32">
+                <SelectValue placeholder="Itens por página" />
+              </SelectTrigger>
+              <SelectContent>
+                {PAGE_SIZES.map((size) => (
+                  <SelectItem key={size} value={size.toString()}>
+                    {size} itens
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
-      <div className="mt-4">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-              >
-                Anterior
-              </PaginationPrevious>
-            </PaginationItem>
-            {[...Array(totalPages)].map((_, i) => (
-              <PaginationItem key={i}>
-                <PaginationLink
-                  onClick={() => setCurrentPage(i + 1)}
-                  isActive={currentPage === i + 1}
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Código</TableHead>
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  onClick={() => handleSort('customerName')}
+                  className="hover:bg-transparent"
                 >
-                  {i + 1}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext
-                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                  Cliente
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              </TableHead>
+              <TableHead>
+                <Button
+                  variant="ghost"
+                  onClick={() => handleSort('date')}
+                  className="hover:bg-transparent"
+                >
+                  Data
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              </TableHead>
+              <TableHead className="text-right">
+                <Button
+                  variant="ghost"
+                  onClick={() => handleSort('total')}
+                  className="hover:bg-transparent"
+                >
+                  Total
+                  <ArrowUpDown className="ml-2 h-4 w-4" />
+                </Button>
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {ordersData?.orders.map((order) => (
+              <TableRow
+                key={order._id}
+                className="cursor-pointer hover:bg-muted/50"
+                onClick={() => setSelectedOrder(order)}
               >
-                Próximo
-              </PaginationNext>
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      </div>
+                <TableCell>{order._id}</TableCell>
+                <TableCell>{order.customerName}</TableCell>
+                <TableCell>{order.date}</TableCell>
+                <TableCell className="text-right">
+                  R$ {order.total.toFixed(2)}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
 
-      <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
-        <DialogContent className="max-w-4xl">
-          {selectedOrder && <OrderDetails order={selectedOrder} />}
-        </DialogContent>
-      </Dialog>
+        <div className="mt-4">
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
+                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                  className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                >
+                  Anterior
+                </PaginationPrevious>
+              </PaginationItem>
+              {[...Array(totalPages)].map((_, i) => (
+                <PaginationItem key={i}>
+                  <PaginationLink
+                    onClick={() => setCurrentPage(i + 1)}
+                    isActive={currentPage === i + 1}
+                  >
+                    {i + 1}
+                  </PaginationLink>
+                </PaginationItem>
+              ))}
+              <PaginationItem>
+                <PaginationNext
+                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                  className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                >
+                  Próximo
+                </PaginationNext>
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </div>
+
+        <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
+          <DialogContent className="max-w-4xl">
+            {selectedOrder && <OrderDetails order={selectedOrder} />}
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   );
 };

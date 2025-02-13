@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -94,7 +93,7 @@ export default function Companies() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F1F0FB] p-4 md:p-8">
+    <div className="min-h-screen bg-background p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-8">
         <div className="flex items-center justify-between">
           <Button

@@ -62,23 +62,25 @@ export default function UserCreate() {
   };
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Criar Conta</h1>
-        
-        <Alert className="mb-6" variant="default">
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Importante</AlertTitle>
-          <AlertDescription>
-            Após criar sua conta, você precisará confirmar seu email antes de fazer login.
-            Se não receber o email de confirmação, aguarde alguns segundos e tente criar a conta novamente.
-          </AlertDescription>
-        </Alert>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto py-8">
+        <div className="max-w-2xl mx-auto">
+          <h1 className="text-2xl font-bold mb-6">Criar Conta</h1>
+          
+          <Alert className="mb-6" variant="default">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Importante</AlertTitle>
+            <AlertDescription>
+              Após criar sua conta, você precisará confirmar seu email antes de fazer login.
+              Se não receber o email de confirmação, aguarde alguns segundos e tente criar a conta novamente.
+            </AlertDescription>
+          </Alert>
 
-        <UserForm
-          onSubmit={handleSubmit}
-          isLoading={isCreating}
-        />
+          <UserForm
+            onSubmit={handleSubmit}
+            isLoading={isCreating}
+          />
+        </div>
       </div>
     </div>
   );

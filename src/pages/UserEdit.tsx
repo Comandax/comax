@@ -47,24 +47,26 @@ export default function UserEdit() {
   };
 
   return (
-    <div className="container mx-auto py-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="flex items-center mb-6">
-          <Button 
-            variant="ghost" 
-            onClick={() => navigate('/admin')} 
-            className="mr-4"
-          >
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Voltar para o Painel
-          </Button>
-          <h1 className="text-2xl font-bold">Editar Usuário</h1>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto py-8">
+        <div className="max-w-2xl mx-auto">
+          <div className="flex items-center mb-6">
+            <Button 
+              variant="ghost" 
+              onClick={() => navigate('/admin')} 
+              className="mr-4"
+            >
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              Voltar para o Painel
+            </Button>
+            <h1 className="text-2xl font-bold">Editar Usuário</h1>
+          </div>
+          <UserForm
+            initialData={initialData}
+            onSubmit={handleSubmit}
+            isLoading={isUpdating}
+          />
         </div>
-        <UserForm
-          initialData={initialData}
-          onSubmit={handleSubmit}
-          isLoading={isUpdating}
-        />
       </div>
     </div>
   );
