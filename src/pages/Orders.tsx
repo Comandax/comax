@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -24,7 +25,9 @@ import {
 import {
   ArrowLeft,
   ArrowUpDown,
+  Building2,
   Search,
+  ShoppingBag,
 } from "lucide-react";
 import {
   Pagination,
@@ -181,8 +184,81 @@ const Orders = () => {
     }));
   };
 
+  // Se não houver empresa cadastrada
   if (!company) {
-    return <div>Carregando...</div>;
+    return (
+      <div className="min-h-screen bg-background p-8">
+        <div className="max-w-2xl mx-auto">
+          <Card className="p-8 text-center space-y-4">
+            <Building2 className="w-12 h-12 mx-auto text-primary" />
+            <h2 className="text-2xl font-semibold">Nenhuma empresa cadastrada</h2>
+            <p className="text-muted-foreground">
+              Para visualizar pedidos, você precisa primeiro cadastrar sua empresa.
+            </p>
+            <Button 
+              onClick={() => navigate('/companies')}
+              className="mt-4"
+            >
+              Cadastrar Empresa
+            </Button>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
+  // Se não houver pedidos
+  if (ordersData?.orders.length === 0) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto py-10">
+          <div className="flex items-center justify-between mb-8">
+            <Button
+              variant="ghost"
+              className="text-primary hover:text-primary/80"
+              onClick={() => navigate('/admin')}
+            >
+              <ArrowLeft className="h-5 w-5 mr-2" />
+              Voltar para o painel
+            </Button>
+          </div>
+
+          <Card 
+            className="p-6 mb-8 bg-white/90 cursor-pointer hover:bg-white/95 transition-colors"
+            onClick={() => navigate("/admin")}
+          >
+            <div className="flex items-center gap-4">
+              {company.logo_url && (
+                <img 
+                  src={company.logo_url} 
+                  alt={`Logo ${company.name}`}
+                  className="w-16 h-16 object-contain rounded-lg"
+                />
+              )}
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">{company.name}</h2>
+              </div>
+            </div>
+          </Card>
+
+          <div className="max-w-2xl mx-auto">
+            <Card className="p-8 text-center space-y-4">
+              <ShoppingBag className="w-12 h-12 mx-auto text-primary" />
+              <h2 className="text-2xl font-semibold">Nenhum pedido realizado</h2>
+              <p className="text-muted-foreground">
+                Compartilhe o link da sua página para começar a receber pedidos.
+              </p>
+              <Button 
+                onClick={() => navigate(`/${company.short_name}`)}
+                className="mt-4"
+              >
+                Ver página de pedidos
+              </Button>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
