@@ -24,7 +24,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 export default function Companies() {
   const [companies, setCompanies] = useState<Company[]>([]);
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, userInitials, userName, handleLogout } = useAuth();
   const navigate = useNavigate();
   const isSuperuser = user?.roles?.includes('superuser');
 
@@ -96,9 +96,9 @@ export default function Companies() {
     window.open(url, '_blank');
   };
 
-  const handleLogout = async () => {
+  const onLogout = async () => {
     try {
-      await user?.handleLogout();
+      await handleLogout();
       navigate("/login");
     } catch (error) {
       toast({
@@ -146,14 +146,14 @@ export default function Companies() {
                   <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                     <Avatar className="h-10 w-10">
                       <AvatarFallback className="bg-primary text-primary-foreground">
-                        {user.userInitials}
+                        {userInitials}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end">
                   <DropdownMenuItem disabled className="font-semibold">
-                    {user.userName}
+                    {userName}
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={() => navigate(`/profile/${user.id}`)}>
                     <User className="mr-2 h-4 w-4" />
@@ -165,7 +165,7 @@ export default function Companies() {
                     Minha Empresa
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                  <DropdownMenuItem onClick={onLogout} className="text-red-600">
                     <LogOut className="mr-2 h-4 w-4" />
                     Sair
                   </DropdownMenuItem>
