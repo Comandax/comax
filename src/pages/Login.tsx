@@ -65,12 +65,12 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-primary p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#1A1F2C] p-4">
       <div className="mb-8">
         <img 
-          src="/lovable-uploads/97447ac0-dd6b-44f8-87c4-07cac3aafa27.png" 
+          src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
           alt="COMAX Logo" 
-          className="h-16 w-auto"
+          className="h-20 w-auto"
         />
       </div>
       
