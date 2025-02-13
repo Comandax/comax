@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -264,23 +263,15 @@ const Products = () => {
 
       <div className="container mx-auto py-10">
         <div className="max-w-6xl mx-auto px-4">
-          <Card 
-            className="p-6 mb-8 bg-white/95 cursor-pointer hover:bg-white transition-colors"
-            onClick={() => navigate("/admin")}
-          >
-            <div className="flex items-center gap-4">
-              {effectiveCompany?.logo_url && (
-                <img 
-                  src={effectiveCompany.logo_url} 
-                  alt={`Logo ${effectiveCompany.name}`}
-                  className="w-16 h-16 object-contain rounded-lg"
-                />
-              )}
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900">{effectiveCompany.name}</h2>
-              </div>
-            </div>
-          </Card>
+          <CompanyHeader 
+            logo_url={effectiveCompany?.logo_url}
+            name={effectiveCompany?.name || ''}
+            isPublicView={isPublicView}
+            onNewProduct={() => {
+              setSelectedProduct(null);
+              setDialogOpen(true);
+            }}
+          />
 
           <ProductsHeader
             isPublicView={isPublicView}
