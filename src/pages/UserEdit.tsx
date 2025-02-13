@@ -4,8 +4,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getProfile, updateProfile } from "@/services/profileService";
 import { UserForm } from "@/components/users/UserForm";
 import { ProfileFormData } from "@/types/profile";
-import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 export default function UserEdit() {
@@ -40,7 +40,6 @@ export default function UserEdit() {
   if (isLoadingProfile) return <div>Carregando...</div>;
   if (!profile) return <div>Usuário não encontrado</div>;
 
-  // Convert Profile to ProfileFormData by adding empty password fields
   const initialData: ProfileFormData = {
     ...profile,
     password: '',
@@ -52,11 +51,20 @@ export default function UserEdit() {
       <div className="bg-gray-900/50 shadow-md">
         <div className="container mx-auto">
           <div className="max-w-2xl mx-auto px-4">
-            <div className="py-1.5">
+            <div className="flex items-center gap-2 py-1.5">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => navigate('/admin')}
+                className="text-white hover:text-white/80"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
               <img 
                 src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
                 alt="COMAX Logo" 
-                className="h-8 w-auto"
+                className="h-8 w-auto cursor-pointer"
+                onClick={() => navigate('/admin')}
               />
             </div>
           </div>
@@ -65,17 +73,7 @@ export default function UserEdit() {
 
       <div className="container mx-auto py-8">
         <Card className="w-full max-w-2xl mx-auto shadow-lg bg-white/95 p-6">
-          <div className="flex items-center mb-6">
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate('/admin')} 
-              className="mr-4"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Voltar para o Painel
-            </Button>
-            <h1 className="text-2xl font-bold text-gray-900">Editar Usuário</h1>
-          </div>
+          <h1 className="text-2xl font-bold text-gray-900 mb-6">Editar Usuário</h1>
 
           <UserForm
             initialData={initialData}
