@@ -25,6 +25,8 @@ import {
   ArrowLeft,
   ArrowUpDown,
   Building2,
+  Copy,
+  ExternalLink,
   Search,
   ShoppingBag,
 } from "lucide-react";
@@ -37,6 +39,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { useToast } from "@/components/ui/use-toast";
 import type { Order } from "@/types/order";
 import { useCompany } from "@/hooks/useCompany";
 import { supabase } from "@/integrations/supabase/client";
@@ -126,6 +129,20 @@ const Orders = () => {
   
   const { company } = useCompany();
   const navigate = useNavigate();
+  const { toast } = useToast();
+
+  const handleCopyLink = () => {
+    const link = `${window.location.origin}/${company?.short_name}`;
+    navigator.clipboard.writeText(link);
+    toast({
+      title: "Link copiado!",
+      description: "O link foi copiado para sua área de transferência.",
+    });
+  };
+
+  const handleOpenLink = () => {
+    window.open(`/${company?.short_name}`, '_blank');
+  };
 
   const { data: ordersData } = useQuery<OrdersQueryResult>({
     queryKey: ["orders", company?.id, searchTerm, sortConfig, currentPage, pageSize],
@@ -239,15 +256,15 @@ const Orders = () => {
             onClick={() => navigate("/admin")}
           >
             <div className="flex items-center gap-4">
-              {company.logo_url && (
+              {company?.logo_url && (
                 <img 
-                  src={company.logo_url} 
-                  alt={`Logo ${company.name}`}
+                  src={company?.logo_url} 
+                  alt={`Logo ${company?.name}`}
                   className="w-16 h-16 object-contain rounded-lg"
                 />
               )}
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">{company.name}</h2>
+                <h2 className="text-2xl font-bold text-gray-900">{company?.name}</h2>
               </div>
             </div>
           </Card>
@@ -262,8 +279,30 @@ const Orders = () => {
               <div className="mt-4 p-4 bg-muted rounded-lg">
                 <p className="text-sm text-muted-foreground mb-2">Página de pedidos:</p>
                 <code className="text-sm">
-                  {window.location.origin}/{company.short_name}
+                  {window.location.origin}/{company?.short_name}
                 </code>
+                <div className="flex justify-center gap-4 mt-4">
+                  <div className="flex flex-col items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={handleCopyLink}
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                    <span className="text-xs text-muted-foreground">Copiar</span>
+                  </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={handleOpenLink}
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                    <span className="text-xs text-muted-foreground">Abrir</span>
+                  </div>
+                </div>
               </div>
             </Card>
           </div>
@@ -291,15 +330,15 @@ const Orders = () => {
           onClick={() => navigate("/admin")}
         >
           <div className="flex items-center gap-4">
-            {company.logo_url && (
+            {company?.logo_url && (
               <img 
-                src={company.logo_url} 
-                alt={`Logo ${company.name}`}
+                src={company?.logo_url} 
+                alt={`Logo ${company?.name}`}
                 className="w-16 h-16 object-contain rounded-lg"
               />
             )}
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">{company.name}</h2>
+              <h2 className="text-2xl font-bold text-gray-900">{company?.name}</h2>
             </div>
           </div>
         </Card>
