@@ -259,12 +259,12 @@ const Orders = () => {
               <p className="text-muted-foreground">
                 Compartilhe o link da sua página para começar a receber pedidos.
               </p>
-              <Button 
-                onClick={() => navigate(`/${company.short_name}`)}
-                className="mt-4"
-              >
-                Ver página de pedidos
-              </Button>
+              <div className="mt-4 p-4 bg-muted rounded-lg">
+                <p className="text-sm text-muted-foreground mb-2">Página de pedidos:</p>
+                <code className="text-sm">
+                  {window.location.origin}/{company.short_name}
+                </code>
+              </div>
             </Card>
           </div>
         </div>
