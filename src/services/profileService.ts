@@ -34,9 +34,10 @@ export async function updateProfile(id: string, profile: ProfileFormData): Promi
     })
     .eq('id', id)
     .select()
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
+  if (!data) throw new Error('Perfil não encontrado');
   return data;
 }
 
@@ -75,11 +76,15 @@ export async function createProfile(profile: ProfileFormData): Promise<Profile> 
     })
     .eq('id', authData.user.id)
     .select()
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error('Profile update error:', error);
     throw new Error('Erro ao atualizar perfil: ' + error.message);
+  }
+
+  if (!data) {
+    throw new Error('Perfil não encontrado após criação');
   }
 
   return data;
