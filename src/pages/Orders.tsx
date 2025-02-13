@@ -395,87 +395,91 @@ const Orders = () => {
             </Card>
           ) : (
             <>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Código</TableHead>
-                    <TableHead>
-                      <Button
-                        variant="ghost"
-                        onClick={() => sortConfig.column = 'customerName'}
-                        className="hover:bg-transparent"
-                      >
-                        Cliente
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                      </Button>
-                    </TableHead>
-                    <TableHead>
-                      <Button
-                        variant="ghost"
-                        onClick={() => sortConfig.column = 'date'}
-                        className="hover:bg-transparent"
-                      >
-                        Data
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                      </Button>
-                    </TableHead>
-                    <TableHead className="text-right">
-                      <Button
-                        variant="ghost"
-                        onClick={() => sortConfig.column = 'total'}
-                        className="hover:bg-transparent"
-                      >
-                        Total
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
-                      </Button>
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {ordersData.orders.map((order) => (
-                    <TableRow
-                      key={order._id}
-                      className="cursor-pointer hover:bg-muted/50"
-                      onClick={() => setSelectedOrder(order)}
-                    >
-                      <TableCell>{order._id}</TableCell>
-                      <TableCell>{order.customerName}</TableCell>
-                      <TableCell>{order.date}</TableCell>
-                      <TableCell className="text-right">
-                        R$ {order.total.toFixed(2)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-
-              <div className="mt-4">
-                <Pagination>
-                  <PaginationContent>
-                    <PaginationItem>
-                      <PaginationPrevious
-                        onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                        className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-                      />
-                    </PaginationItem>
-                    {Array.from({ length: Math.ceil((ordersData.totalCount || 0) / pageSize) }).map((_, i) => (
-                      <PaginationItem key={i}>
-                        <PaginationLink
-                          onClick={() => setCurrentPage(i + 1)}
-                          isActive={currentPage === i + 1}
+              <div className="bg-gray-50/95 rounded-lg p-6 shadow-lg">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-gray-100/80 hover:bg-gray-100/90">
+                      <TableHead>Código</TableHead>
+                      <TableHead>
+                        <Button
+                          variant="ghost"
+                          onClick={() => sortConfig.column = 'customerName'}
+                          className="hover:bg-transparent"
                         >
-                          {i + 1}
-                        </PaginationLink>
-                      </PaginationItem>
+                          Cliente
+                          <ArrowUpDown className="ml-2 h-4 w-4" />
+                        </Button>
+                      </TableHead>
+                      <TableHead>
+                        <Button
+                          variant="ghost"
+                          onClick={() => sortConfig.column = 'date'}
+                          className="hover:bg-transparent"
+                        >
+                          Data
+                          <ArrowUpDown className="ml-2 h-4 w-4" />
+                        </Button>
+                      </TableHead>
+                      <TableHead className="text-right">
+                        <Button
+                          variant="ghost"
+                          onClick={() => sortConfig.column = 'total'}
+                          className="hover:bg-transparent"
+                        >
+                          Total
+                          <ArrowUpDown className="ml-2 h-4 w-4" />
+                        </Button>
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {ordersData.orders.map((order, index) => (
+                      <TableRow
+                        key={order._id}
+                        className={`cursor-pointer hover:bg-gray-100/70 ${
+                          index % 2 === 0 ? 'bg-white' : 'bg-gray-50/80'
+                        }`}
+                        onClick={() => setSelectedOrder(order)}
+                      >
+                        <TableCell>{order._id}</TableCell>
+                        <TableCell>{order.customerName}</TableCell>
+                        <TableCell>{order.date}</TableCell>
+                        <TableCell className="text-right">
+                          R$ {order.total.toFixed(2)}
+                        </TableCell>
+                      </TableRow>
                     ))}
-                    <PaginationItem>
-                      <PaginationNext
-                        onClick={() => setCurrentPage((p) => Math.min(Math.ceil((ordersData.totalCount || 0) / pageSize), p + 1))}
-                        className={currentPage === Math.ceil((ordersData.totalCount || 0) / pageSize) ? "pointer-events-none opacity-50" : ""}
-                      />
-                    </PaginationItem>
-                  </PaginationContent>
-                </Pagination>
+                  </TableBody>
+                </Table>
+
+                <div className="mt-4">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                          className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                        />
+                      </PaginationItem>
+                      {Array.from({ length: Math.ceil((ordersData.totalCount || 0) / pageSize) }).map((_, i) => (
+                        <PaginationItem key={i}>
+                          <PaginationLink
+                            onClick={() => setCurrentPage(i + 1)}
+                            isActive={currentPage === i + 1}
+                          >
+                            {i + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+                      <PaginationItem>
+                        <PaginationNext
+                          onClick={() => setCurrentPage((p) => Math.min(Math.ceil((ordersData.totalCount || 0) / pageSize), p + 1))}
+                          className={currentPage === Math.ceil((ordersData.totalCount || 0) / pageSize) ? "pointer-events-none opacity-50" : ""}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
               </div>
             </>
           )}
