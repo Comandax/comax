@@ -1,3 +1,4 @@
+
 import { LayoutDashboard, Package, Building2, LogOut, User } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -103,7 +104,7 @@ const Admin = () => {
     <div className="min-h-screen bg-[#1A1F2C]">
       <div className="bg-gray-900/50 shadow-md">
         <div className="container mx-auto">
-          <div className="max-w-7xl mx-auto px-4">
+          <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-8">
                 <img 
@@ -151,7 +152,7 @@ const Admin = () => {
       </div>
 
       <div className="container mx-auto py-10">
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="max-w-6xl mx-auto px-4">
           {userCompany && (
             <Card className="p-6 mb-8 bg-white/95">
               <div className="flex items-center gap-4">
