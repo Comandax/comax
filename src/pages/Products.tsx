@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -10,20 +11,22 @@ import { CompanyHeader } from "@/components/companies/CompanyHeader";
 import { ProductsHeader } from "@/components/products/ProductsHeader";
 import { usePublicCompany } from "@/hooks/usePublicCompany";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Building2 } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const { company } = useCompany();
+  const { company, isLoading: isLoadingCompany } = useCompany();
   const { companyId } = useParams();
-  const { publicCompany, isLoading } = usePublicCompany(companyId);
+  const { publicCompany, isLoading: isLoadingPublicCompany } = usePublicCompany(companyId);
   const navigate = useNavigate();
 
   const effectiveCompany = company || publicCompany;
   const isPublicView = !company && !!publicCompany;
+  const isLoading = isLoadingCompany || isLoadingPublicCompany;
 
   const { data: products = [], refetch } = useQuery({
     queryKey: ["products", effectiveCompany?.id],
@@ -111,6 +114,29 @@ const Products = () => {
 
   if (isLoading) {
     return <div>Loading...</div>;
+  }
+
+  // Se não for uma visualização pública e o usuário não tiver empresa
+  if (!isPublicView && !company) {
+    return (
+      <div className="min-h-screen bg-background p-8">
+        <div className="max-w-2xl mx-auto">
+          <Card className="p-8 text-center space-y-4">
+            <Building2 className="w-12 h-12 mx-auto text-primary" />
+            <h2 className="text-2xl font-semibold">Nenhuma empresa cadastrada</h2>
+            <p className="text-muted-foreground">
+              Para gerenciar produtos, você precisa primeiro cadastrar sua empresa.
+            </p>
+            <Button 
+              onClick={() => navigate('/companies')}
+              className="mt-4"
+            >
+              Cadastrar Empresa
+            </Button>
+          </Card>
+        </div>
+      </div>
+    );
   }
 
   if (!effectiveCompany) {
