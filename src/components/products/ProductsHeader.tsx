@@ -29,16 +29,11 @@ export const ProductsHeader = ({
   onSubmit,
 }: ProductsHeaderProps) => {
   if (isPublicView) {
-    return (
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-100">Produtos</h1>
-      </div>
-    );
+    return null;
   }
 
   return (
-    <div className="flex justify-between items-center mb-6">
-      <h1 className="text-3xl font-bold text-gray-100">Produtos</h1>
+    <div className="flex justify-end items-center mb-6">
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>
           <Button onClick={() => setSelectedProduct(null)}>
