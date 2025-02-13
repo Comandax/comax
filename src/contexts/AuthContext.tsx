@@ -48,18 +48,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }
 
-  const handleLogout = async () => {
+  async function handleLogout() {
     await logout();
     window.location.href = '/login';
-  };
+  }
 
-  const userInitials = user?.email 
-    ? user.email.split('@')[0].slice(0, 2).toUpperCase()
+  const userInitials = user?.name 
+    ? user.name
+        .split(' ')
+        .map(n => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2)
     : '';
 
-  const userName = user?.email 
-    ? user.email.split('@')[0]
-    : '';
+  const userName = user?.name || user?.email?.split('@')[0] || '';
 
   return (
     <AuthContext.Provider value={{ 
