@@ -22,7 +22,7 @@ export function ProductQuantities({ form, quantityArray }: ProductQuantitiesProp
           type="button"
           variant="default"
           size="sm"
-          onClick={() => append({ value: 0 })}
+          onClick={() => append({ value: 5 })}
         >
           <Plus className="mr-2 h-4 w-4" />
           Adicionar Quantidade
@@ -43,7 +43,13 @@ export function ProductQuantities({ form, quantityArray }: ProductQuantitiesProp
                       type="number"
                       min="0"
                       placeholder="Quantidade"
-                      onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
+                      onChange={(e) => {
+                        const value = parseInt(e.target.value, 10);
+                        // Apenas permite os valores 5 ou 10
+                        if (value === 5 || value === 10) {
+                          field.onChange(value);
+                        }
+                      }}
                     />
                   </FormControl>
                   <FormMessage />
