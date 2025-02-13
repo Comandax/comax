@@ -59,6 +59,8 @@ export const createProduct = async (product: ProductFormData, companyId: string)
 };
 
 export const updateProduct = async (productId: string, product: ProductFormData): Promise<Product> => {
+  console.log('Updating product:', { productId, product });
+  
   const { data, error } = await supabase
     .from('products')
     .update({
