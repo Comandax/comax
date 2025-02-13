@@ -31,14 +31,14 @@ export const ProductsHeader = ({
   if (isPublicView) {
     return (
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Produtos</h1>
+        <h1 className="text-3xl font-bold text-gray-100">Produtos</h1>
       </div>
     );
   }
 
   return (
     <div className="flex justify-between items-center mb-6">
-      <h1 className="text-3xl font-bold">Produtos</h1>
+      <h1 className="text-3xl font-bold text-gray-100">Produtos</h1>
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogTrigger asChild>
           <Button onClick={() => setSelectedProduct(null)}>
