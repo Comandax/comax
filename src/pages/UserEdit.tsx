@@ -6,6 +6,7 @@ import { UserForm } from "@/components/users/UserForm";
 import { ProfileFormData } from "@/types/profile";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { Card } from "@/components/ui/card";
 
 export default function UserEdit() {
   const { id } = useParams<{ id: string }>();
@@ -47,25 +48,36 @@ export default function UserEdit() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto py-8">
-        <div className="max-w-2xl mx-auto">
-          <div className="flex items-center mb-6">
-            <Button 
-              variant="ghost" 
-              onClick={() => navigate('/admin')} 
-              className="mr-4"
-            >
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Voltar para o Painel
-            </Button>
-            <h1 className="text-2xl font-bold">Editar Usuário</h1>
+    <div className="min-h-screen bg-[#1A1F2C]">
+      <div className="container mx-auto py-8 px-4">
+        <div className="flex flex-col items-center">
+          <div className="mb-8">
+            <img 
+              src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
+              alt="COMAX Logo" 
+              className="h-20 w-auto"
+            />
           </div>
-          <UserForm
-            initialData={initialData}
-            onSubmit={handleSubmit}
-            isLoading={isUpdating}
-          />
+          
+          <Card className="w-full max-w-2xl mx-auto shadow-lg bg-white/95 p-6">
+            <div className="flex items-center mb-6">
+              <Button 
+                variant="ghost" 
+                onClick={() => navigate('/admin')} 
+                className="mr-4"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Voltar para o Painel
+              </Button>
+              <h1 className="text-2xl font-bold text-gray-900">Editar Usuário</h1>
+            </div>
+
+            <UserForm
+              initialData={initialData}
+              onSubmit={handleSubmit}
+              isLoading={isUpdating}
+            />
+          </Card>
         </div>
       </div>
     </div>
