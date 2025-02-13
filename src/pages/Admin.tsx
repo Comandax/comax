@@ -1,3 +1,4 @@
+
 import { LayoutDashboard, Package, Building2, LogOut, User } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -100,66 +101,82 @@ const Admin = () => {
   const isSuperuser = userRoles?.some(role => role.role === 'superuser');
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto py-10">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Painel Administrativo</h1>
-          <div className="flex items-center gap-4">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                  <Avatar className="h-10 w-10">
-                    <AvatarFallback className="bg-primary text-primary-foreground">
-                      {userInitials}
-                    </AvatarFallback>
-                  </Avatar>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="w-56" align="end">
-                <DropdownMenuItem disabled className="font-semibold">
-                  {userName}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => navigate(`/profile/${user.id}`)}>
-                  <User className="mr-2 h-4 w-4" />
-                  Meu Perfil
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => navigate('/companies')}>
-                  <Building2 className="mr-2 h-4 w-4" />
-                  {isSuperuser ? "Gerenciar Empresas" : userCompany ? "Minha Empresa" : "Criar Empresa"}
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="text-red-600">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sair
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+    <div className="min-h-screen bg-[#1A1F2C]">
+      <div className="bg-gray-900/50 shadow-md">
+        <div className="container mx-auto">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="py-1.5">
+              <img 
+                src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
+                alt="COMAX Logo" 
+                className="h-8 w-auto"
+              />
+            </div>
           </div>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Link 
-            to="/products"
-            className="flex items-center p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
-          >
-            <Package className="w-8 h-8 text-blue-500 mr-4" />
-            <div>
-              <h2 className="text-xl font-semibold">Produtos</h2>
-              <p className="text-gray-600">Gerenciar catálogo de produtos</p>
-            </div>
-          </Link>
+      </div>
 
-          <Link 
-            to="/orders"
-            className="flex items-center p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
-          >
-            <LayoutDashboard className="w-8 h-8 text-blue-500 mr-4" />
-            <div>
-              <h2 className="text-xl font-semibold">Relatório de Pedidos</h2>
-              <p className="text-gray-600">Visualizar e gerenciar pedidos</p>
+      <div className="container mx-auto py-10">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex justify-between items-center mb-8">
+            <h1 className="text-3xl font-bold text-white">Painel Administrativo</h1>
+            <div className="flex items-center gap-4">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-10 w-10">
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {userInitials}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end">
+                  <DropdownMenuItem disabled className="font-semibold">
+                    {userName}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate(`/profile/${user.id}`)}>
+                    <User className="mr-2 h-4 w-4" />
+                    Meu Perfil
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/companies')}>
+                    <Building2 className="mr-2 h-4 w-4" />
+                    {isSuperuser ? "Gerenciar Empresas" : userCompany ? "Minha Empresa" : "Criar Empresa"}
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sair
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
-          </Link>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Link 
+              to="/products"
+              className="flex items-center p-6 bg-white/95 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+            >
+              <Package className="w-8 h-8 text-blue-500 mr-4" />
+              <div>
+                <h2 className="text-xl font-semibold">Produtos</h2>
+                <p className="text-gray-600">Gerenciar catálogo de produtos</p>
+              </div>
+            </Link>
+
+            <Link 
+              to="/orders"
+              className="flex items-center p-6 bg-white/95 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+            >
+              <LayoutDashboard className="w-8 h-8 text-blue-500 mr-4" />
+              <div>
+                <h2 className="text-xl font-semibold">Relatório de Pedidos</h2>
+                <p className="text-gray-600">Visualizar e gerenciar pedidos</p>
+              </div>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
