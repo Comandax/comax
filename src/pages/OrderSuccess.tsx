@@ -9,8 +9,8 @@ const OrderSuccess = () => {
   const { shortName } = useParams<{ shortName?: string }>();
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8 flex items-center justify-center">
-      <Card className="max-w-md w-full p-8 space-y-6">
+    <div className="min-h-screen bg-[#1A1F2C] p-4 md:p-8 flex items-center justify-center">
+      <Card className="max-w-md w-full p-8 space-y-6 bg-white/95">
         <div className="text-center space-y-4">
           <div className="flex justify-center">
             <div className="bg-green-100 p-3 rounded-full">
@@ -25,7 +25,7 @@ const OrderSuccess = () => {
         
         <div className="flex justify-center">
           <Button 
-            onClick={() => navigate(`/company/${shortName}`)}
+            onClick={() => navigate(`/${shortName}`)}
             className="bg-primary text-white hover:bg-primary/90"
           >
             Fazer Novo Pedido
