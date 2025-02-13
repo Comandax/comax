@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchProducts } from "@/services/productService";
 import { LoadingState } from "@/components/index/LoadingState";
@@ -16,19 +16,19 @@ const Index = () => {
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
   const params = useParams();
+  const navigate = useNavigate();
   const shortName = params.shortName;
 
   useEffect(() => {
     console.log('🔍 Iniciando busca da empresa com shortName:', shortName);
     
-    const fetchCompany = async () => {
-      if (!shortName) {
-        console.log('❌ shortName não fornecido');
-        setIsLoading(false);
-        setError("Por favor, verifique se o endereço está correto.");
-        return;
-      }
+    if (!shortName) {
+      console.log('❌ shortName não fornecido, redirecionando para login');
+      navigate('/login');
+      return;
+    }
 
+    const fetchCompany = async () => {
       console.log('📡 Fazendo requisição ao Supabase para shortName:', shortName);
       
       const { data, error } = await supabase
@@ -57,7 +57,7 @@ const Index = () => {
     };
 
     fetchCompany();
-  }, [shortName, toast]);
+  }, [shortName, toast, navigate]);
 
   const { data: products = [] } = useQuery({
     queryKey: ['products', company?.id],
