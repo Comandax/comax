@@ -1,4 +1,3 @@
-
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -12,17 +11,19 @@ import { ProductSizes } from "./form/ProductSizes";
 import { ProductQuantities } from "./form/ProductQuantities";
 
 interface ProductFormProps {
-  onSubmit: (data: ProductFormData) => Promise<void>;
+  onSubmit: (data: ProductFormData, isEditing: boolean) => Promise<void>;
   initialData?: Product;
   onComplete?: () => void;
 }
 
 export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormProps) {
   const [isUploading, setIsUploading] = useState(false);
+  const isEditing = Boolean(initialData?._id);
 
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productFormSchema),
     defaultValues: {
+      _id: initialData?._id,
       reference: initialData?.reference || "",
       name: initialData?.name || "",
       image: initialData?.image || "",
@@ -58,7 +59,7 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
       if (!reference) {
         form.setError('reference', {
           type: 'manual',
-          message: 'Please fill in the reference before uploading an image'
+          message: 'Por favor, preencha a referência antes de fazer upload da imagem'
         });
         return;
       }
@@ -84,7 +85,7 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
       console.error('Error uploading file:', error);
       form.setError('image', {
         type: 'manual',
-        message: 'Error uploading image. Please try again.'
+        message: 'Erro ao fazer upload da imagem. Por favor, tente novamente.'
       });
     } finally {
       setIsUploading(false);
@@ -92,7 +93,8 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
   };
 
   const handleFormSubmit = async (data: ProductFormData) => {
-    await onSubmit(data);
+    // Passa o flag isEditing para o onSubmit saber se deve atualizar ou criar
+    await onSubmit(data, isEditing);
     if (onComplete) {
       onComplete();
     }
@@ -118,7 +120,7 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
         />
 
         <Button type="submit" disabled={isUploading}>
-          {isUploading ? 'Uploading...' : 'Salvar'}
+          {isUploading ? 'Uploading...' : isEditing ? 'Atualizar' : 'Salvar'}
         </Button>
       </form>
     </Form>

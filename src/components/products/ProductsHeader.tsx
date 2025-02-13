@@ -1,4 +1,3 @@
-
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ProductForm } from "./ProductForm";
 import type { Product, ProductFormData } from "@/types/product";
@@ -9,7 +8,7 @@ interface ProductsHeaderProps {
   setDialogOpen: (open: boolean) => void;
   selectedProduct: Product | null;
   setSelectedProduct: (product: Product | null) => void;
-  onSubmit: (data: ProductFormData) => Promise<void>;
+  onSubmit: (data: ProductFormData, isEditing: boolean) => Promise<void>;
 }
 
 export const ProductsHeader = ({
@@ -24,6 +23,10 @@ export const ProductsHeader = ({
     return null;
   }
 
+  const handleSubmit = async (data: ProductFormData) => {
+    await onSubmit(data, !!selectedProduct);
+  };
+
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogContent aria-describedby="product-form-description">
@@ -36,7 +39,7 @@ export const ProductsHeader = ({
           Formulário para {selectedProduct ? "edição" : "criação"} de produto, incluindo campos para referência, nome, imagem, tamanhos e quantidades
         </div>
         <ProductForm 
-          onSubmit={onSubmit} 
+          onSubmit={handleSubmit} 
           initialData={selectedProduct || undefined} 
           onComplete={() => {
             setDialogOpen(false);

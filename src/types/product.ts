@@ -1,4 +1,3 @@
-
 export interface Product {
   _id: string;
   reference: string;
@@ -16,6 +15,7 @@ export interface Product {
 }
 
 export type ProductFormData = {
+  _id?: string;
   reference: string;
   name: string;
   image?: string;

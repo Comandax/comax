@@ -1,4 +1,3 @@
-
 import { Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -27,7 +26,7 @@ interface ProductActionsProps {
   product: Product;
   onEdit: (product: Product) => void;
   onDelete: (productId: string) => Promise<void>;
-  onSubmit: (data: ProductFormData) => Promise<void>;
+  onSubmit: (data: ProductFormData, isEditing: boolean) => Promise<void>;
   onOpenChange: (open: boolean) => void;
 }
 
@@ -38,6 +37,11 @@ export function ProductActions({
   onSubmit, 
   onOpenChange 
 }: ProductActionsProps) {
+  const handleSubmit = async (data: ProductFormData) => {
+    await onSubmit(data, true); // Sempre true porque estamos editando
+    onOpenChange(false);
+  };
+
   return (
     <div className="flex justify-end gap-2">
       <Dialog>
@@ -53,7 +57,7 @@ export function ProductActions({
           </DialogHeader>
           <ScrollArea className="h-[80vh] pr-4">
             <ProductForm 
-              onSubmit={onSubmit} 
+              onSubmit={handleSubmit} 
               initialData={product} 
               onComplete={() => onOpenChange(false)}
             />

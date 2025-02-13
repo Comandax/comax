@@ -1,4 +1,3 @@
-
 import { Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -28,7 +27,7 @@ interface ProductTableActionsProps {
   product: Product;
   onEdit: (product: Product) => void;
   onDelete: (productId: string) => Promise<void>;
-  onSubmit: (data: ProductFormData) => Promise<void>;
+  onSubmit: (data: ProductFormData, isEditing: boolean) => Promise<void>;
 }
 
 export function ProductTableActions({
@@ -40,7 +39,7 @@ export function ProductTableActions({
   const [isEditOpen, setIsEditOpen] = useState(false);
 
   const handleSubmit = async (data: ProductFormData) => {
-    await onSubmit(data);
+    await onSubmit(data, true); // Sempre true porque estamos editando
     setIsEditOpen(false);
   };
 

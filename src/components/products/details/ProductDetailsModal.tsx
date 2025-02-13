@@ -1,4 +1,3 @@
-
 import {
   Dialog,
   DialogContent,
@@ -19,7 +18,7 @@ interface ProductDetailsModalProps {
   onOpenChange: (open: boolean) => void;
   onEdit: (product: Product) => void;
   onDelete: (productId: string) => Promise<void>;
-  onSubmit: (data: ProductFormData) => Promise<void>;
+  onSubmit: (data: ProductFormData, isEditing: boolean) => Promise<void>;
   onToggleStatus: (productId: string, disabled: boolean) => Promise<void>;
 }
 
@@ -56,7 +55,7 @@ export function ProductDetailsModal({
             product={product}
             onEdit={onEdit}
             onDelete={onDelete}
-            onSubmit={onSubmit}
+            onSubmit={(data) => onSubmit(data, !!product.id)}
             onOpenChange={onOpenChange}
           />
         </div>

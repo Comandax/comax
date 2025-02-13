@@ -1,7 +1,7 @@
-
 import * as z from "zod";
 
 export const productFormSchema = z.object({
+  _id: z.string().optional(),
   reference: z.string().min(1, "Referência deve ter no mínimo 1 caractere"),
   name: z.string().min(3, "Nome deve ter no mínimo 3 caracteres"),
   image: z.string().optional(),
@@ -19,4 +19,3 @@ export const productFormSchema = z.object({
 });
 
 export type ProductFormSchemaType = z.infer<typeof productFormSchema>;
-

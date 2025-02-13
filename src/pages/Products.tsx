@@ -84,14 +84,14 @@ const Products = () => {
     `${userProfile.first_name} ${userProfile.last_name}` : 
     'Usuário';
 
-  const onSubmit = async (data: ProductFormData) => {
+  const onSubmit = async (data: ProductFormData, isEditing: boolean) => {
     try {
       if (!company?.id) {
         throw new Error("Company ID not found");
       }
 
-      if (selectedProduct) {
-        await updateProduct(selectedProduct._id, data);
+      if (isEditing) {
+        await updateProduct(data._id!, data);
         toast({
           title: "Produto atualizado com sucesso!",
         });
@@ -101,15 +101,16 @@ const Products = () => {
           title: "Produto criado com sucesso!",
         });
       }
-      
+
+      queryClient.invalidateQueries(["products"]);
       setDialogOpen(false);
       setSelectedProduct(null);
-      refetch();
-    } catch (error) {
-      console.error('Error saving product:', error);
+    } catch (error: any) {
+      console.error("Error submitting product:", error);
       toast({
-        title: "Erro ao salvar produto",
         variant: "destructive",
+        title: "Erro ao salvar produto",
+        description: error?.message || "Por favor, tente novamente.",
       });
     }
   };
@@ -280,7 +281,7 @@ const Products = () => {
             setDialogOpen={setDialogOpen}
             selectedProduct={selectedProduct}
             setSelectedProduct={setSelectedProduct}
-            onSubmit={onSubmit}
+            onSubmit={(data) => onSubmit(data, !!selectedProduct)}
           />
 
           <ProductList
