@@ -7,13 +7,13 @@ export const productFormSchema = z.object({
   image: z.string().optional(),
   sizes: z.array(
     z.object({
-      size: z.string(),
-      value: z.number().min(0),
+      size: z.string().min(1, "Tamanho não pode ficar vazio"),
+      value: z.number().min(0.01, "Valor deve ser maior que zero"),
     })
   ).min(1, "Adicione pelo menos um tamanho"),
   quantities: z.array(
     z.object({
-      value: z.number().min(0),
+      value: z.number().min(0.01, "Quantidade deve ser maior que zero"),
     })
   ).min(1, "Adicione pelo menos uma quantidade"),
 });
