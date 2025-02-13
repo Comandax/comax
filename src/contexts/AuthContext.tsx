@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { SupabaseAuthProvider } from '../services/supabaseAuthProvider';
 import type { AuthProvider, User } from '../types/auth';
+import { useNavigate } from 'react-router-dom';
 
 interface AuthContextType {
   user: User | null;
@@ -21,6 +22,7 @@ const authProvider: AuthProvider = new SupabaseAuthProvider();
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     checkUser();
@@ -28,22 +30,37 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   async function checkUser() {
     try {
+      console.log('Checking current user');
       const user = await authProvider.getCurrentUser();
+      console.log('Current user:', user);
       setUser(user);
+      
+      // Se não houver usuário e não estivermos na página de login,
+      // redireciona para login
+      if (!user && window.location.pathname !== '/login') {
+        console.log('No user found, redirecting to login');
+        navigate('/login');
+      }
     } catch (error) {
       console.error('Error checking user:', error);
+      // Em caso de erro de autenticação, também redireciona para login
+      if (window.location.pathname !== '/login') {
+        navigate('/login');
+      }
     } finally {
       setLoading(false);
     }
   }
 
   async function login(email: string, password: string) {
+    console.log('Login attempt for:', email);
     const user = await authProvider.login(email, password);
     setUser(user);
     return user;
   }
 
   async function logout() {
+    console.log('Logging out');
     await authProvider.logout();
     setUser(null);
   }
