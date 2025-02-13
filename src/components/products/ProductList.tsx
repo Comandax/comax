@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { PackageX } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -41,6 +43,19 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortField, setSortField] = useState<SortField>('reference');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+
+  // Se não houver produtos, mostra o card informativo
+  if (!products.length) {
+    return (
+      <Card className="p-8 text-center space-y-4 bg-white/95">
+        <PackageX className="w-12 h-12 mx-auto text-primary" />
+        <h2 className="text-2xl font-semibold">Nenhum produto cadastrado</h2>
+        <p className="text-muted-foreground">
+          Clique no botão "Novo Produto" acima para começar a cadastrar seus produtos.
+        </p>
+      </Card>
+    );
+  }
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
