@@ -63,29 +63,27 @@ export async function createProfile(profile: ProfileFormData): Promise<Profile> 
     throw new Error('Falha ao criar usuário');
   }
 
-  // Espera um momento para garantir que o trigger de criação do perfil seja executado
-  await new Promise(resolve => setTimeout(resolve, 1000));
-
-  // Atualiza o perfil com as informações adicionais
-  const { data, error } = await supabase
+  // Cria o perfil manualmente ao invés de esperar pelo trigger
+  const { data: profileData, error: profileError } = await supabase
     .from('profiles')
-    .update({
+    .insert({
+      id: authData.user.id,
       first_name: profile.first_name,
       last_name: profile.last_name,
+      email: profile.email,
       phone: profile.phone
     })
-    .eq('id', authData.user.id)
     .select()
     .maybeSingle();
 
-  if (error) {
-    console.error('Profile update error:', error);
-    throw new Error('Erro ao atualizar perfil: ' + error.message);
+  if (profileError) {
+    console.error('Profile creation error:', profileError);
+    throw new Error('Erro ao criar perfil: ' + profileError.message);
   }
 
-  if (!data) {
-    throw new Error('Perfil não encontrado após criação');
+  if (!profileData) {
+    throw new Error('Erro ao criar perfil: dados não retornados');
   }
 
-  return data;
+  return profileData;
 }
