@@ -89,7 +89,7 @@ export const useOrderSubmission = () => {
         throw insertError;
       }
 
-      navigate(`/company/${companyData.short_name}/success`);
+      navigate(`/${companyData.short_name}/success`);
     } catch (error) {
       console.error('Error submitting order:', error);
       toast({
