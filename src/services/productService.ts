@@ -28,6 +28,8 @@ export const fetchProducts = async (companyId: string): Promise<Product[]> => {
 };
 
 export const createProduct = async (product: ProductFormData, companyId: string): Promise<Product> => {
+  console.log('Creating product:', { product, companyId });
+  
   const { data, error } = await supabase
     .from('products')
     .insert({
@@ -61,6 +63,10 @@ export const createProduct = async (product: ProductFormData, companyId: string)
 export const updateProduct = async (productId: string, product: ProductFormData): Promise<Product> => {
   console.log('Updating product:', { productId, product });
   
+  if (!productId) {
+    throw new Error('Product ID is required for update');
+  }
+
   const { data, error } = await supabase
     .from('products')
     .update({
@@ -78,6 +84,8 @@ export const updateProduct = async (productId: string, product: ProductFormData)
     console.error('Error updating product:', error);
     throw error;
   }
+
+  console.log('Update response:', data);
 
   return {
     _id: data.id,
