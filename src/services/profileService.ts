@@ -63,6 +63,9 @@ export async function createProfile(profile: ProfileFormData): Promise<Profile> 
     throw new Error('Falha ao criar usuário');
   }
 
+  // Gera um token de confirmação único
+  const confirmationToken = crypto.randomUUID();
+
   // Cria o perfil manualmente ao invés de esperar pelo trigger
   const { data: profileData, error: profileError } = await supabase
     .from('profiles')
@@ -71,7 +74,9 @@ export async function createProfile(profile: ProfileFormData): Promise<Profile> 
       first_name: profile.first_name,
       last_name: profile.last_name,
       email: profile.email,
-      phone: profile.phone
+      phone: profile.phone,
+      confirmation_token: confirmationToken,
+      email_confirmed: false
     })
     .select()
     .maybeSingle();
@@ -96,7 +101,9 @@ export async function createProfile(profile: ProfileFormData): Promise<Profile> 
         .update({
           first_name: profile.first_name,
           last_name: profile.last_name,
-          phone: profile.phone
+          phone: profile.phone,
+          confirmation_token: confirmationToken,
+          email_confirmed: false
         })
         .eq('id', authData.user.id)
         .select()

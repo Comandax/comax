@@ -144,6 +144,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          confirmation_token: string | null
           created_at: string
           email: string | null
           email_confirmed: boolean | null
@@ -154,6 +155,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          confirmation_token?: string | null
           created_at?: string
           email?: string | null
           email_confirmed?: boolean | null
@@ -164,6 +166,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          confirmation_token?: string | null
           created_at?: string
           email?: string | null
           email_confirmed?: boolean | null
