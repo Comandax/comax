@@ -29,7 +29,9 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
   };
 
   const handleQuantitySelect = (productId: string, size: string, quantity: number, price: number) => {
+    // Imediatamente define como calculando
     setIsCalculating(true);
+    
     setSelectedItems(prev => {
       const filtered = prev.filter(item => !(item.productId === productId && item.size === size));
       
@@ -40,7 +42,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
       return filtered;
     });
     
-    // Simular um pequeno delay antes de finalizar o cálculo
+    // Mantém o estado de calculando por pelo menos 500ms para garantir uma transição suave
     setTimeout(() => {
       setIsCalculating(false);
     }, 500);
