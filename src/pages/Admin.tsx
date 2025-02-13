@@ -15,13 +15,13 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { Card } from "@/components/ui/card";
 
 const Admin = () => {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   
-  // If user is not logged in, redirect to login page
   if (!user) {
     return <Navigate to="/login" replace />;
   }
@@ -153,6 +153,23 @@ const Admin = () => {
               </DropdownMenu>
             </div>
           </div>
+
+          {userCompany && (
+            <Card className="p-6 mb-8 bg-white/95">
+              <div className="flex items-center gap-4">
+                {userCompany.logo_url && (
+                  <img 
+                    src={userCompany.logo_url} 
+                    alt={`Logo ${userCompany.name}`}
+                    className="w-16 h-16 object-contain rounded-lg"
+                  />
+                )}
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">{userCompany.name}</h2>
+                </div>
+              </div>
+            </Card>
+          )}
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Link 
