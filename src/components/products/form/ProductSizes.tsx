@@ -16,13 +16,12 @@ export function ProductSizes({ form, sizeArray }: ProductSizesProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between bg-primary rounded-lg px-4 py-2">
-        <FormLabel className="text-white font-medium">Tamanhos e Valores</FormLabel>
+      <div className="flex items-center justify-between bg-muted rounded-lg px-4 py-2">
+        <FormLabel className="text-foreground font-medium">Tamanhos e Valores</FormLabel>
         <Button
           type="button"
-          variant="outline"
+          variant="default"
           size="sm"
-          className="bg-white hover:bg-white/90"
           onClick={() => append({ size: "", value: 0 })}
         >
           <Plus className="mr-2 h-4 w-4" />
