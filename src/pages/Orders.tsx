@@ -238,11 +238,48 @@ const Orders = () => {
     );
   }, [ordersData?.orders, searchTerm]);
 
+  const handleSort = (column: SortConfig['column']) => {
+    setSortConfig(prevConfig => ({
+      column,
+      direction: prevConfig.column === column && prevConfig.direction === 'asc' ? 'desc' : 'asc'
+    }));
+  };
+
+  const sortedOrders = useMemo(() => {
+    if (!filteredOrders) return [];
+    
+    return [...filteredOrders].sort((a, b) => {
+      let compareA: string | number = '';
+      let compareB: string | number = '';
+
+      switch (sortConfig.column) {
+        case 'customerName':
+          compareA = a.customerName.toLowerCase();
+          compareB = b.customerName.toLowerCase();
+          break;
+        case 'date':
+          compareA = new Date(`${a.date} ${a.time}`).getTime();
+          compareB = new Date(`${b.date} ${b.time}`).getTime();
+          break;
+        case 'total':
+          compareA = a.total;
+          compareB = b.total;
+          break;
+      }
+
+      if (sortConfig.direction === 'asc') {
+        return compareA > compareB ? 1 : -1;
+      } else {
+        return compareA < compareB ? 1 : -1;
+      }
+    });
+  }, [filteredOrders, sortConfig]);
+
   const paginatedOrders = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
     const end = start + pageSize;
-    return filteredOrders.slice(start, end);
-  }, [filteredOrders, currentPage, pageSize]);
+    return sortedOrders.slice(start, end);
+  }, [sortedOrders, currentPage, pageSize]);
 
   const totalPages = Math.ceil(filteredOrders.length / pageSize);
 
@@ -257,6 +294,15 @@ const Orders = () => {
   }
 
   const hasNoOrders = ordersData.orders.length === 0;
+
+  const SortIcon = ({ column }: { column: SortConfig['column'] }) => {
+    if (column !== sortConfig.column) {
+      return <ArrowUpDown className="ml-2 h-4 w-4" />;
+    }
+    return sortConfig.direction === 'asc' ? 
+      <ArrowUp className="ml-2 h-4 w-4" /> : 
+      <ArrowDown className="ml-2 h-4 w-4" />;
+  };
 
   return (
     <div className="min-h-screen bg-[#1A1F2C]">
@@ -422,31 +468,31 @@ const Orders = () => {
                     <TableHead>
                       <Button
                         variant="ghost"
-                        onClick={() => sortConfig.column = 'customerName'}
-                        className="hover:bg-transparent"
+                        onClick={() => handleSort('customerName')}
+                        className="hover:bg-transparent font-semibold"
                       >
                         Cliente
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                        <SortIcon column="customerName" />
                       </Button>
                     </TableHead>
                     <TableHead>
                       <Button
                         variant="ghost"
-                        onClick={() => sortConfig.column = 'date'}
-                        className="hover:bg-transparent"
+                        onClick={() => handleSort('date')}
+                        className="hover:bg-transparent font-semibold"
                       >
                         Data/Hora
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                        <SortIcon column="date" />
                       </Button>
                     </TableHead>
                     <TableHead className="text-right">
                       <Button
                         variant="ghost"
-                        onClick={() => sortConfig.column = 'total'}
-                        className="hover:bg-transparent"
+                        onClick={() => handleSort('total')}
+                        className="hover:bg-transparent font-semibold ml-auto"
                       >
                         Total
-                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                        <SortIcon column="total" />
                       </Button>
                     </TableHead>
                   </TableRow>
