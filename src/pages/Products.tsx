@@ -14,6 +14,7 @@ import { LoadingState } from "@/components/index/LoadingState";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { supabase } from "@/integrations/supabase/client";
+import { CompanyHeader } from "@/components/companies/CompanyHeader";
 import {
   DropdownMenu,
   DropdownMenuContent,
