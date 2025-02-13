@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -10,7 +11,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Copy, ArrowLeft, ExternalLink } from "lucide-react";
+import { Copy, ArrowLeft, ExternalLink, Building2, LogOut, User } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
 export default function Companies() {
   const [companies, setCompanies] = useState<Company[]>([]);
@@ -34,7 +43,6 @@ export default function Companies() {
       .from('companies')
       .select('*');
 
-    // Se não for superusuário, filtra apenas as empresas do usuário
     if (!isSuperuser) {
       query = query.eq('owner_id', user.id);
     }
@@ -88,6 +96,19 @@ export default function Companies() {
     window.open(url, '_blank');
   };
 
+  const handleLogout = async () => {
+    try {
+      await user?.handleLogout();
+      navigate("/login");
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Erro ao fazer logout",
+        description: "Por favor, tente novamente.",
+      });
+    }
+  };
+
   if (!user) {
     return null;
   }
@@ -97,12 +118,59 @@ export default function Companies() {
       <div className="bg-gray-900/50 shadow-md">
         <div className="container mx-auto">
           <div className="max-w-6xl mx-auto px-4">
-            <div className="py-1.5">
-              <img 
-                src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
-                alt="COMAX Logo" 
-                className="h-8 w-auto"
-              />
+            <div className="flex items-center justify-between py-1.5">
+              <div className="flex items-center gap-8">
+                <div className="flex items-center gap-2">
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => navigate('/admin')}
+                    className="text-white hover:text-white/80"
+                  >
+                    <ArrowLeft className="h-5 w-5" />
+                  </Button>
+                  <img 
+                    src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
+                    alt="COMAX Logo" 
+                    className="h-8 w-auto cursor-pointer"
+                    onClick={() => navigate('/admin')}
+                  />
+                </div>
+                <h1 className="text-xl font-semibold text-white">
+                  {isSuperuser ? "Administração de Empresas" : "Minha Empresa"}
+                </h1>
+              </div>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                    <Avatar className="h-10 w-10">
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {user.userInitials}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end">
+                  <DropdownMenuItem disabled className="font-semibold">
+                    {user.userName}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate(`/profile/${user.id}`)}>
+                    <User className="mr-2 h-4 w-4" />
+                    Meu Perfil
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => navigate('/companies')}>
+                    <Building2 className="mr-2 h-4 w-4" />
+                    Minha Empresa
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sair
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
@@ -110,23 +178,6 @@ export default function Companies() {
 
       <div className="container mx-auto py-8">
         <div className="max-w-6xl mx-auto px-4 space-y-8">
-          <div className="flex items-center justify-between">
-            <Button
-              variant="ghost"
-              className="text-primary hover:text-primary/80"
-              onClick={() => navigate('/admin')}
-            >
-              <ArrowLeft className="h-5 w-5 mr-2" />
-              Voltar para o painel
-            </Button>
-          </div>
-
-          <div className="text-center">
-            <h1 className="text-3xl font-bold text-primary mb-8">
-              {isSuperuser ? "Administração de Empresas" : "Minha Empresa"}
-            </h1>
-          </div>
-
           {(isSuperuser || companies.length === 0) && (
             <CompanyForm onSubmitSuccess={fetchCompanies} />
           )}
