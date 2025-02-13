@@ -64,35 +64,39 @@ export default function UserCreate() {
 
   return (
     <div className="min-h-screen bg-[#1A1F2C]">
-      <div className="container mx-auto py-8 px-4">
-        <div className="flex flex-col items-center">
-          <div className="mb-8">
-            <img 
-              src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
-              alt="COMAX Logo" 
-              className="h-20 w-auto"
-            />
+      <div className="bg-gray-900/50 shadow-md">
+        <div className="container mx-auto">
+          <div className="max-w-2xl mx-auto px-4">
+            <div className="py-1.5">
+              <img 
+                src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
+                alt="COMAX Logo" 
+                className="h-8 w-auto"
+              />
+            </div>
           </div>
-          
-          <Card className="w-full max-w-2xl mx-auto shadow-lg bg-white/95 p-6">
-            <h1 className="text-2xl font-bold mb-6 text-gray-900">Criar Conta</h1>
-            
-            <Alert className="mb-6" variant="default">
-              <AlertCircle className="h-4 w-4" />
-              <AlertTitle>Importante</AlertTitle>
-              <AlertDescription>
-                Após criar sua conta, você precisará confirmar seu email antes de fazer login.
-                Se não receber o email de confirmação, aguarde alguns segundos e tente criar a conta novamente.
-              </AlertDescription>
-            </Alert>
-
-            <UserForm
-              onSubmit={handleSubmit}
-              isLoading={isCreating}
-            />
-          </Card>
         </div>
+      </div>
+
+      <div className="container mx-auto py-8">
+        <Card className="w-full max-w-2xl mx-auto shadow-lg bg-white/95 p-6">
+          <h1 className="text-2xl font-bold mb-6 text-gray-900">Criar Conta</h1>
+          
+          <Alert className="mb-6" variant="default">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Importante</AlertTitle>
+            <AlertDescription>
+              Após criar sua conta, você precisará confirmar seu email antes de fazer login.
+              Se não receber o email de confirmação, aguarde alguns segundos e tente criar a conta novamente.
+            </AlertDescription>
+          </Alert>
+
+          <UserForm
+            onSubmit={handleSubmit}
+            isLoading={isCreating}
+          />
+        </Card>
       </div>
     </div>
   );
-};
+}
