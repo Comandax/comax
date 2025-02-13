@@ -1,4 +1,3 @@
-
 import { LayoutDashboard, Package, Building2, LogOut, User } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -8,110 +7,92 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Card } from "@/components/ui/card";
-
 const Admin = () => {
-  const { user, logout } = useAuth();
-  const { toast } = useToast();
+  const {
+    user,
+    logout
+  } = useAuth();
+  const {
+    toast
+  } = useToast();
   const navigate = useNavigate();
-  
   if (!user) {
     return <Navigate to="/login" replace />;
   }
-  
-  const { data: userCompany, isError } = useQuery({
+  const {
+    data: userCompany,
+    isError
+  } = useQuery({
     queryKey: ['company', user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('companies')
-        .select('*')
-        .eq('owner_id', user?.id)
-        .maybeSingle();
-      
+      const {
+        data,
+        error
+      } = await supabase.from('companies').select('*').eq('owner_id', user?.id).maybeSingle();
       if (error) {
         console.error('Error fetching company:', error);
         throw error;
       }
-      
       return data;
     },
-    enabled: !!user,
+    enabled: !!user
   });
-
-  const { data: userRoles } = useQuery({
+  const {
+    data: userRoles
+  } = useQuery({
     queryKey: ['user_roles', user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user?.id);
-      
+      const {
+        data,
+        error
+      } = await supabase.from('user_roles').select('role').eq('user_id', user?.id);
       if (error) throw error;
       return data;
     },
-    enabled: !!user,
+    enabled: !!user
   });
-
-  const { data: userProfile } = useQuery({
+  const {
+    data: userProfile
+  } = useQuery({
     queryKey: ['profile', user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user?.id)
-        .single();
-      
+      const {
+        data,
+        error
+      } = await supabase.from('profiles').select('*').eq('id', user?.id).single();
       if (error) throw error;
       return data;
     },
-    enabled: !!user,
+    enabled: !!user
   });
-
   const handleLogout = async () => {
     try {
       await logout();
       toast({
         title: "Logout realizado com sucesso",
-        description: "Você será redirecionado para a página de login.",
+        description: "Você será redirecionado para a página de login."
       });
       navigate("/login");
     } catch (error) {
       toast({
         variant: "destructive",
         title: "Erro ao fazer logout",
-        description: "Por favor, tente novamente.",
+        description: "Por favor, tente novamente."
       });
     }
   };
-
-  const userInitials = userProfile ? 
-    `${userProfile.first_name[0]}${userProfile.last_name[0]}`.toUpperCase() : 
-    'U';
-  const userName = userProfile ? 
-    `${userProfile.first_name} ${userProfile.last_name}` : 
-    'Usuário';
-
+  const userInitials = userProfile ? `${userProfile.first_name[0]}${userProfile.last_name[0]}`.toUpperCase() : 'U';
+  const userName = userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'Usuário';
   const isSuperuser = userRoles?.some(role => role.role === 'superuser');
-
-  return (
-    <div className="min-h-screen bg-[#1A1F2C]">
+  return <div className="min-h-screen bg-[#1A1F2C]">
       <div className="bg-gray-900/50 shadow-md">
         <div className="container mx-auto">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-8">
-                <img 
-                  src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
-                  alt="COMAX Logo" 
-                  className="h-8 w-auto"
-                />
+                <img src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" alt="COMAX Logo" className="h-8 w-auto" />
                 <h1 className="text-xl font-semibold text-white">Painel Administrativo</h1>
               </div>
               <div className="flex items-center gap-4">
@@ -153,28 +134,17 @@ const Admin = () => {
 
       <div className="container mx-auto py-10">
         <div className="max-w-6xl mx-auto px-4">
-          {userCompany && (
-            <Card className="p-6 mb-8 bg-white/95">
+          {userCompany && <Card className="p-6 mb-8 bg-white/95 py-[3px]">
               <div className="flex items-center gap-4">
-                {userCompany.logo_url && (
-                  <img 
-                    src={userCompany.logo_url} 
-                    alt={`Logo ${userCompany.name}`}
-                    className="w-16 h-16 object-contain rounded-lg"
-                  />
-                )}
+                {userCompany.logo_url && <img src={userCompany.logo_url} alt={`Logo ${userCompany.name}`} className="w-16 h-16 object-contain rounded-lg" />}
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900">{userCompany.name}</h2>
                 </div>
               </div>
-            </Card>
-          )}
+            </Card>}
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Link 
-              to="/products"
-              className="flex items-center p-6 bg-white/95 rounded-lg shadow-sm hover:shadow-md transition-shadow"
-            >
+            <Link to="/products" className="flex items-center p-6 bg-white/95 rounded-lg shadow-sm hover:shadow-md transition-shadow">
               <Package className="w-8 h-8 text-blue-500 mr-4" />
               <div>
                 <h2 className="text-xl font-semibold">Produtos</h2>
@@ -182,10 +152,7 @@ const Admin = () => {
               </div>
             </Link>
 
-            <Link 
-              to="/orders"
-              className="flex items-center p-6 bg-white/95 rounded-lg shadow-sm hover:shadow-md transition-shadow"
-            >
+            <Link to="/orders" className="flex items-center p-6 bg-white/95 rounded-lg shadow-sm hover:shadow-md transition-shadow">
               <LayoutDashboard className="w-8 h-8 text-blue-500 mr-4" />
               <div>
                 <h2 className="text-xl font-semibold">Relatório de Pedidos</h2>
@@ -195,8 +162,6 @@ const Admin = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Admin;
