@@ -24,7 +24,6 @@ interface ProductSelectionCardProps {
 
 export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: ProductSelectionCardProps) => {
   const [selectedQuantities, setSelectedQuantities] = useState<Record<string, number>>({});
-  const [loading, setLoading] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (resetItem && resetItem.productId === product.id) {
@@ -48,16 +47,11 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
   };
 
   const handleQuantityChange = useCallback((size: string, quantity: number, price: number) => {
-    // Atualizar estado local imediatamente para resposta instantânea do UI
     setSelectedQuantities(prev => ({
       ...prev,
       [size]: quantity
     }));
-    
-    // Simular um pequeno delay antes de notificar o componente pai
-    setTimeout(() => {
-      onQuantitySelect(size, quantity, price);
-    }, 200);
+    onQuantitySelect(size, quantity, price);
   }, [onQuantitySelect]);
 
   return (
