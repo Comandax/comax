@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
@@ -76,7 +75,7 @@ export default function Companies() {
   };
 
   const copyToClipboard = async (shortName: string) => {
-    const url = `${window.location.origin}/company/${shortName}`;
+    const url = `${window.location.origin}/${shortName}`;
     await navigator.clipboard.writeText(url);
     toast({
       title: "Link copiado!",
@@ -85,7 +84,7 @@ export default function Companies() {
   };
 
   const openInNewTab = (shortName: string) => {
-    const url = `${window.location.origin}/company/${shortName}`;
+    const url = `${window.location.origin}/${shortName}`;
     window.open(url, '_blank');
   };
 
@@ -146,7 +145,7 @@ export default function Companies() {
                   <div className="flex-1">
                     <Input
                       readOnly
-                      value={`${window.location.origin}/company/${companies[0].short_name}`}
+                      value={`${window.location.origin}/${companies[0].short_name}`}
                     />
                   </div>
                   <div className="flex gap-4">
