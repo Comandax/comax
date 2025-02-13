@@ -138,7 +138,46 @@ const Orders = () => {
   const { company } = useCompany();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, userInitials, userName, handleLogout } = useAuth();
+  const { user, logout } = useAuth();
+
+  const { data: userProfile } = useQuery({
+    queryKey: ['profile', user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user?.id)
+        .single();
+      
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      toast({
+        title: "Logout realizado com sucesso",
+        description: "Você será redirecionado para a página de login.",
+      });
+      navigate("/login");
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Erro ao fazer logout",
+        description: "Por favor, tente novamente.",
+      });
+    }
+  };
+
+  const userInitials = userProfile ? 
+    `${userProfile.first_name[0]}${userProfile.last_name[0]}`.toUpperCase() : 
+    'U';
+  const userName = userProfile ? 
+    `${userProfile.first_name} ${userProfile.last_name}` : 
+    'Usuário';
 
   const handleCopyLink = () => {
     const link = `${window.location.origin}/${company?.short_name}`;
