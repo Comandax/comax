@@ -284,43 +284,41 @@ const Orders = () => {
               </div>
             </Card>
 
-            <div className="max-w-2xl mx-auto">
-              <Card className="p-8 text-center space-y-4 bg-white/95">
-                <ShoppingBag className="w-12 h-12 mx-auto text-primary" />
-                <h2 className="text-2xl font-semibold">Nenhum pedido realizado</h2>
-                <p className="text-muted-foreground">
-                  Compartilhe o link da sua página para começar a receber pedidos.
-                </p>
-                <div className="mt-4 p-4 bg-muted rounded-lg">
-                  <p className="text-sm text-muted-foreground mb-2">Página de pedidos:</p>
-                  <code className="text-sm">
-                    {window.location.origin}/{company?.short_name}
-                  </code>
-                  <div className="flex justify-center gap-4 mt-4">
-                    <div className="flex flex-col items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={handleCopyLink}
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Button>
-                      <span className="text-xs text-muted-foreground">Copiar</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        onClick={handleOpenLink}
-                      >
-                        <ExternalLink className="h-4 w-4" />
-                      </Button>
-                      <span className="text-xs text-muted-foreground">Abrir</span>
-                    </div>
+            <Card className="p-8 text-center space-y-4 bg-white/95">
+              <ShoppingBag className="w-12 h-12 mx-auto text-primary" />
+              <h2 className="text-2xl font-semibold">Nenhum pedido realizado</h2>
+              <p className="text-muted-foreground">
+                Compartilhe o link da sua página para começar a receber pedidos.
+              </p>
+              <div className="mt-4 p-4 bg-muted rounded-lg">
+                <p className="text-sm text-muted-foreground mb-2">Página de pedidos:</p>
+                <code className="text-sm">
+                  {window.location.origin}/{company?.short_name}
+                </code>
+                <div className="flex justify-center gap-4 mt-4">
+                  <div className="flex flex-col items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={handleCopyLink}
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                    <span className="text-xs text-muted-foreground">Copiar</span>
+                  </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={handleOpenLink}
+                    >
+                      <ExternalLink className="h-4 w-4" />
+                    </Button>
+                    <span className="text-xs text-muted-foreground">Abrir</span>
                   </div>
                 </div>
-              </Card>
-            </div>
+              </div>
+            </Card>
           </div>
         </div>
       </div>
