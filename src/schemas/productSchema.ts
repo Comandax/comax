@@ -10,12 +10,12 @@ export const productFormSchema = z.object({
       size: z.string(),
       value: z.number().min(0),
     })
-  ),
+  ).min(1, "Adicione pelo menos um tamanho"),
   quantities: z.array(
     z.object({
       value: z.number().min(0),
     })
-  ),
+  ).min(1, "Adicione pelo menos uma quantidade"),
 });
 
 export type ProductFormSchemaType = z.infer<typeof productFormSchema>;
