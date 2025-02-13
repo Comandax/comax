@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { User, Building2, LogOut } from "lucide-react";
+import { User, Building2, LogOut, ArrowLeft } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -382,6 +382,14 @@ const Orders = () => {
             <div className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-8">
                 <div className="flex items-center gap-2">
+                  <Button 
+                    variant="ghost" 
+                    size="icon"
+                    onClick={() => navigate('/admin')}
+                    className="text-white hover:text-white/80"
+                  >
+                    <ArrowLeft className="h-5 w-5" />
+                  </Button>
                   <img 
                     src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
                     alt="COMAX Logo" 
@@ -389,199 +397,191 @@ const Orders = () => {
                     onClick={() => navigate('/admin')}
                   />
                 </div>
-                <h1 className="text-xl font-semibold text-white">Pedidos</h1>
-              </div>
-              {
-                <div className="flex items-center gap-4">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                        <Avatar className="h-10 w-10">
-                          <AvatarFallback className="bg-primary text-primary-foreground">
-                            {userInitials}
-                          </AvatarFallback>
-                        </Avatar>
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56" align="end">
-                      <DropdownMenuItem disabled className="font-semibold">
-                        {userName}
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={() => navigate(`/profile/${user?.id}`)}>
-                        <User className="mr-2 h-4 w-4" />
-                        Meu Perfil
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={() => navigate('/companies')}>
-                        <Building2 className="mr-2 h-4 w-4" />
-                        Minha Empresa
-                      </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onClick={handleLogout} className="text-red-600">
-                        <LogOut className="mr-2 h-4 w-4" />
-                        Sair
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                <div className="flex items-center gap-8">
+                  <h1 className="text-xl font-semibold text-white">Pedidos</h1>
+                  <h1 className="text-xl font-semibold text-white">Produtos</h1>
                 </div>
-              }
+              </div>
+              <div className="flex items-center gap-4">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-10 w-10 rounded-full">
+                      <Avatar className="h-10 w-10">
+                        <AvatarFallback className="bg-primary text-primary-foreground">
+                          {userInitials}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end">
+                    <DropdownMenuItem disabled className="font-semibold">
+                      {userName}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate(`/profile/${user?.id}`)}>
+                      <User className="mr-2 h-4 w-4" />
+                      Meu Perfil
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => navigate('/companies')}>
+                      <Building2 className="mr-2 h-4 w-4" />
+                      Minha Empresa
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sair
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       <div className="container mx-auto py-10">
-        <div className="flex items-center justify-between mb-8">
-          <Button
-            variant="ghost"
-            className="text-primary hover:text-primary/80"
-            onClick={() => navigate('/admin')}
+        <div className="max-w-6xl mx-auto px-4">
+          <Card 
+            className="p-6 mb-8 bg-white/95 cursor-pointer hover:bg-white transition-colors"
+            onClick={() => navigate("/admin")}
           >
-            <ArrowLeft className="h-5 w-5 mr-2" />
-            Voltar para o painel
-          </Button>
-        </div>
-
-        <Card 
-          className="p-6 mb-8 bg-white/95 cursor-pointer hover:bg-white transition-colors"
-          onClick={() => navigate("/admin")}
-        >
-          <div className="flex items-center gap-4">
-            {company?.logo_url && (
-              <img 
-                src={company?.logo_url} 
-                alt={`Logo ${company?.name}`}
-                className="w-16 h-16 object-contain rounded-lg"
-              />
-            )}
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900">{company?.name}</h2>
+            <div className="flex items-center gap-4">
+              {company?.logo_url && (
+                <img 
+                  src={company?.logo_url} 
+                  alt={`Logo ${company?.name}`}
+                  className="w-16 h-16 object-contain rounded-lg"
+                />
+              )}
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">{company?.name}</h2>
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
 
-        <div className="flex flex-col gap-4 mb-6">
-          <h1 className="text-3xl font-bold">Relatório de Pedidos</h1>
-          <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
-              <Input
-                placeholder="Buscar por cliente..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 w-full md:w-64"
-              />
-            </div>
-            <Select
-              value={pageSize.toString()}
-              onValueChange={(value) => setPageSize(Number(value))}
-            >
-              <SelectTrigger className="w-full md:w-32">
-                <SelectValue placeholder="Itens por página" />
-              </SelectTrigger>
-              <SelectContent>
-                {PAGE_SIZES.map((size) => (
-                  <SelectItem key={size} value={size.toString()}>
-                    {size} itens
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Código</TableHead>
-              <TableHead>
-                <Button
-                  variant="ghost"
-                  onClick={() => handleSort('customerName')}
-                  className="hover:bg-transparent"
-                >
-                  Cliente
-                  <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-              </TableHead>
-              <TableHead>
-                <Button
-                  variant="ghost"
-                  onClick={() => handleSort('date')}
-                  className="hover:bg-transparent"
-                >
-                  Data
-                  <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-              </TableHead>
-              <TableHead className="text-right">
-                <Button
-                  variant="ghost"
-                  onClick={() => handleSort('total')}
-                  className="hover:bg-transparent"
-                >
-                  Total
-                  <ArrowUpDown className="ml-2 h-4 w-4" />
-                </Button>
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {ordersData?.orders.map((order) => (
-              <TableRow
-                key={order._id}
-                className="cursor-pointer hover:bg-muted/50"
-                onClick={() => setSelectedOrder(order)}
+          <div className="flex flex-col gap-4 mb-6">
+            <h1 className="text-3xl font-bold">Relatório de Pedidos</h1>
+            <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+                <Input
+                  placeholder="Buscar por cliente..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 w-full md:w-64"
+                />
+              </div>
+              <Select
+                value={pageSize.toString()}
+                onValueChange={(value) => setPageSize(Number(value))}
               >
-                <TableCell>{order._id}</TableCell>
-                <TableCell>{order.customerName}</TableCell>
-                <TableCell>{order.date}</TableCell>
-                <TableCell className="text-right">
-                  R$ {order.total.toFixed(2)}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+                <SelectTrigger className="w-full md:w-32">
+                  <SelectValue placeholder="Itens por página" />
+                </SelectTrigger>
+                <SelectContent>
+                  {PAGE_SIZES.map((size) => (
+                    <SelectItem key={size} value={size.toString()}>
+                      {size} itens
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
 
-        <div className="mt-4">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                  className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-                >
-                  Anterior
-                </PaginationPrevious>
-              </PaginationItem>
-              {[...Array(totalPages)].map((_, i) => (
-                <PaginationItem key={i}>
-                  <PaginationLink
-                    onClick={() => setCurrentPage(i + 1)}
-                    isActive={currentPage === i + 1}
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Código</TableHead>
+                <TableHead>
+                  <Button
+                    variant="ghost"
+                    onClick={() => handleSort('customerName')}
+                    className="hover:bg-transparent"
                   >
-                    {i + 1}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                  className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                    Cliente
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </TableHead>
+                <TableHead>
+                  <Button
+                    variant="ghost"
+                    onClick={() => handleSort('date')}
+                    className="hover:bg-transparent"
+                  >
+                    Data
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </TableHead>
+                <TableHead className="text-right">
+                  <Button
+                    variant="ghost"
+                    onClick={() => handleSort('total')}
+                    className="hover:bg-transparent"
+                  >
+                    Total
+                    <ArrowUpDown className="ml-2 h-4 w-4" />
+                  </Button>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {ordersData?.orders.map((order) => (
+                <TableRow
+                  key={order._id}
+                  className="cursor-pointer hover:bg-muted/50"
+                  onClick={() => setSelectedOrder(order)}
                 >
-                  Próximo
-                </PaginationNext>
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
+                  <TableCell>{order._id}</TableCell>
+                  <TableCell>{order.customerName}</TableCell>
+                  <TableCell>{order.date}</TableCell>
+                  <TableCell className="text-right">
+                    R$ {order.total.toFixed(2)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
 
-        <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
-          <DialogContent className="max-w-4xl">
-            {selectedOrder && <OrderDetails order={selectedOrder} />}
-          </DialogContent>
-        </Dialog>
+          <div className="mt-4">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                    className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                  >
+                    Anterior
+                  </PaginationPrevious>
+                </PaginationItem>
+                {[...Array(totalPages)].map((_, i) => (
+                  <PaginationItem key={i}>
+                    <PaginationLink
+                      onClick={() => setCurrentPage(i + 1)}
+                      isActive={currentPage === i + 1}
+                    >
+                      {i + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                    className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                  >
+                    Próximo
+                  </PaginationNext>
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+
+          <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
+            <DialogContent className="max-w-4xl">
+              {selectedOrder && <OrderDetails order={selectedOrder} />}
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
     </div>
   );
