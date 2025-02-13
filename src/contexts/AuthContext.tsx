@@ -53,19 +53,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     window.location.href = '/login';
   }
 
-  const userInitials = user?.name 
-    ? (() => {
-        const nameParts = user.name.trim().split(' ');
-        if (nameParts.length >= 2) {
-          // Pega a primeira letra do primeiro e do último nome
-          return (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
-        }
-        // Se tiver apenas um nome, pega a primeira letra
-        return nameParts[0][0].toUpperCase();
-      })()
-    : user?.email?.charAt(0).toUpperCase() || '';
+  const userInitials = (() => {
+    if (user?.firstName && user?.lastName) {
+      return (user.firstName[0] + user.lastName[0]).toUpperCase();
+    }
+    // Fallback para o nome completo se existir
+    if (user?.name) {
+      const nameParts = user.name.trim().split(' ');
+      if (nameParts.length >= 2) {
+        return (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+      }
+      return nameParts[0][0].toUpperCase();
+    }
+    // Último fallback para o email
+    return user?.email?.charAt(0).toUpperCase() || '';
+  })();
 
-  const userName = user?.name || user?.email?.split('@')[0] || '';
+  const userName = user?.firstName && user?.lastName 
+    ? `${user.firstName} ${user.lastName}`
+    : user?.name || user?.email?.split('@')[0] || '';
 
   return (
     <AuthContext.Provider value={{ 
