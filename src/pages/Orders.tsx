@@ -399,7 +399,6 @@ const Orders = () => {
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-gray-100/80 hover:bg-gray-100/90">
-                      <TableHead>Código</TableHead>
                       <TableHead>
                         <Button
                           variant="ghost"
@@ -416,7 +415,7 @@ const Orders = () => {
                           onClick={() => sortConfig.column = 'date'}
                           className="hover:bg-transparent"
                         >
-                          Data
+                          Data/Hora
                           <ArrowUpDown className="ml-2 h-4 w-4" />
                         </Button>
                       </TableHead>
@@ -441,9 +440,10 @@ const Orders = () => {
                         }`}
                         onClick={() => setSelectedOrder(order)}
                       >
-                        <TableCell>{order._id}</TableCell>
                         <TableCell>{order.customerName}</TableCell>
-                        <TableCell>{order.date}</TableCell>
+                        <TableCell>
+                          {order.date} às {order.time.substring(0, 5)}
+                        </TableCell>
                         <TableCell className="text-right">
                           R$ {order.total.toFixed(2)}
                         </TableCell>
