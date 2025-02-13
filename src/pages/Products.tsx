@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -114,7 +115,7 @@ const Products = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-[#1A1F2C]">
         <div className="container mx-auto py-10">
           <LoadingState />
         </div>
@@ -124,9 +125,9 @@ const Products = () => {
 
   if (!isPublicView && !company) {
     return (
-      <div className="min-h-screen bg-background p-8">
-        <div className="max-w-2xl mx-auto">
-          <Card className="p-8 text-center space-y-4">
+      <div className="min-h-screen bg-[#1A1F2C] p-8">
+        <div className="max-w-6xl mx-auto">
+          <Card className="p-8 text-center space-y-4 bg-white/95">
             <Building2 className="w-12 h-12 mx-auto text-primary" />
             <h2 className="text-2xl font-semibold">Nenhuma empresa cadastrada</h2>
             <p className="text-muted-foreground">
@@ -149,43 +150,71 @@ const Products = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto py-10">
-        {!isPublicView && (
-          <div className="flex items-center justify-between mb-8">
-            <Button
-              variant="ghost"
-              className="text-primary hover:text-primary/80"
-              onClick={() => navigate('/admin')}
-            >
-              <ArrowLeft className="h-5 w-5 mr-2" />
-              Voltar para o painel
-            </Button>
+    <div className="min-h-screen bg-[#1A1F2C]">
+      <div className="bg-gray-900/50 shadow-md">
+        <div className="container mx-auto">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="py-1.5">
+              <img 
+                src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
+                alt="COMAX Logo" 
+                className="h-8 w-auto"
+              />
+            </div>
           </div>
-        )}
+        </div>
+      </div>
 
-        <CompanyHeader 
-          logo_url={effectiveCompany.logo_url}
-          name={effectiveCompany.name}
-          isPublicView={isPublicView}
-        />
+      <div className="container mx-auto py-10">
+        <div className="max-w-6xl mx-auto px-4">
+          {!isPublicView && (
+            <div className="flex items-center justify-between mb-8">
+              <Button
+                variant="ghost"
+                className="text-primary hover:text-primary/80"
+                onClick={() => navigate('/admin')}
+              >
+                <ArrowLeft className="h-5 w-5 mr-2" />
+                Voltar para o painel
+              </Button>
+            </div>
+          )}
 
-        <ProductsHeader
-          isPublicView={isPublicView}
-          dialogOpen={dialogOpen}
-          setDialogOpen={setDialogOpen}
-          selectedProduct={selectedProduct}
-          setSelectedProduct={setSelectedProduct}
-          onSubmit={onSubmit}
-        />
+          <Card 
+            className="p-6 mb-8 bg-white/95 cursor-pointer hover:bg-white transition-colors"
+            onClick={() => navigate("/admin")}
+          >
+            <div className="flex items-center gap-4">
+              {effectiveCompany?.logo_url && (
+                <img 
+                  src={effectiveCompany.logo_url} 
+                  alt={`Logo ${effectiveCompany.name}`}
+                  className="w-16 h-16 object-contain rounded-lg"
+                />
+              )}
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900">{effectiveCompany.name}</h2>
+              </div>
+            </div>
+          </Card>
 
-        <ProductList
-          products={products}
-          onEdit={isPublicView ? undefined : handleEdit}
-          onDelete={isPublicView ? undefined : handleDelete}
-          onSubmit={isPublicView ? undefined : onSubmit}
-          onToggleStatus={isPublicView ? undefined : handleToggleStatus}
-        />
+          <ProductsHeader
+            isPublicView={isPublicView}
+            dialogOpen={dialogOpen}
+            setDialogOpen={setDialogOpen}
+            selectedProduct={selectedProduct}
+            setSelectedProduct={setSelectedProduct}
+            onSubmit={onSubmit}
+          />
+
+          <ProductList
+            products={products}
+            onEdit={isPublicView ? undefined : handleEdit}
+            onDelete={isPublicView ? undefined : handleDelete}
+            onSubmit={isPublicView ? undefined : onSubmit}
+            onToggleStatus={isPublicView ? undefined : handleToggleStatus}
+          />
+        </div>
       </div>
     </div>
   );
