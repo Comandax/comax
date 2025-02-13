@@ -16,12 +16,13 @@ export function ProductQuantities({ form, quantityArray }: ProductQuantitiesProp
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <FormLabel>Quantidades</FormLabel>
+      <div className="flex items-center justify-between bg-[#7E69AB] rounded-lg px-4 py-2">
+        <FormLabel className="text-white font-medium">Quantidades</FormLabel>
         <Button
           type="button"
           variant="outline"
           size="sm"
+          className="bg-white hover:bg-white/90"
           onClick={() => append({ value: 0 })}
         >
           <Plus className="mr-2 h-4 w-4" />
