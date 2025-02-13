@@ -24,7 +24,7 @@ export default function UserEdit() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['profiles'] });
       queryClient.invalidateQueries({ queryKey: ['profile', id] });
-      navigate('/users');
+      navigate('/admin');
     },
   });
 
