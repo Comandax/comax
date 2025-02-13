@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -193,23 +193,16 @@ const Orders = () => {
   };
 
   const { data: ordersData } = useQuery({
-    queryKey: ["orders", company?.id, searchTerm, sortConfig, currentPage, pageSize],
+    queryKey: ["orders", company?.id],
     queryFn: async () => {
       let query = supabase
         .from("orders")
         .select("*", { count: 'exact' })
         .eq("company_id", company?.id);
 
-      if (searchTerm) {
-        query = query.ilike('customer_name', `%${searchTerm}%`);
-      }
-
       const column = sortConfig.column === 'customerName' ? 'customer_name' : 
                     sortConfig.column === 'date' ? 'date' : 'total';
       query = query.order(column, { ascending: sortConfig.direction === 'asc' });
-
-      const from = (currentPage - 1) * pageSize;
-      query = query.range(from, from + pageSize - 1);
 
       const { data, error, count } = await query;
 
@@ -237,7 +230,22 @@ const Orders = () => {
     enabled: !!company?.id,
   });
 
-  // Se os dados ainda estão carregando ou não há empresa
+  const filteredOrders = useMemo(() => {
+    if (!ordersData?.orders) return [];
+    
+    return ordersData.orders.filter(order => 
+      order.customerName.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [ordersData?.orders, searchTerm]);
+
+  const paginatedOrders = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    const end = start + pageSize;
+    return filteredOrders.slice(start, end);
+  }, [filteredOrders, currentPage, pageSize]);
+
+  const totalPages = Math.ceil(filteredOrders.length / pageSize);
+
   if (!company || !ordersData) {
     return (
       <div className="min-h-screen bg-background">
@@ -247,6 +255,8 @@ const Orders = () => {
       </div>
     );
   }
+
+  const hasNoOrders = ordersData.orders.length === 0;
 
   return (
     <div className="min-h-screen bg-[#1A1F2C]">
@@ -326,7 +336,7 @@ const Orders = () => {
             </div>
           </Card>
 
-          {ordersData.orders.length > 0 && (
+          {!hasNoOrders && (
             <div className="space-y-4 mb-6">
               <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
                 <div className="relative">
@@ -340,13 +350,16 @@ const Orders = () => {
                 </div>
                 <Select
                   value={pageSize.toString()}
-                  onValueChange={(value) => setPageSize(Number(value))}
+                  onValueChange={(value) => {
+                    setPageSize(Number(value));
+                    setCurrentPage(1);
+                  }}
                 >
                   <SelectTrigger className="w-full md:w-32">
                     <SelectValue placeholder="Itens por página" />
                   </SelectTrigger>
                   <SelectContent>
-                    {[10, 20, 50, 100].map((size) => (
+                    {PAGE_SIZES.map((size) => (
                       <SelectItem key={size} value={size.toString()}>
                         {size} itens
                       </SelectItem>
@@ -357,7 +370,7 @@ const Orders = () => {
             </div>
           )}
 
-          {ordersData.orders.length === 0 ? (
+          {hasNoOrders ? (
             <Card className="p-8 text-center space-y-4">
               <ShoppingBag className="w-12 h-12 mx-auto text-primary" />
               <h2 className="text-2xl font-semibold">Nenhum pedido realizado</h2>
@@ -393,65 +406,73 @@ const Orders = () => {
                 </div>
               </div>
             </Card>
+          ) : filteredOrders.length === 0 ? (
+            <Card className="p-8 text-center space-y-4">
+              <Search className="w-12 h-12 mx-auto text-primary" />
+              <h2 className="text-2xl font-semibold">Nenhum resultado encontrado</h2>
+              <p className="text-muted-foreground">
+                Sua busca não retornou resultados. Tente outros termos.
+              </p>
+            </Card>
           ) : (
-            <>
-              <div className="bg-gray-50/95 rounded-lg p-6 shadow-lg">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-gray-100/80 hover:bg-gray-100/90">
-                      <TableHead>
-                        <Button
-                          variant="ghost"
-                          onClick={() => sortConfig.column = 'customerName'}
-                          className="hover:bg-transparent"
-                        >
-                          Cliente
-                          <ArrowUpDown className="ml-2 h-4 w-4" />
-                        </Button>
-                      </TableHead>
-                      <TableHead>
-                        <Button
-                          variant="ghost"
-                          onClick={() => sortConfig.column = 'date'}
-                          className="hover:bg-transparent"
-                        >
-                          Data/Hora
-                          <ArrowUpDown className="ml-2 h-4 w-4" />
-                        </Button>
-                      </TableHead>
-                      <TableHead className="text-right">
-                        <Button
-                          variant="ghost"
-                          onClick={() => sortConfig.column = 'total'}
-                          className="hover:bg-transparent"
-                        >
-                          Total
-                          <ArrowUpDown className="ml-2 h-4 w-4" />
-                        </Button>
-                      </TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {ordersData.orders.map((order, index) => (
-                      <TableRow
-                        key={order._id}
-                        className={`cursor-pointer hover:bg-gray-100/70 ${
-                          index % 2 === 0 ? 'bg-white' : 'bg-gray-50/80'
-                        }`}
-                        onClick={() => setSelectedOrder(order)}
+            <div className="bg-gray-50/95 rounded-lg p-6 shadow-lg">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-gray-100/80 hover:bg-gray-100/90">
+                    <TableHead>
+                      <Button
+                        variant="ghost"
+                        onClick={() => sortConfig.column = 'customerName'}
+                        className="hover:bg-transparent"
                       >
-                        <TableCell>{order.customerName}</TableCell>
-                        <TableCell>
-                          {order.date} às {order.time.substring(0, 5)}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          R$ {order.total.toFixed(2)}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
+                        Cliente
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </TableHead>
+                    <TableHead>
+                      <Button
+                        variant="ghost"
+                        onClick={() => sortConfig.column = 'date'}
+                        className="hover:bg-transparent"
+                      >
+                        Data/Hora
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </TableHead>
+                    <TableHead className="text-right">
+                      <Button
+                        variant="ghost"
+                        onClick={() => sortConfig.column = 'total'}
+                        className="hover:bg-transparent"
+                      >
+                        Total
+                        <ArrowUpDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {paginatedOrders.map((order, index) => (
+                    <TableRow
+                      key={order._id}
+                      className={`cursor-pointer hover:bg-gray-100/70 ${
+                        index % 2 === 0 ? 'bg-white' : 'bg-gray-50/80'
+                      }`}
+                      onClick={() => setSelectedOrder(order)}
+                    >
+                      <TableCell>{order.customerName}</TableCell>
+                      <TableCell>
+                        {order.date} às {order.time.substring(0, 5)}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        R$ {order.total.toFixed(2)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
 
+              {totalPages > 1 && (
                 <div className="mt-4">
                   <Pagination>
                     <PaginationContent>
@@ -461,7 +482,7 @@ const Orders = () => {
                           className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
                         />
                       </PaginationItem>
-                      {Array.from({ length: Math.ceil((ordersData.totalCount || 0) / pageSize) }).map((_, i) => (
+                      {Array.from({ length: totalPages }).map((_, i) => (
                         <PaginationItem key={i}>
                           <PaginationLink
                             onClick={() => setCurrentPage(i + 1)}
@@ -473,15 +494,15 @@ const Orders = () => {
                       ))}
                       <PaginationItem>
                         <PaginationNext
-                          onClick={() => setCurrentPage((p) => Math.min(Math.ceil((ordersData.totalCount || 0) / pageSize), p + 1))}
-                          className={currentPage === Math.ceil((ordersData.totalCount || 0) / pageSize) ? "pointer-events-none opacity-50" : ""}
+                          onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                          className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
                         />
                       </PaginationItem>
                     </PaginationContent>
                   </Pagination>
                 </div>
-              </div>
-            </>
+              )}
+            </div>
           )}
 
           <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
