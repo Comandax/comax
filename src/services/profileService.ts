@@ -77,6 +77,44 @@ export async function createProfile(profile: ProfileFormData): Promise<Profile> 
     .maybeSingle();
 
   if (profileError) {
+    // Se houver erro na criação, verifica se o perfil já existe (pode ter sido criado pelo trigger)
+    const { data: existingProfile, error: fetchError } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', authData.user.id)
+      .maybeSingle();
+
+    if (fetchError) {
+      console.error('Error fetching existing profile:', fetchError);
+      throw new Error('Erro ao verificar perfil existente: ' + fetchError.message);
+    }
+
+    if (existingProfile) {
+      // Se o perfil já existe, atualiza com as informações adicionais
+      const { data: updatedProfile, error: updateError } = await supabase
+        .from('profiles')
+        .update({
+          first_name: profile.first_name,
+          last_name: profile.last_name,
+          phone: profile.phone
+        })
+        .eq('id', authData.user.id)
+        .select()
+        .maybeSingle();
+
+      if (updateError) {
+        console.error('Error updating existing profile:', updateError);
+        throw new Error('Erro ao atualizar perfil existente: ' + updateError.message);
+      }
+
+      if (!updatedProfile) {
+        throw new Error('Perfil não encontrado após atualização');
+      }
+
+      return updatedProfile;
+    }
+
+    // Se não encontrou perfil existente, propaga o erro original
     console.error('Profile creation error:', profileError);
     throw new Error('Erro ao criar perfil: ' + profileError.message);
   }
