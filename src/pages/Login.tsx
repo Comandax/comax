@@ -33,12 +33,31 @@ const Login = () => {
       } else {
         navigate("/admin");
       }
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Erro ao fazer login",
-        description: "Verifique suas credenciais e tente novamente.",
-      });
+    } catch (error: any) {
+      // Verificar se é um erro de credenciais inválidas
+      const errorMessage = error?.message || "";
+      const errorBody = error?.body ? JSON.parse(error.body) : null;
+      
+      if (errorBody?.code === "invalid_credentials" || errorMessage.includes("Invalid login credentials")) {
+        toast({
+          variant: "destructive",
+          title: "Credenciais inválidas",
+          description: "E-mail ou senha incorretos. Por favor, verifique suas credenciais e tente novamente.",
+        });
+      } else if (errorMessage.includes("confirme seu email")) {
+        toast({
+          variant: "destructive",
+          title: "E-mail não confirmado",
+          description: "Por favor, confirme seu e-mail antes de fazer login. Verifique sua caixa de entrada.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Erro ao fazer login",
+          description: "Ocorreu um erro inesperado. Por favor, tente novamente.",
+        });
+      }
+      console.error("Erro de login:", error);
     } finally {
       setIsLoading(false);
     }
