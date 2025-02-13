@@ -6,12 +6,14 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   // Login form state
   const [email, setEmail] = useState("");
@@ -65,8 +67,8 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-[#1A1F2C] p-4">
-      <div className="mb-8">
+    <div className="min-h-screen flex flex-col items-center justify-start bg-[#1A1F2C] p-4">
+      <div className={`${isMobile ? 'mt-8' : 'mt-16'} mb-8`}>
         <img 
           src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
           alt="COMAX Logo" 
