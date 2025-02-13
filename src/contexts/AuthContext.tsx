@@ -54,12 +54,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const userInitials = user?.name 
-    ? user.name
-        .split(' ')
-        .map(n => n[0])
-        .join('')
-        .toUpperCase()
-        .slice(0, 2)
+    ? (() => {
+        const nameParts = user.name.trim().split(' ');
+        if (nameParts.length >= 2) {
+          // Pega a primeira letra do primeiro e do último nome
+          return (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+        }
+        // Se tiver apenas um nome, pega a primeira letra
+        return nameParts[0][0].toUpperCase();
+      })()
     : user?.email?.charAt(0).toUpperCase() || '';
 
   const userName = user?.name || user?.email?.split('@')[0] || '';
