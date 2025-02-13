@@ -132,7 +132,7 @@ const Orders = () => {
   const { toast } = useToast();
 
   const handleCopyLink = () => {
-    const link = `${window.location.origin}/${company?.short_name}`;
+    const link = `${window.location.origin}/company/${company?.short_name}`;
     navigator.clipboard.writeText(link);
     toast({
       title: "Link copiado!",
@@ -141,7 +141,7 @@ const Orders = () => {
   };
 
   const handleOpenLink = () => {
-    window.open(`/${company?.short_name}`, '_blank');
+    window.open(`/company/${company?.short_name}`, '_blank');
   };
 
   const { data: ordersData } = useQuery<OrdersQueryResult>({
@@ -279,7 +279,7 @@ const Orders = () => {
               <div className="mt-4 p-4 bg-muted rounded-lg">
                 <p className="text-sm text-muted-foreground mb-2">Página de pedidos:</p>
                 <code className="text-sm">
-                  {window.location.origin}/{company?.short_name}
+                  {window.location.origin}/company/{company?.short_name}
                 </code>
                 <div className="flex justify-center gap-4 mt-4">
                   <div className="flex flex-col items-center gap-2">
