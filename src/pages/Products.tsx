@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -13,6 +12,7 @@ import { usePublicCompany } from "@/hooks/usePublicCompany";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Building2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
+import { LoadingState } from "@/components/index/LoadingState";
 
 const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -113,10 +113,15 @@ const Products = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto py-10">
+          <LoadingState />
+        </div>
+      </div>
+    );
   }
 
-  // Se não for uma visualização pública e o usuário não tiver empresa
   if (!isPublicView && !company) {
     return (
       <div className="min-h-screen bg-background p-8">

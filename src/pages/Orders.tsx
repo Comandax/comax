@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
@@ -41,6 +40,7 @@ import {
 import type { Order } from "@/types/order";
 import { useCompany } from "@/hooks/useCompany";
 import { supabase } from "@/integrations/supabase/client";
+import { LoadingState } from "@/components/index/LoadingState";
 
 const OrderDetails = ({ order }: { order: Order }) => {
   return (
@@ -183,6 +183,17 @@ const Orders = () => {
       direction: current.column === column && current.direction === 'asc' ? 'desc' : 'asc'
     }));
   };
+
+  // Se os dados ainda estão carregando
+  if (!company || !ordersData) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container mx-auto py-10">
+          <LoadingState />
+        </div>
+      </div>
+    );
+  }
 
   // Se não houver empresa cadastrada
   if (!company) {
