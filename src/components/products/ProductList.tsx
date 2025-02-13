@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { PackageX } from "lucide-react";
+import { PackageX, Search } from "lucide-react";
 import {
   Pagination,
   PaginationContent,
@@ -108,100 +108,103 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
   const currentProducts = sortedProducts.slice(startIndex, endIndex);
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div className="flex-1 max-w-sm">
-          <Input
-            placeholder="Buscar por nome ou referência..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
+    <Card className="bg-white/95">
+      <div className="p-6 space-y-6">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex-1 max-w-sm relative">
+            <Input
+              placeholder="Buscar por nome ou referência..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-10"
+            />
+            <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={showOnlyActive}
+                onCheckedChange={setShowOnlyActive}
+                id="active-filter"
+              />
+              <Label htmlFor="active-filter">Mostrar apenas ativos</Label>
+            </div>
+
+            <Select
+              value={String(itemsPerPage)}
+              onValueChange={(value) => {
+                setItemsPerPage(Number(value));
+                setCurrentPage(1);
+              }}
+            >
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Itens por página" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="5">5 itens</SelectItem>
+                <SelectItem value="10">10 itens</SelectItem>
+                <SelectItem value="20">20 itens</SelectItem>
+                <SelectItem value="50">50 itens</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="rounded-lg overflow-hidden border">
+          <ProductTable
+            products={currentProducts}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onSubmit={onSubmit}
+            onToggleStatus={handleToggleStatus}
+            onProductClick={handleProductClick}
+            sortField={sortField}
+            sortOrder={sortOrder}
+            onSort={handleSort}
           />
         </div>
-        
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Switch
-              checked={showOnlyActive}
-              onCheckedChange={setShowOnlyActive}
-              id="active-filter"
-            />
-            <Label htmlFor="active-filter">Mostrar apenas ativos</Label>
-          </div>
 
-          <Select
-            value={String(itemsPerPage)}
-            onValueChange={(value) => {
-              setItemsPerPage(Number(value));
-              setCurrentPage(1);
-            }}
-          >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Itens por página" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="5">5 itens</SelectItem>
-              <SelectItem value="10">10 itens</SelectItem>
-              <SelectItem value="20">20 itens</SelectItem>
-              <SelectItem value="50">50 itens</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-
-      <ProductTable
-        products={currentProducts}
-        onEdit={onEdit}
-        onDelete={onDelete}
-        onSubmit={onSubmit}
-        onToggleStatus={handleToggleStatus}
-        onProductClick={handleProductClick}
-        sortField={sortField}
-        sortOrder={sortOrder}
-        onSort={handleSort}
-      />
-
-      {totalPages > 1 && (
-        <div className="flex justify-center mt-4">
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <Button
-                  variant="ghost"
-                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                  disabled={currentPage === 1}
-                >
-                  <PaginationPrevious />
-                </Button>
-              </PaginationItem>
-              
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                <PaginationItem key={page}>
-                  <button
-                    className={`px-4 py-2 rounded-md ${
-                      currentPage === page
-                        ? "bg-primary text-primary-foreground"
-                        : "hover:bg-muted"
-                    }`}
-                    onClick={() => setCurrentPage(page)}
+        {totalPages > 1 && (
+          <div className="flex justify-center mt-4">
+            <Pagination>
+              <PaginationContent>
+                <PaginationItem>
+                  <Button
+                    variant="ghost"
+                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                    disabled={currentPage === 1}
                   >
-                    {page}
-                  </button>
+                    <PaginationPrevious />
+                  </Button>
                 </PaginationItem>
-              ))}
+                
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                  <PaginationItem key={page}>
+                    <Button
+                      variant={currentPage === page ? "default" : "ghost"}
+                      className={currentPage === page ? "pointer-events-none" : ""}
+                      onClick={() => setCurrentPage(page)}
+                    >
+                      {page}
+                    </Button>
+                  </PaginationItem>
+                ))}
 
-              <PaginationItem>
-                <Button
-                  variant="ghost"
-                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                  disabled={currentPage === totalPages}
-                >
-                  <PaginationNext />
-                </Button>
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        </div>
-      )}
+                <PaginationItem>
+                  <Button
+                    variant="ghost"
+                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                    disabled={currentPage === totalPages}
+                  >
+                    <PaginationNext />
+                  </Button>
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          </div>
+        )}
+      </div>
 
       <ProductDetailsModal
         product={selectedProduct}
@@ -212,6 +215,6 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
         onSubmit={onSubmit}
         onToggleStatus={handleToggleStatus}
       />
-    </div>
+    </Card>
   );
 }
