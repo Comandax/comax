@@ -60,7 +60,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         .join('')
         .toUpperCase()
         .slice(0, 2)
-    : '';
+    : user?.email?.charAt(0).toUpperCase() || '';
 
   const userName = user?.name || user?.email?.split('@')[0] || '';
 

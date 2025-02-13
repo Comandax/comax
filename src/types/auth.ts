@@ -4,6 +4,7 @@ export type Role = 'superuser' | 'owner';
 export interface User {
   id: string;
   email: string;
+  name?: string;
   companyId: string;
   roles?: Role[];
 }
