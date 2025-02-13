@@ -166,7 +166,7 @@ export const OrderSummaryModal = ({
                                   )}
                                 </div>
                                 {idx < item.sizes.length - 1 && (
-                                  <div className="border-b border-gray-200"></div>
+                                  <div className="border-b border-gray-300"></div>
                                 )}
                               </div>
                             ))}
