@@ -65,11 +65,19 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-primary p-4">
-      <Card className="w-full max-w-md mx-auto shadow-lg animate-fade-in">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-primary p-4">
+      <div className="mb-8">
+        <img 
+          src="/lovable-uploads/97447ac0-dd6b-44f8-87c4-07cac3aafa27.png" 
+          alt="COMAX Logo" 
+          className="h-16 w-auto"
+        />
+      </div>
+      
+      <Card className="w-full max-w-md mx-auto shadow-lg animate-fade-in bg-white/95">
         <CardHeader>
-          <h2 className="text-3xl font-bold text-center text-gray-900">
-            Login
+          <h2 className="text-2xl font-bold text-center text-gray-900">
+            Acesse sua conta
           </h2>
         </CardHeader>
         <CardContent>
