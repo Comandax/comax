@@ -95,7 +95,7 @@ const Index = () => {
 
   console.log('✅ Renderizando página principal');
   return (
-    <div className="min-h-screen bg-gradient-to-r from-primary to-secondary p-4 md:p-8">
+    <div className="min-h-screen bg-[#1A1F2C] p-4 md:p-8">
       <div className="max-w-6xl mx-auto space-y-8">
         <CompanyInfo company={company} />
         <h1 className="text-3xl font-bold text-white text-center">Simulações e Pedidos</h1>
