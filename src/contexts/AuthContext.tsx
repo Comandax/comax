@@ -8,6 +8,9 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<User>;
   logout: () => Promise<void>;
+  userInitials: string;
+  userName: string;
+  handleLogout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -45,8 +48,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }
 
+  const handleLogout = async () => {
+    await logout();
+    window.location.href = '/login';
+  };
+
+  const userInitials = user?.email 
+    ? user.email.split('@')[0].slice(0, 2).toUpperCase()
+    : '';
+
+  const userName = user?.email 
+    ? user.email.split('@')[0]
+    : '';
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      loading, 
+      login, 
+      logout,
+      userInitials,
+      userName,
+      handleLogout
+    }}>
       {children}
     </AuthContext.Provider>
   );
