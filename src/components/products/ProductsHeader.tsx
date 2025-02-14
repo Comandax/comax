@@ -1,3 +1,4 @@
+
 import { ProductForm } from "./ProductForm";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import type { Product, ProductFormData } from "@/types/product";
