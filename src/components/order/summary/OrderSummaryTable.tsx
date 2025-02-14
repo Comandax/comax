@@ -34,8 +34,8 @@ export const OrderSummaryTable = ({
   };
 
   return (
-    <div className="w-full overflow-auto">
-      <div className="w-full min-w-[300px]">
+    <div className="w-full overflow-hidden flex flex-col">
+      <div className="w-full min-w-[300px] overflow-auto">
         <Table>
           <TableHeader>
             <TableRow>
@@ -100,6 +100,12 @@ export const OrderSummaryTable = ({
                 </TableRow>
               );
             })}
+          </TableBody>
+        </Table>
+      </div>
+      <div className="mt-4 bg-white sticky bottom-0 border-t">
+        <Table>
+          <TableBody>
             <TableRow>
               <TableCell 
                 colSpan={3} 
