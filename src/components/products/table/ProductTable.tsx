@@ -1,4 +1,3 @@
-
 import { Switch } from "@/components/ui/switch";
 import {
   Table,
@@ -16,7 +15,7 @@ interface ProductTableProps {
   products: Product[];
   onEdit: (product: Product) => void;
   onDelete: (productId: string) => Promise<void>;
-  onSubmit: (data: ProductFormData) => Promise<void>;
+  onSubmit: (data: ProductFormData, isEditing: boolean) => Promise<void>;
   onToggleStatus: (productId: string, disabled: boolean) => Promise<void>;
   onProductClick: (product: Product) => void;
   sortField?: 'reference' | 'name';

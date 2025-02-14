@@ -1,4 +1,3 @@
-
 import { ProductForm } from "./ProductForm";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import type { Product, ProductFormData } from "@/types/product";
@@ -27,9 +26,9 @@ export const ProductsHeader = ({
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogContent>
         <ProductForm
-          product={selectedProduct}
+          initialData={selectedProduct || undefined}
           onSubmit={(data) => onSubmit(data, !!selectedProduct)}
-          onCancel={() => {
+          onComplete={() => {
             setDialogOpen(false);
             setSelectedProduct(null);
           }}

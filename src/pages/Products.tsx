@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useNavigate, useParams } from "react-router-dom";
@@ -162,7 +161,7 @@ const Products = () => {
         isLoading={isLoadingProducts}
         onEdit={isPublicView ? undefined : handleEdit}
         onDelete={isPublicView ? undefined : handleDelete}
-        onSubmit={isPublicView ? undefined : onSubmit}
+        onSubmit={isPublicView ? undefined : (data, isEditing) => onSubmit(data, isEditing)}
         onToggleStatus={isPublicView ? undefined : handleToggleStatus}
       />
     </ProductsLayout>
