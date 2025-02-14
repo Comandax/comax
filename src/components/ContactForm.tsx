@@ -123,9 +123,9 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
   };
 
   const handleStateChange = (value: string) => {
-    const state = states.find(s => s.id.toString() === value);
-    setSelectedState(value);
-    handleInputChange("state", state?.nome || "");
+    const state = states.find(s => s.sigla === value);
+    setSelectedState(state?.id.toString() || "");
+    handleInputChange("state", value);
     handleInputChange("city", "");
   };
 
@@ -178,7 +178,7 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
         <div className="space-y-2">
           <Label htmlFor="state">Estado</Label>
           <Select 
-            value={selectedState} 
+            value={formData.state} 
             onValueChange={handleStateChange}
           >
             <SelectTrigger>
@@ -186,7 +186,7 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
             </SelectTrigger>
             <SelectContent>
               {states.map((state) => (
-                <SelectItem key={state.id} value={state.id.toString()}>
+                <SelectItem key={state.id} value={state.sigla}>
                   {state.nome}
                 </SelectItem>
               ))}
