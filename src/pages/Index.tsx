@@ -59,28 +59,21 @@ const Index = () => {
     fetchCompany();
   }, [shortName, toast, navigate]);
 
-  const { data: products = [] } = useQuery({
+  const { data: products = [], isLoading: isLoadingProducts } = useQuery({
     queryKey: ['products', company?.id],
     queryFn: () => {
       console.log('🔍 Buscando produtos para empresa:', company?.id);
       return fetchProducts(company?.id || '');
     },
     enabled: !!company?.id,
-    meta: {
-      onSuccess: (data: any) => {
-        console.log('✅ Produtos carregados:', data);
-      },
-      onError: (error: any) => {
-        console.error('❌ Erro ao carregar produtos:', error);
-      }
-    }
   });
 
   console.log('🔄 Estado atual:', {
     isLoading,
     error,
     company,
-    productsCount: products.length
+    productsCount: products.length,
+    isLoadingProducts
   });
 
   if (isLoading) {
@@ -100,7 +93,11 @@ const Index = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto space-y-8">
           <h1 className="text-3xl font-bold text-white text-center">Simulações e Pedidos</h1>
-          <OrderForm companyId={company.id} products={products} />
+          <OrderForm 
+            companyId={company.id} 
+            products={products} 
+            isLoading={isLoadingProducts} 
+          />
         </div>
       </div>
     </div>
