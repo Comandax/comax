@@ -50,6 +50,12 @@ const OrderDetails = ({
             <p>Código: {order._id}</p>
             <p>Data: {order.date}</p>
             <p>Hora: {order.time}</p>
+            {order.notes && (
+              <div className="mt-2">
+                <h4 className="font-semibold mb-1">Observações:</h4>
+                <p className="text-gray-700 text-sm whitespace-pre-wrap">{order.notes}</p>
+              </div>
+            )}
           </div>
           <div>
             <h3 className="font-semibold mb-2">Cliente</h3>
