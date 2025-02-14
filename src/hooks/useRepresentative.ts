@@ -14,13 +14,15 @@ export function useRepresentative() {
     enabled: !!user && user.roles?.includes('representative'),
     staleTime: 5 * 60 * 1000, // Cache por 5 minutos
     retry: 1,
-    onError: (error: Error) => {
-      console.error('Erro ao carregar dados do representante:', error);
-      toast({
-        variant: "destructive",
-        title: "Erro ao carregar dados",
-        description: "Não foi possível carregar os dados do representante. Por favor, tente novamente.",
-      });
+    meta: {
+      onError: (error: Error) => {
+        console.error('Erro ao carregar dados do representante:', error);
+        toast({
+          variant: "destructive",
+          title: "Erro ao carregar dados",
+          description: "Não foi possível carregar os dados do representante. Por favor, tente novamente.",
+        });
+      }
     }
   });
 
@@ -30,13 +32,15 @@ export function useRepresentative() {
     enabled: !!representative,
     staleTime: 5 * 60 * 1000, // Cache por 5 minutos
     retry: 1,
-    onError: (error: Error) => {
-      console.error('Erro ao carregar empresas do representante:', error);
-      toast({
-        variant: "destructive",
-        title: "Erro ao carregar empresas",
-        description: "Não foi possível carregar a lista de empresas. Por favor, tente novamente.",
-      });
+    meta: {
+      onError: (error: Error) => {
+        console.error('Erro ao carregar empresas do representante:', error);
+        toast({
+          variant: "destructive",
+          title: "Erro ao carregar empresas",
+          description: "Não foi possível carregar a lista de empresas. Por favor, tente novamente.",
+        });
+      }
     }
   });
 
