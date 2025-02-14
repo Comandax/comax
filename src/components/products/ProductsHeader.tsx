@@ -1,13 +1,15 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
 import { ProductForm } from "./ProductForm";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import type { Product, ProductFormData } from "@/types/product";
+import { Dispatch, SetStateAction } from "react";
 
 interface ProductsHeaderProps {
   isPublicView: boolean;
   dialogOpen: boolean;
-  setDialogOpen: (open: boolean) => void;
+  setDialogOpen: Dispatch<SetStateAction<boolean>>;
   selectedProduct: Product | null;
-  setSelectedProduct: (product: Product | null) => void;
+  setSelectedProduct: Dispatch<SetStateAction<Product | null>>;
   onSubmit: (data: ProductFormData, isEditing: boolean) => Promise<void>;
 }
 
@@ -17,31 +19,17 @@ export const ProductsHeader = ({
   setDialogOpen,
   selectedProduct,
   setSelectedProduct,
-  onSubmit,
+  onSubmit
 }: ProductsHeaderProps) => {
-  if (isPublicView) {
-    return null;
-  }
-
-  const handleSubmit = async (data: ProductFormData) => {
-    await onSubmit(data, !!selectedProduct);
-  };
+  if (isPublicView) return null;
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogContent aria-describedby="product-form-description">
-        <DialogHeader>
-          <DialogTitle>
-            {selectedProduct ? "Editar Produto" : "Novo Produto"}
-          </DialogTitle>
-        </DialogHeader>
-        <div id="product-form-description" className="sr-only">
-          Formulário para {selectedProduct ? "edição" : "criação"} de produto, incluindo campos para referência, nome, imagem, tamanhos e quantidades
-        </div>
-        <ProductForm 
-          onSubmit={handleSubmit} 
-          initialData={selectedProduct || undefined} 
-          onComplete={() => {
+      <DialogContent>
+        <ProductForm
+          product={selectedProduct}
+          onSubmit={(data) => onSubmit(data, !!selectedProduct)}
+          onCancel={() => {
             setDialogOpen(false);
             setSelectedProduct(null);
           }}

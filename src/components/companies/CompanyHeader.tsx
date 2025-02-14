@@ -1,8 +1,6 @@
 
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Plus } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 interface CompanyHeaderProps {
   logo_url?: string | null;
@@ -17,36 +15,26 @@ export const CompanyHeader = ({
   isPublicView,
   onNewProduct
 }: CompanyHeaderProps) => {
-  const navigate = useNavigate();
-
   if (isPublicView) return null;
 
   return (
-    <Card 
-      className="p-6 mb-8 bg-white/90 hover:bg-white/95 transition-colors"
-    >
-      <div className="flex items-center justify-between">
-        <div 
-          className="flex items-center gap-4 cursor-pointer"
-          onClick={() => navigate("/admin")}
-        >
+    <div className="bg-white/5 border-b border-white/10 -mx-4 mb-6">
+      <div className="flex items-center justify-between px-4">
+        <div className="flex items-center gap-4 py-2">
           {logo_url && (
             <img 
               src={logo_url} 
               alt={`${name} logo`}
-              className="w-16 h-16 object-contain rounded-lg"
+              className="w-8 h-8 object-contain rounded"
             />
           )}
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">{name}</h2>
-          </div>
+          <h2 className="text-sm font-medium text-white/90">{name}</h2>
         </div>
         <Button onClick={onNewProduct}>
           <Plus className="mr-2" />
           Novo Produto
         </Button>
       </div>
-    </Card>
+    </div>
   );
 };
-
