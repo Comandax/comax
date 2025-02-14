@@ -25,4 +25,6 @@ export interface Order {
   items: OrderItem[];
   total: number;
   companyId: string;
+  notes?: string;
 }
+
