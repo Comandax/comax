@@ -9,6 +9,7 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { PackageX, Search } from "lucide-react";
+import { LoadingState } from "@/components/index/LoadingState";
 import {
   Pagination,
   PaginationContent,
@@ -30,12 +31,13 @@ interface ProductListProps {
   onDelete?: (productId: string) => Promise<void>;
   onSubmit?: (data: ProductFormData) => Promise<void>;
   onToggleStatus?: (productId: string, disabled: boolean) => Promise<void>;
+  isLoading?: boolean;
 }
 
 type SortField = 'reference' | 'name';
 type SortOrder = 'asc' | 'desc';
 
-export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStatus }: ProductListProps) {
+export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStatus, isLoading = false }: ProductListProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [search, setSearch] = useState('');
   const [showOnlyActive, setShowOnlyActive] = useState(false);
@@ -44,7 +46,14 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
   const [sortField, setSortField] = useState<SortField>('reference');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
 
-  // Se não houver produtos, mostra o card informativo
+  if (isLoading) {
+    return (
+      <Card className="p-8 bg-white/95">
+        <LoadingState />
+      </Card>
+    );
+  }
+
   if (!products.length) {
     return (
       <Card className="p-8 text-center space-y-4 bg-white/95">
@@ -83,7 +92,6 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
     }
   };
 
-  // Filtragem
   const filteredProducts = products.filter(product => {
     const searchMatch = search.toLowerCase() === '' || 
       product.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -92,7 +100,6 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
     return searchMatch && activeMatch;
   });
 
-  // Ordenação
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     const compareValue = sortOrder === 'asc' ? 1 : -1;
     if (sortField === 'reference') {
@@ -101,7 +108,6 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
     return a.name > b.name ? compareValue : -compareValue;
   });
 
-  // Paginação
   const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;

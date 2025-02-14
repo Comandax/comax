@@ -39,7 +39,7 @@ const Products = () => {
   const isPublicView = !company && !!publicCompany;
   const isLoading = isLoadingCompany || isLoadingPublicCompany;
 
-  const { data: products = [], refetch } = useQuery({
+  const { data: products = [], isLoading: isLoadingProducts, refetch } = useQuery({
     queryKey: ["products", effectiveCompany?.id],
     queryFn: () => fetchProducts(effectiveCompany?.id || ""),
     enabled: !!effectiveCompany?.id,
@@ -286,6 +286,7 @@ const Products = () => {
 
           <ProductList
             products={products}
+            isLoading={isLoadingProducts}
             onEdit={isPublicView ? undefined : handleEdit}
             onDelete={isPublicView ? undefined : handleDelete}
             onSubmit={isPublicView ? undefined : onSubmit}
