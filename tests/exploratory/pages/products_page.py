@@ -19,7 +19,7 @@ class ProductsPage(BasePage):
         'confirm_delete': (By.XPATH, "//button[text()='Excluir']")
     }
 
-    SEARCH = (By.PLACEHOLDER, "Buscar produtos...")
+    SEARCH = (By.CSS_SELECTOR, "[placeholder='Buscar produtos...']")
     SORT_REFERENCE = (By.XPATH, "//th[contains(text(), 'Referência')]")
     SORT_NAME = (By.XPATH, "//th[contains(text(), 'Nome')]")
 
