@@ -8,6 +8,7 @@ import type { Product } from "@/types/product";
 import { useOrderCalculations } from "./hooks/useOrderCalculations";
 import { useOrderSubmission } from "./hooks/useOrderSubmission";
 import { useQuery } from "@tanstack/react-query";
+import type { ContactFormData } from "@/components/ContactForm";
 
 interface OrderFormProps {
   companyId: string;
@@ -22,7 +23,7 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
     price: number;
   }>>([]);
   const [resetItem, setResetItem] = useState<{ size: string; productId: string; } | undefined>();
-  const [contactInfo, setContactInfo] = useState({
+  const [contactInfo, setContactInfo] = useState<ContactFormData>({
     name: "",
     whatsapp: "",
     city: "",
