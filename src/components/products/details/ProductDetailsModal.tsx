@@ -1,4 +1,3 @@
-
 import {
   Dialog,
   DialogContent,
@@ -56,7 +55,7 @@ export function ProductDetailsModal({
             product={product}
             onEdit={onEdit}
             onDelete={onDelete}
-            onSubmit={(data) => onSubmit(data, true)}
+            onSubmit={(data) => onSubmit(data, !!product.id)}
             onOpenChange={onOpenChange}
           />
         </div>

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -91,8 +90,8 @@ const Products = () => {
         throw new Error("Company ID not found");
       }
 
-      if (isEditing && data._id) {
-        await updateProduct(data._id, data);
+      if (isEditing) {
+        await updateProduct(data._id!, data);
         toast({
           title: "Produto atualizado com sucesso!",
         });
@@ -103,7 +102,7 @@ const Products = () => {
         });
       }
 
-      queryClient.invalidateQueries({ queryKey: ["products", effectiveCompany?.id] });
+      queryClient.invalidateQueries(["products"]);
       setDialogOpen(false);
       setSelectedProduct(null);
     } catch (error: any) {
@@ -282,14 +281,14 @@ const Products = () => {
             setDialogOpen={setDialogOpen}
             selectedProduct={selectedProduct}
             setSelectedProduct={setSelectedProduct}
-            onSubmit={onSubmit}
+            onSubmit={(data) => onSubmit(data, !!selectedProduct)}
           />
 
           <ProductList
             products={products}
             onEdit={isPublicView ? undefined : handleEdit}
             onDelete={isPublicView ? undefined : handleDelete}
-            onSubmit={onSubmit}
+            onSubmit={isPublicView ? undefined : onSubmit}
             onToggleStatus={isPublicView ? undefined : handleToggleStatus}
           />
         </div>

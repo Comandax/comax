@@ -1,4 +1,3 @@
-
 import { Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -40,7 +39,7 @@ export function ProductTableActions({
   const [isEditOpen, setIsEditOpen] = useState(false);
 
   const handleSubmit = async (data: ProductFormData) => {
-    await onSubmit(data, true);
+    await onSubmit(data, true); // Sempre true porque estamos editando
     setIsEditOpen(false);
   };
 
@@ -61,11 +60,7 @@ export function ProductTableActions({
             <DialogTitle>Editar Produto</DialogTitle>
           </DialogHeader>
           <ScrollArea className="h-[80vh] pr-4">
-            <ProductForm 
-              onSubmit={handleSubmit} 
-              initialData={product}
-              onComplete={() => setIsEditOpen(false)}
-            />
+            <ProductForm onSubmit={handleSubmit} initialData={product} />
           </ScrollArea>
         </DialogContent>
       </Dialog>

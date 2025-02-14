@@ -1,8 +1,6 @@
-
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ProductForm } from "./ProductForm";
 import type { Product, ProductFormData } from "@/types/product";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ProductsHeaderProps {
   isPublicView: boolean;
@@ -25,24 +23,29 @@ export const ProductsHeader = ({
     return null;
   }
 
+  const handleSubmit = async (data: ProductFormData) => {
+    await onSubmit(data, !!selectedProduct);
+  };
+
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogContent>
+      <DialogContent aria-describedby="product-form-description">
         <DialogHeader>
           <DialogTitle>
             {selectedProduct ? "Editar Produto" : "Novo Produto"}
           </DialogTitle>
         </DialogHeader>
-        <ScrollArea className="h-[80vh] pr-4">
-          <ProductForm 
-            onSubmit={(data) => onSubmit(data, !!selectedProduct)} 
-            initialData={selectedProduct || undefined}
-            onComplete={() => {
-              setDialogOpen(false);
-              setSelectedProduct(null);
-            }}
-          />
-        </ScrollArea>
+        <div id="product-form-description" className="sr-only">
+          Formulário para {selectedProduct ? "edição" : "criação"} de produto, incluindo campos para referência, nome, imagem, tamanhos e quantidades
+        </div>
+        <ProductForm 
+          onSubmit={handleSubmit} 
+          initialData={selectedProduct || undefined} 
+          onComplete={() => {
+            setDialogOpen(false);
+            setSelectedProduct(null);
+          }}
+        />
       </DialogContent>
     </Dialog>
   );
