@@ -121,7 +121,7 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
                 </div>
               </div>
               {index < product.sizes.length - 1 && (
-                <Separator className="my-4 opacity-50" />
+                <Separator className="my-0 opacity-50" />
               )}
             </div>
           ))}
