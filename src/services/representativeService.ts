@@ -84,7 +84,7 @@ export async function getRepresentativeCompanies(representativeId: string): Prom
       id,
       name,
       logo_url,
-      owner:profiles(
+      profiles!companies_owner_id_fkey (
         first_name,
         last_name,
         email,
@@ -99,7 +99,7 @@ export async function getRepresentativeCompanies(representativeId: string): Prom
     id: company.id,
     name: company.name,
     logo_url: company.logo_url,
-    owner: company.owner as RepresentativeCompany['owner']
+    owner: company.profiles as RepresentativeCompany['owner']
   }));
 }
 
