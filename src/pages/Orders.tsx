@@ -34,6 +34,14 @@ const OrderDetails = ({
     return phone;
   };
 
+  const formatZipCode = (zipCode: string) => {
+    const cleaned = zipCode.replace(/\D/g, '');
+    if (cleaned.length === 8) {
+      return `${cleaned.slice(0, 5)}-${cleaned.slice(5)}`;
+    }
+    return zipCode;
+  };
+
   return <ScrollArea className="h-[80vh]">
       <div className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
@@ -48,7 +56,7 @@ const OrderDetails = ({
             <p>Nome: {order.customerName}</p>
             <p>Telefone: {formatPhoneNumber(order.customerPhone)}</p>
             <p>Cidade: {order.customerCity} / {order.customerState}</p>
-            <p>CEP: {order.customerZipCode}</p>
+            <p>CEP: {formatZipCode(order.customerZipCode)}</p>
           </div>
         </div>
 
