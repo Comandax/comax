@@ -1,3 +1,4 @@
+
 import { LayoutDashboard, Package, Building2, LogOut, User } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Card } from "@/components/ui/card";
+
 const Admin = () => {
   const {
     user,
@@ -18,9 +20,11 @@ const Admin = () => {
     toast
   } = useToast();
   const navigate = useNavigate();
+
   if (!user) {
     return <Navigate to="/login" replace />;
   }
+
   const {
     data: userCompany,
     isError
@@ -39,6 +43,7 @@ const Admin = () => {
     },
     enabled: !!user
   });
+
   const {
     data: userRoles
   } = useQuery({
@@ -53,6 +58,7 @@ const Admin = () => {
     },
     enabled: !!user
   });
+
   const {
     data: userProfile
   } = useQuery({
@@ -67,6 +73,7 @@ const Admin = () => {
     },
     enabled: !!user
   });
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -83,9 +90,11 @@ const Admin = () => {
       });
     }
   };
+
   const userInitials = userProfile ? `${userProfile.first_name[0]}${userProfile.last_name[0]}`.toUpperCase() : 'U';
   const userName = userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'Usuário';
   const isSuperuser = userRoles?.some(role => role.role === 'superuser');
+
   return <div className="min-h-screen bg-[#1A1F2C]">
       <div className="bg-gray-900/50 shadow-md">
         <div className="container mx-auto">
@@ -132,17 +141,27 @@ const Admin = () => {
         </div>
       </div>
 
+      {userCompany && (
+        <div className="bg-white/5 border-b border-white/10">
+          <div className="container mx-auto">
+            <div className="max-w-6xl mx-auto px-4">
+              <div className="flex items-center gap-4 py-2">
+                {userCompany.logo_url && (
+                  <img 
+                    src={userCompany.logo_url} 
+                    alt={`Logo ${userCompany.name}`} 
+                    className="w-8 h-8 object-contain rounded"
+                  />
+                )}
+                <h2 className="text-sm font-medium text-white/90">{userCompany.name}</h2>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="container mx-auto py-10">
         <div className="max-w-6xl mx-auto px-4">
-          {userCompany && <Card className="p-6 mb-8 bg-white/95 py-[3px]">
-              <div className="flex items-center gap-4">
-                {userCompany.logo_url && <img src={userCompany.logo_url} alt={`Logo ${userCompany.name}`} className="w-16 h-16 object-contain rounded-lg" />}
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-900">{userCompany.name}</h2>
-                </div>
-              </div>
-            </Card>}
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Link to="/products" className="flex items-center p-6 bg-white/95 rounded-lg shadow-sm hover:shadow-md transition-shadow">
               <Package className="w-8 h-8 text-blue-500 mr-4" />
@@ -164,4 +183,5 @@ const Admin = () => {
       </div>
     </div>;
 };
+
 export default Admin;
