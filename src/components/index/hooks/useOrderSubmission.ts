@@ -92,13 +92,11 @@ export const useOrderSubmission = () => {
         .insert([orderData]);
 
       if (insertError) {
-        console.error('Insert error:', insertError);
         throw insertError;
       }
 
       navigate(`/${companyData.short_name}/success`);
     } catch (error) {
-      console.error('Error submitting order:', error);
       toast({
         title: "Erro ao enviar pedido",
         description: "Ocorreu um erro ao salvar seu pedido. Por favor, tente novamente.",
