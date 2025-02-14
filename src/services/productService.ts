@@ -60,6 +60,28 @@ export const createProduct = async (product: ProductFormData, companyId: string)
   };
 };
 
+export const createManyProducts = async (products: ProductFormData[], companyId: string): Promise<void> => {
+  console.log('Creating multiple products:', { productsCount: products.length, companyId });
+  
+  const productsToInsert = products.map(product => ({
+    reference: product.reference,
+    name: product.name,
+    sizes: product.sizes,
+    quantities: product.quantities.map(q => q.value),
+    company_id: companyId,
+    disabled: false
+  }));
+
+  const { error } = await supabase
+    .from('products')
+    .insert(productsToInsert);
+
+  if (error) {
+    console.error('Error creating products:', error);
+    throw error;
+  }
+};
+
 export const updateProduct = async (productId: string, product: ProductFormData): Promise<Product> => {
   console.log('Updating product:', { productId, product });
   
@@ -135,3 +157,4 @@ export const deleteProduct = async (productId: string): Promise<void> => {
     throw error;
   }
 };
+
