@@ -34,8 +34,8 @@ export const OrderSummaryTable = ({
   };
 
   return (
-    <div className="w-full overflow-hidden flex flex-col pr-4">
-      <div className="w-full min-w-[300px] overflow-auto max-h-[60vh] pr-2">
+    <div className="w-full overflow-hidden flex flex-col">
+      <div className="w-full min-w-[300px] overflow-auto max-h-[40vh] pr-2">
         <Table>
           <TableHeader>
             <TableRow>
@@ -98,26 +98,16 @@ export const OrderSummaryTable = ({
                     {formattedSubtotal}
                   </TableCell>
                 </TableRow>
-              );
-            })}
+              ))}
           </TableBody>
         </Table>
       </div>
-      <div className="mt-4 bg-white border-t">
-        <Table>
-          <TableBody>
-            <TableRow>
-              <TableCell 
-                colSpan={4} 
-                className="text-right font-bold whitespace-normal p-1 md:p-2"
-              >
-                <div className="flex justify-center items-center">
-                  <span className="text-sm md:text-base mr-8">Total do Pedido: {formattedTotal}</span>
-                </div>
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
+      <div className="mt-4 border-t pt-4">
+        <div className="text-right pr-4">
+          <span className="text-sm md:text-base font-semibold">
+            Total do Pedido: {formattedTotal}
+          </span>
+        </div>
       </div>
     </div>
   );

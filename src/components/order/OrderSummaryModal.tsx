@@ -91,22 +91,28 @@ export const OrderSummaryModal = ({
           Resumo do pedido contendo lista de produtos selecionados, quantidades, tamanhos e valor total
         </div>
         
-        <OrderSummaryHeader />
+        <div className="flex flex-col h-full max-h-[85vh]">
+          <OrderSummaryHeader />
 
-        <div className="space-y-6 w-full">
-          <OrderSummaryTable 
-            items={items} 
-            total={total} 
-            onRemoveItem={handleRemoveItem}
-            removingItem={removingItem}
-          />
+          <div className="flex-1 overflow-hidden flex flex-col">
+            <div className="flex-1 min-h-0 space-y-6">
+              <OrderSummaryTable 
+                items={items} 
+                total={total} 
+                onRemoveItem={handleRemoveItem}
+                removingItem={removingItem}
+              />
 
-          <OrderNotes value={notes} onChange={onNotesChange} />
+              <OrderNotes value={notes} onChange={onNotesChange} />
+            </div>
 
-          <OrderSummaryFooter 
-            onSubmit={handleSubmit}
-            isSubmitting={isSubmitting}
-          />
+            <div className="pt-6 mt-4 border-t">
+              <OrderSummaryFooter 
+                onSubmit={handleSubmit}
+                isSubmitting={isSubmitting}
+              />
+            </div>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
