@@ -57,7 +57,7 @@ export async function getRepresentativeByIdentifier(identifier: string): Promise
     .from('representatives')
     .select('*')
     .eq('identifier', identifier)
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
   return data;
@@ -69,7 +69,7 @@ export async function updateRepresentative(id: string, identifier: string): Prom
     .update({ identifier })
     .eq('id', id)
     .select()
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
   if (!data) throw new Error('Representative not found');
@@ -112,8 +112,8 @@ export async function getCurrentRepresentative(): Promise<Representative | null>
     .from('representatives')
     .select('*')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
-  if (error) return null;
+  if (error) throw error;
   return data;
 }
