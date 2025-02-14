@@ -84,7 +84,7 @@ export async function getRepresentativeCompanies(representativeId: string): Prom
       id,
       name,
       logo_url,
-      owner:profiles!companies_owner_id_fkey (
+      owner:profiles(
         first_name,
         last_name,
         email,
