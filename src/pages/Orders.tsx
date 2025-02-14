@@ -73,7 +73,7 @@ const OrderDetails = ({ order }: { order: Order }) => {
             <h3 className="font-semibold mb-2">Cliente</h3>
             <p>Nome: {order.customerName}</p>
             <p>Telefone: {order.customerPhone}</p>
-            <p>Cidade: {order.customerCity}</p>
+            <p>Cidade: {order.customerCity} / {order.customerState}</p>
             <p>CEP: {order.customerZipCode}</p>
           </div>
         </div>
@@ -222,6 +222,7 @@ const Orders = () => {
           customerName: order.customer_name,
           customerPhone: order.customer_phone,
           customerCity: order.customer_city,
+          customerState: order.customer_state,
           customerZipCode: order.customer_zip_code,
           date: new Date(order.date).toLocaleDateString(),
           time: order.time,
