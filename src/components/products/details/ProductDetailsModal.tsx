@@ -55,7 +55,7 @@ export function ProductDetailsModal({
             product={product}
             onEdit={onEdit}
             onDelete={onDelete}
-            onSubmit={(data) => onSubmit(data, !!product.id)}
+            onSubmit={(data) => onSubmit(data, !!product._id)}
             onOpenChange={onOpenChange}
           />
         </div>
