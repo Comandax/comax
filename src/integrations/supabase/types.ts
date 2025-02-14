@@ -42,6 +42,13 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "companies_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "companies_representative_id_fkey"
             columns: ["representative_id"]
             isOneToOne: false
