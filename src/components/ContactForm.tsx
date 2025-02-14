@@ -1,4 +1,3 @@
-
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -167,7 +166,6 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
             inputMode="numeric"
             value={formData.whatsapp}
             onChange={(e) => handleInputChange("whatsapp", e.target.value)}
-            placeholder="(00) 0000-0000 ou (00) 0 0000-0000"
             required
             className="md:text-sm"
           />
