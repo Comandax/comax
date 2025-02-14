@@ -215,7 +215,8 @@ const Orders = () => {
           time: order.time,
           items: order.items,
           total: order.total,
-          companyId: order.company_id
+          companyId: order.company_id,
+          notes: order.notes
         })),
         totalCount: count || 0
       };
