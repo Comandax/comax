@@ -10,11 +10,23 @@ interface SelectedItem {
   price: number;
 }
 
-export const useOrderCalculations = (selectedItems: SelectedItem[], products: Product[]) => {
+interface OrderCalculationsParams {
+  selectedItems: SelectedItem[];
+  products?: Product[];
+}
+
+export const useOrderCalculations = ({ selectedItems, products = [] }: OrderCalculationsParams) => {
   const calculateTotal = () => {
     return selectedItems.reduce((total, item) => {
       return total + (item.quantity * item.price);
     }, 0);
+  };
+
+  const formatTotal = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value);
   };
 
   const prepareOrderItems = () => {
@@ -50,10 +62,12 @@ export const useOrderCalculations = (selectedItems: SelectedItem[], products: Pr
   };
 
   const memoizedTotal = useMemo(() => calculateTotal(), [selectedItems]);
+  const memoizedFormattedTotal = useMemo(() => formatTotal(memoizedTotal), [memoizedTotal]);
   const memoizedOrderItems = useMemo(() => prepareOrderItems(), [selectedItems, products]);
 
   return {
     total: memoizedTotal,
+    formattedTotal: memoizedFormattedTotal,
     orderItems: memoizedOrderItems
   };
 };
