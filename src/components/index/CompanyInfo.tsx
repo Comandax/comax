@@ -20,7 +20,7 @@ export const CompanyInfo = ({ company }: CompanyInfoProps) => {
                 <img 
                   src={company.logo_url} 
                   alt={`${company.name} logo`}
-                  className="w-14 h-14 object-contain rounded-lg"
+                  className="w-15 h-15 object-contain rounded-lg"
                 />
               )}
               <h2 className="text-xl font-bold text-gray-900">{company.name}</h2>
