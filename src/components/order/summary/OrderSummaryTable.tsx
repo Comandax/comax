@@ -98,7 +98,8 @@ export const OrderSummaryTable = ({
                     {formattedSubtotal}
                   </TableCell>
                 </TableRow>
-              ))}
+              );
+            })}
           </TableBody>
         </Table>
       </div>
