@@ -76,7 +76,7 @@ export const ProductCard = ({ product, onQuantitySelect, resetItem }: ProductCar
         </div>
         
         <div className="md:w-1/2">
-          <div className="grid grid-cols-[80px_1fr_60px] gap-4 text-sm font-medium text-gray-700 mb-2">
+          <div className="grid grid-cols-[80px_1fr_60px] gap-4 text-sm font-medium text-gray-700 mb-2 bg-gray-100 p-2 rounded-md">
             <div>Tamanho</div>
             <div>Quantidades</div>
             <div>Subtotal</div>
@@ -125,3 +125,4 @@ export const ProductCard = ({ product, onQuantitySelect, resetItem }: ProductCar
     </Card>
   );
 };
+
