@@ -109,7 +109,7 @@ export const OrderSummaryTable = ({
             <TableRow>
               <TableCell 
                 colSpan={3} 
-                className="text-right font-bold whitespace-normal p-1 md:p-2"
+                className="text-center font-bold whitespace-normal p-1 md:p-2"
               >
                 <span className="text-sm md:text-base">Total do Pedido</span>
               </TableCell>
