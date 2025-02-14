@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import type { Representative, RepresentativeCompany } from "@/types/representative";
 import type { Profile } from "@/types/profile";
@@ -40,14 +39,20 @@ export async function createRepresentative(userId: string): Promise<Representati
   // Add representative role
   const { error: roleError } = await supabase
     .from('user_roles')
-    .insert([
+    .upsert([
       {
         user_id: userId,
         role: 'representative'
       }
-    ]);
+    ], {
+      onConflict: 'user_id,role'
+    });
 
-  if (roleError) throw roleError;
+  if (roleError) {
+    // Se houver erro ao criar a role, vamos tentar limpar o representante criado
+    await supabase.from('representatives').delete().eq('id', userId);
+    throw roleError;
+  }
 
   return data;
 }
