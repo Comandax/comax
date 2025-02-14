@@ -1,5 +1,6 @@
 
 import { useQuery } from "@tanstack/react-query";
+import { getProfiles } from "@/services/profileService";
 import {
   Table,
   TableBody,
@@ -31,8 +32,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useState } from "react";
-import { useAuth } from "@/contexts/AuthContext";
-import { useRepresentative } from "@/hooks/useRepresentative";
 
 type SortField = 'name' | 'company' | 'email' | 'phone' | 'created_at';
 type SortOrder = 'asc' | 'desc';
@@ -44,32 +43,14 @@ export function UserList() {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
-  const { user } = useAuth();
-  const { representative } = useRepresentative();
 
   const { data: profilesData, isLoading } = useQuery({
-    queryKey: ['profiles', representative?.id],
+    queryKey: ['profiles'],
     queryFn: async () => {
-      let query = supabase
+      const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('*');
 
-      if (representative) {
-        // Se for um representante, filtra apenas os usuários das empresas que ele representa
-        const { data: companies } = await supabase
-          .from('companies')
-          .select('owner_id')
-          .eq('representative_id', representative.id);
-
-        if (companies && companies.length > 0) {
-          query = query.in('id', companies.map(c => c.owner_id));
-        } else {
-          // Se não houver empresas, retorna apenas o próprio perfil
-          query = query.eq('id', user?.id);
-        }
-      }
-
-      const { data: profiles, error: profilesError } = await query;
       if (profilesError) throw profilesError;
 
       const { data: companies, error: companiesError } = await supabase
@@ -158,12 +139,10 @@ export function UserList() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Usuários</h2>
-        {!representative && (
-          <Button onClick={() => navigate('/users/create')}>
-            <Plus className="size-4" />
-            Novo Usuário
-          </Button>
-        )}
+        <Button onClick={() => navigate('/users/create')}>
+          <Plus className="size-4" />
+          Novo Usuário
+        </Button>
       </div>
 
       <div className="flex gap-4 items-center">

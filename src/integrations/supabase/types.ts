@@ -17,7 +17,6 @@ export type Database = {
           logo_url: string | null
           name: string
           owner_id: string
-          representative_id: string | null
           short_name: string
         }
         Insert: {
@@ -27,7 +26,6 @@ export type Database = {
           logo_url?: string | null
           name: string
           owner_id: string
-          representative_id?: string | null
           short_name?: string
         }
         Update: {
@@ -37,25 +35,9 @@ export type Database = {
           logo_url?: string | null
           name?: string
           owner_id?: string
-          representative_id?: string | null
           short_name?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "companies_owner_id_fkey"
-            columns: ["owner_id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "companies_representative_id_fkey"
-            columns: ["representative_id"]
-            isOneToOne: false
-            referencedRelation: "representatives"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       orders: {
         Row: {
@@ -196,27 +178,6 @@ export type Database = {
         }
         Relationships: []
       }
-      representatives: {
-        Row: {
-          created_at: string
-          id: string
-          identifier: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          id: string
-          identifier: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          identifier?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       user_roles: {
         Row: {
           id: string
@@ -240,13 +201,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      generate_representative_identifier: {
-        Args: {
-          first_name: string
-          last_name: string
-        }
-        Returns: string
-      }
       generate_short_name: {
         Args: {
           name: string
@@ -262,7 +216,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "superuser" | "owner" | "representative"
+      app_role: "superuser" | "owner"
     }
     CompositeTypes: {
       [_ in never]: never

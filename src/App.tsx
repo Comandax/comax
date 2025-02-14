@@ -1,48 +1,100 @@
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { AuthProvider } from "./contexts/AuthContext";
 import { Toaster } from "@/components/ui/toaster";
-import Index from "./pages/Index";
-import Login from "./pages/Login";
-import Admin from "./pages/Admin";
-import Products from "./pages/Products";
-import Users from "./pages/Users";
-import UserCreate from "./pages/UserCreate";
-import UserEdit from "./pages/UserEdit";
-import Companies from "./pages/Companies";
-import Orders from "./pages/Orders";
-import RepresentativeSignup from "./pages/RepresentativeSignup";
-import OrderSuccess from "./pages/OrderSuccess";
-import NotFound from "./pages/NotFound";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
+import Index from "./pages/Index";
+import Admin from "./pages/Admin";
+import Companies from "./pages/Companies";
+import Products from "./pages/Products";
+import Orders from "./pages/Orders";
+import Users from "./pages/Users";
+import UserEdit from "./pages/UserEdit";
+import UserCreate from "./pages/UserCreate";
+import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import OrderSuccess from "./pages/OrderSuccess";
 
 const queryClient = new QueryClient();
 
-function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Router>
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/:shortName" element={<Index />} />
+            <Route path="/:shortName/success" element={<OrderSuccess />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/representative/signup" element={<RepresentativeSignup />} />
-            <Route path="/admin" element={<ProtectedRoute><Admin /></ProtectedRoute>} />
-            <Route path="/users" element={<ProtectedRoute><Users /></ProtectedRoute>} />
-            <Route path="/users/create" element={<ProtectedRoute superUserOnly><UserCreate /></ProtectedRoute>} />
-            <Route path="/users/:id" element={<ProtectedRoute><UserEdit /></ProtectedRoute>} />
-            <Route path="/companies" element={<ProtectedRoute><Companies /></ProtectedRoute>} />
-            <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
-            <Route path="/orders" element={<ProtectedRoute><Orders /></ProtectedRoute>} />
-            <Route path="/order-success" element={<OrderSuccess />} />
+            <Route 
+              path="/admin" 
+              element={
+                <ProtectedRoute>
+                  <Admin />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/companies" 
+              element={
+                <ProtectedRoute>
+                  <Companies />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/products" 
+              element={
+                <ProtectedRoute>
+                  <Products />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/orders" 
+              element={
+                <ProtectedRoute>
+                  <Orders />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/users" 
+              element={
+                <ProtectedRoute superUserOnly>
+                  <Users />
+                </ProtectedRoute>
+              } 
+            />
+            <Route path="/users/create" element={<UserCreate />} />
+            <Route 
+              path="/users/:id" 
+              element={
+                <ProtectedRoute>
+                  <UserEdit />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/profile/:id" 
+              element={
+                <ProtectedRoute>
+                  <UserEdit />
+                </ProtectedRoute>
+              } 
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </Router>
-        <Toaster />
-      </AuthProvider>
-    </QueryClientProvider>
-  );
-}
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
+  </QueryClientProvider>
+);
 
 export default App;

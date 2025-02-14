@@ -1,5 +1,5 @@
 
-export type Role = 'superuser' | 'owner' | 'representative';
+export type Role = 'superuser' | 'owner';
 
 export interface User {
   id: string;
