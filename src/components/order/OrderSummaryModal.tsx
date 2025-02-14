@@ -83,7 +83,7 @@ export const OrderSummaryModal = ({
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent 
         ref={contentRef}
-        className="max-w-3xl w-[95%] md:w-full max-h-[90vh] overflow-y-auto p-2 md:p-6" 
+        className="max-w-3xl w-[95%] md:w-full max-h-[90vh] p-2 md:p-6 pr-8" 
         onOpenAutoFocus={(e) => e.preventDefault()}
         aria-describedby="order-summary-description"
       >
