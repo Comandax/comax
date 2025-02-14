@@ -73,6 +73,7 @@ export const useOrderSubmission = () => {
         customer_name: contactData.name,
         customer_phone: contactData.whatsapp,
         customer_city: contactData.city,
+        customer_state: contactData.state,
         customer_zip_code: contactData.zipCode,
         items: orderItems as unknown as Json,
         total,
