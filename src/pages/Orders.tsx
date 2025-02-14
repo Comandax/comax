@@ -18,11 +18,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import type { Order } from "@/types/order";
 import { useCompany } from "@/hooks/useCompany";
+
 const OrderDetails = ({
   order
 }: {
   order: Order;
 }) => {
+  const formatPhoneNumber = (phone: string) => {
+    const cleaned = phone.replace(/\D/g, '');
+    if (cleaned.length === 11) {
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)}-${cleaned.slice(7)}`;
+    } else if (cleaned.length === 10) {
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
+    }
+    return phone;
+  };
+
   return <ScrollArea className="h-[80vh]">
       <div className="space-y-6">
         <div className="grid grid-cols-2 gap-4">
@@ -35,7 +46,7 @@ const OrderDetails = ({
           <div>
             <h3 className="font-semibold mb-2">Cliente</h3>
             <p>Nome: {order.customerName}</p>
-            <p>Telefone: {order.customerPhone}</p>
+            <p>Telefone: {formatPhoneNumber(order.customerPhone)}</p>
             <p>Cidade: {order.customerCity} / {order.customerState}</p>
             <p>CEP: {order.customerZipCode}</p>
           </div>
@@ -75,15 +86,19 @@ const OrderDetails = ({
       </div>
     </ScrollArea>;
 };
+
 type SortConfig = {
   column: 'customerName' | 'date' | 'total';
   direction: 'asc' | 'desc';
 };
+
 type OrdersQueryResult = {
   orders: Order[];
   totalCount: number;
 };
+
 const PAGE_SIZES = [10, 20, 50, 100];
+
 const Orders = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
@@ -93,6 +108,7 @@ const Orders = () => {
     column: 'date',
     direction: 'desc'
   });
+
   const {
     company
   } = useCompany();
@@ -118,6 +134,7 @@ const Orders = () => {
     },
     enabled: !!user
   });
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -134,8 +151,10 @@ const Orders = () => {
       });
     }
   };
+
   const userInitials = userProfile ? `${userProfile.first_name[0]}${userProfile.last_name[0]}`.toUpperCase() : 'U';
   const userName = userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'Usuário';
+
   const handleCopyLink = () => {
     const link = `${window.location.origin}/${company?.short_name}`;
     navigator.clipboard.writeText(link);
@@ -144,9 +163,11 @@ const Orders = () => {
       description: "O link foi copiado para sua área de transferência."
     });
   };
+
   const handleOpenLink = () => {
     window.open(`/${company?.short_name}`, '_blank');
   };
+
   const {
     data: ordersData
   } = useQuery({
@@ -187,16 +208,19 @@ const Orders = () => {
     },
     enabled: !!company?.id
   });
+
   const filteredOrders = useMemo(() => {
     if (!ordersData?.orders) return [];
     return ordersData.orders.filter(order => order.customerName.toLowerCase().includes(searchTerm.toLowerCase()));
   }, [ordersData?.orders, searchTerm]);
+
   const handleSort = (column: SortConfig['column']) => {
     setSortConfig(prevConfig => ({
       column,
       direction: prevConfig.column === column && prevConfig.direction === 'asc' ? 'desc' : 'asc'
     }));
   };
+
   const sortedOrders = useMemo(() => {
     if (!filteredOrders) return [];
     return [...filteredOrders].sort((a, b) => {
@@ -223,12 +247,15 @@ const Orders = () => {
       }
     });
   }, [filteredOrders, sortConfig]);
+
   const paginatedOrders = useMemo(() => {
     const start = (currentPage - 1) * pageSize;
     const end = start + pageSize;
     return sortedOrders.slice(start, end);
   }, [sortedOrders, currentPage, pageSize]);
+
   const totalPages = Math.ceil(filteredOrders.length / pageSize);
+
   if (!company || !ordersData) {
     return <div className="min-h-screen bg-background">
         <div className="container mx-auto py-10">
@@ -236,7 +263,9 @@ const Orders = () => {
         </div>
       </div>;
   }
+
   const hasNoOrders = ordersData.orders.length === 0;
+
   const SortIcon = ({
     column
   }: {
@@ -247,6 +276,7 @@ const Orders = () => {
     }
     return sortConfig.direction === 'asc' ? <ArrowUp className="ml-2 h-4 w-4" /> : <ArrowDown className="ml-2 h-4 w-4" />;
   };
+
   return <div className="min-h-screen bg-[#1A1F2C]">
       <div className="bg-gray-900/50 shadow-md">
         <div className="container mx-auto">
@@ -431,4 +461,5 @@ const Orders = () => {
       </div>
     </div>;
 };
+
 export default Orders;
