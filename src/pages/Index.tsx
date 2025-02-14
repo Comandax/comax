@@ -90,7 +90,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-[#1A1F2C]">
       <CompanyInfo company={company} />
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 py-0">
         <div className="max-w-6xl mx-auto space-y-8">
           <h1 className="text-3xl font-bold text-white text-center">Simulações e Pedidos</h1>
           <OrderForm 
