@@ -58,6 +58,11 @@ export class SupabaseAuthProvider implements AuthProvider {
       return [];
     }
 
-    return data.map(role => role.role as Role);
+    // Convertendo a resposta para o formato correto
+    // A role 'superuser' do banco deve ser mapeada para 'superuser' no frontend
+    return data.map(row => {
+      if (row.role === 'superuser') return 'superuser';
+      return 'owner';
+    }) as Role[];
   }
 }
