@@ -1,14 +1,13 @@
 
 import { useState } from "react";
+import { ContactForm, type ContactFormData } from "@/components/ContactForm";
 import { ProductList } from "@/components/order/ProductList";
-import { ContactForm } from "@/components/ContactForm";
-import { OrderNotes } from "@/components/OrderNotes";
 import { FloatingTotal } from "@/components/FloatingTotal";
-import type { Product } from "@/types/product";
+import { OrderSummaryButton } from "./OrderSummaryButton";
 import { useOrderCalculations } from "./hooks/useOrderCalculations";
 import { useOrderSubmission } from "./hooks/useOrderSubmission";
-import { useQuery } from "@tanstack/react-query";
-import type { ContactFormData } from "@/components/ContactForm";
+import type { Product } from "@/types/product";
+import type { SelectedItem, ResetItem } from "./types";
 
 interface OrderFormProps {
   companyId: string;
@@ -16,105 +15,73 @@ interface OrderFormProps {
 }
 
 export const OrderForm = ({ companyId, products }: OrderFormProps) => {
-  const [selectedItems, setSelectedItems] = useState<Array<{
-    productId: string;
-    size: string;
-    quantity: number;
-    price: number;
-  }>>([]);
-  const [resetItem, setResetItem] = useState<{ size: string; productId: string; } | undefined>();
-  const [contactInfo, setContactInfo] = useState<ContactFormData>({
-    name: "",
-    whatsapp: "",
-    city: "",
-    zipCode: "",
-    state: ""
-  });
-  const [notes, setNotes] = useState("");
+  const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
+  const [contactData, setContactData] = useState<ContactFormData | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [resetItem, setResetItem] = useState<ResetItem | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const { isLoading } = useQuery({
-    queryKey: ['products', companyId],
-    queryFn: () => [], // Query is already being handled by the parent component
-    enabled: false, // We don't want to fetch here
-  });
+  const { total, orderItems } = useOrderCalculations(selectedItems, products);
+  const { submitOrder } = useOrderSubmission();
 
-  const { total, formattedTotal, orderItems } = useOrderCalculations({ 
-    selectedItems, 
-    products 
-  });
+  const handleContactSubmit = (data: ContactFormData) => {
+    setContactData(data);
+  };
 
-  const { submitOrder, isSubmitting } = useOrderSubmission();
-
-  const handleQuantitySelect = (
-    productId: string,
-    size: string,
-    quantity: number,
-    price: number
-  ) => {
-    setSelectedItems((prev) => {
-      const existingItemIndex = prev.findIndex(
-        (item) => item.productId === productId && item.size === size
-      );
-
-      if (existingItemIndex > -1) {
-        if (quantity === 0) {
-          return prev.filter((_, index) => index !== existingItemIndex);
-        }
-        return prev.map((item, index) =>
-          index === existingItemIndex ? { ...item, quantity, price } : item
-        );
+  const handleQuantitySelect = (productId: string, size: string, quantity: number, price: number) => {
+    setSelectedItems(prev => {
+      const filtered = prev.filter(item => !(item.productId === productId && item.size === size));
+      
+      if (quantity > 0) {
+        return [...filtered, { productId, size, quantity, price }];
       }
-
-      if (quantity === 0) return prev;
-
-      return [...prev, { productId, size, quantity, price }];
+      
+      return filtered;
     });
+  };
 
-    setResetItem(undefined);
+  const handleSubmitOrder = async (notes: string) => {
+    await submitOrder({
+      companyId,
+      contactData,
+      selectedItems,
+      orderItems,
+      total,
+      notes
+    });
   };
 
   const handleRemoveItem = (productId: string, size: string) => {
-    setSelectedItems((prev) =>
-      prev.filter(
-        (item) => !(item.productId === productId && item.size === size)
-      )
-    );
     setResetItem({ productId, size });
+    handleQuantitySelect(productId, size, 0, 0);
   };
 
   return (
-    <div className="space-y-8">
-      <ProductList
-        products={products}
-        onQuantitySelect={handleQuantitySelect}
+    <>
+      <ContactForm onSubmit={handleContactSubmit} />
+      <ProductList 
+        products={products} 
+        onQuantitySelect={handleQuantitySelect} 
         resetItem={resetItem}
-        isLoading={isLoading}
       />
-
+      
       {selectedItems.length > 0 && (
-        <>
-          <ContactForm onSubmit={(data) => setContactInfo(data)} />
-          <OrderNotes value={notes} onChange={setNotes} />
-          <FloatingTotal
-            total={total}
-            items={orderItems}
-            onSubmitOrder={() => {
-              submitOrder({
-                companyId,
-                contactData: contactInfo,
-                selectedItems,
-                orderItems,
-                total,
-                notes
-              });
-            }}
-            isOpen={selectedItems.length > 0}
-            onOpenChange={() => {}}
-            onRemoveItem={handleRemoveItem}
-            isCalculating={false}
+        <div className="mt-8 flex justify-end">
+          <OrderSummaryButton 
+            onClick={() => setIsModalOpen(true)}
+            isLoading={isLoading}
           />
-        </>
+        </div>
       )}
-    </div>
+
+      <FloatingTotal 
+        total={total}
+        items={orderItems}
+        onSubmitOrder={handleSubmitOrder}
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        onRemoveItem={handleRemoveItem}
+      />
+    </>
   );
 };
