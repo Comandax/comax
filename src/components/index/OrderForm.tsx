@@ -24,10 +24,12 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
   const [resetItem, setResetItem] = useState<{ size: string; productId: string; } | undefined>();
   const [contactInfo, setContactInfo] = useState({
     name: "",
-    phone: "",
-    email: "",
-    notes: "",
+    whatsapp: "",
+    city: "",
+    zipCode: "",
+    state: ""
   });
+  const [notes, setNotes] = useState("");
 
   const { isLoading } = useQuery({
     queryKey: ['products', companyId],
@@ -35,14 +37,12 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
     enabled: false, // We don't want to fetch here
   });
 
-  const { total, formattedTotal } = useOrderCalculations({ selectedItems });
-  const { handleSubmitOrder, isSubmitting } = useOrderSubmission({
-    companyId,
-    selectedItems,
-    contactInfo,
-    total,
-    products,
+  const { total, formattedTotal, orderItems } = useOrderCalculations({ 
+    selectedItems, 
+    products 
   });
+
+  const { submitOrder, isSubmitting } = useOrderSubmission();
 
   const handleQuantitySelect = (
     productId: string,
@@ -72,10 +72,6 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
     setResetItem(undefined);
   };
 
-  const handleContactChange = (field: string, value: string) => {
-    setContactInfo((prev) => ({ ...prev, [field]: value }));
-  };
-
   const handleRemoveItem = (productId: string, size: string) => {
     setSelectedItems((prev) =>
       prev.filter(
@@ -96,21 +92,25 @@ export const OrderForm = ({ companyId, products }: OrderFormProps) => {
 
       {selectedItems.length > 0 && (
         <>
-          <ContactForm
-            contactInfo={contactInfo}
-            onContactChange={handleContactChange}
-          />
-          <OrderNotes
-            notes={contactInfo.notes}
-            onNotesChange={(value) => handleContactChange("notes", value)}
-          />
+          <ContactForm onSubmit={(data) => setContactInfo(data)} />
+          <OrderNotes value={notes} onChange={setNotes} />
           <FloatingTotal
-            total={formattedTotal}
-            onSubmit={handleSubmitOrder}
-            isSubmitting={isSubmitting}
-            selectedItems={selectedItems}
+            total={total}
+            items={orderItems}
+            onSubmitOrder={() => {
+              submitOrder({
+                companyId,
+                contactData: contactInfo,
+                selectedItems,
+                orderItems,
+                total,
+                notes
+              });
+            }}
+            isOpen={selectedItems.length > 0}
+            onOpenChange={() => {}}
             onRemoveItem={handleRemoveItem}
-            products={products}
+            isCalculating={false}
           />
         </>
       )}

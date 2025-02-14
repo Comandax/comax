@@ -19,6 +19,7 @@ interface OrderSubmissionParams {
 export const useOrderSubmission = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const submitOrder = async ({
     companyId,
@@ -54,6 +55,8 @@ export const useOrderSubmission = () => {
       });
       return;
     }
+
+    setIsSubmitting(true);
 
     try {
       const { data: companyData } = await supabase
@@ -97,8 +100,10 @@ export const useOrderSubmission = () => {
         description: "Ocorreu um erro ao salvar seu pedido. Por favor, tente novamente.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  return { submitOrder };
+  return { submitOrder, isSubmitting };
 };
