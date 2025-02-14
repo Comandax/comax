@@ -1,4 +1,3 @@
-
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -71,13 +70,13 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
     // Aplica a máscara
     if (numbers.length <= 2) {
       return numbers;
-    } else if (numbers.length <= 3) {
+    } else if (numbers.length <= 6) {
       return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
-    } else if (numbers.length <= 7) {
-      return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 3)} ${numbers.slice(3)}`;
-    } else if (numbers.length <= 11) {
-      return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 3)} ${numbers.slice(3, 7)}-${numbers.slice(7)}`;
+    } else if (numbers.length <= 10) {
+      // Formato para telefone fixo: (XX) XXXX-XXXX
+      return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 6)}-${numbers.slice(6)}`;
     } else {
+      // Formato para celular: (XX) X XXXX-XXXX
       return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 3)} ${numbers.slice(3, 7)}-${numbers.slice(7, 11)}`;
     }
   };
@@ -123,9 +122,9 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
   };
 
   const handleStateChange = (value: string) => {
-    const state = states.find(s => s.id.toString() === value);
-    setSelectedState(value);
-    handleInputChange("state", state?.nome || "");
+    const state = states.find(s => s.sigla === value);
+    setSelectedState(state?.id.toString() || "");
+    handleInputChange("state", value);
     handleInputChange("city", "");
   };
 
@@ -159,7 +158,7 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
         </div>
         
         <div className="space-y-2">
-          <Label htmlFor="whatsapp">WhatsApp (com DDD)</Label>
+          <Label htmlFor="whatsapp">WhatsApp ou Telefone (com DDD)</Label>
           <Input
             id="whatsapp"
             name="whatsapp"
@@ -167,7 +166,6 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
             inputMode="numeric"
             value={formData.whatsapp}
             onChange={(e) => handleInputChange("whatsapp", e.target.value)}
-            placeholder="(00) 0 0000-0000"
             required
             className="md:text-sm"
           />
@@ -178,7 +176,7 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
         <div className="space-y-2">
           <Label htmlFor="state">Estado</Label>
           <Select 
-            value={selectedState} 
+            value={formData.state} 
             onValueChange={handleStateChange}
           >
             <SelectTrigger>
@@ -186,7 +184,7 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
             </SelectTrigger>
             <SelectContent>
               {states.map((state) => (
-                <SelectItem key={state.id} value={state.id.toString()}>
+                <SelectItem key={state.id} value={state.sigla}>
                   {state.nome}
                 </SelectItem>
               ))}

@@ -68,11 +68,17 @@ export const useOrderSubmission = () => {
 
       const now = new Date();
 
+      // Garantindo que todos os campos required estejam presentes
+      if (!contactData.state) {
+        throw new Error('Estado não especificado');
+      }
+
       const orderData = {
         company_id: companyId,
         customer_name: contactData.name,
         customer_phone: contactData.whatsapp,
         customer_city: contactData.city,
+        customer_state: contactData.state,
         customer_zip_code: contactData.zipCode,
         items: orderItems as unknown as Json,
         total,
@@ -91,7 +97,6 @@ export const useOrderSubmission = () => {
 
       navigate(`/${companyData.short_name}/success`);
     } catch (error) {
-      console.error('Error submitting order:', error);
       toast({
         title: "Erro ao enviar pedido",
         description: "Ocorreu um erro ao salvar seu pedido. Por favor, tente novamente.",

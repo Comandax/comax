@@ -20,8 +20,11 @@ export interface Order {
   time: string;
   customerPhone: string;
   customerCity: string;
+  customerState: string;
   customerZipCode: string;
   items: OrderItem[];
   total: number;
   companyId: string;
+  notes?: string;
 }
+
