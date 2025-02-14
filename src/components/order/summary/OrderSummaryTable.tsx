@@ -108,13 +108,12 @@ export const OrderSummaryTable = ({
           <TableBody>
             <TableRow>
               <TableCell 
-                colSpan={3} 
-                className="text-center font-bold whitespace-normal p-1 md:p-2"
+                colSpan={4} 
+                className="text-right font-bold whitespace-normal p-1 md:p-2"
               >
-                <span className="text-sm md:text-base">Total do Pedido</span>
-              </TableCell>
-              <TableCell className="text-right font-bold whitespace-nowrap p-1 md:p-2">
-                <span className="text-sm md:text-base">{formattedTotal}</span>
+                <div className="flex justify-center items-center">
+                  <span className="text-sm md:text-base mr-8">Total do Pedido: {formattedTotal}</span>
+                </div>
               </TableCell>
             </TableRow>
           </TableBody>
