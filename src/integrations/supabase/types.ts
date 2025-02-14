@@ -17,7 +17,6 @@ export type Database = {
           logo_url: string | null
           name: string
           owner_id: string
-          representative_id: string | null
           short_name: string
         }
         Insert: {
@@ -27,7 +26,6 @@ export type Database = {
           logo_url?: string | null
           name: string
           owner_id: string
-          representative_id?: string | null
           short_name?: string
         }
         Update: {
@@ -37,7 +35,6 @@ export type Database = {
           logo_url?: string | null
           name?: string
           owner_id?: string
-          representative_id?: string | null
           short_name?: string
         }
         Relationships: [
@@ -46,13 +43,6 @@ export type Database = {
             columns: ["owner_id"]
             isOneToOne: true
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "companies_representative_id_fkey"
-            columns: ["representative_id"]
-            isOneToOne: false
-            referencedRelation: "representatives"
             referencedColumns: ["id"]
           },
         ]
@@ -192,27 +182,6 @@ export type Database = {
           id?: string
           last_name?: string
           phone?: string | null
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      representatives: {
-        Row: {
-          created_at: string
-          id: string
-          identifier: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          id: string
-          identifier: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          identifier?: string
           updated_at?: string
         }
         Relationships: []

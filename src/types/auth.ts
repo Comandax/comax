@@ -17,3 +17,4 @@ export interface AuthProvider {
   getCurrentUser: () => Promise<User | null>;
   getUserRoles: (userId: string) => Promise<Role[]>;
 }
+
