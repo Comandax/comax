@@ -31,5 +31,9 @@ __pycache__/
 *.pyd
 .Python
 
+# Environment variables
+.env
+.env.local
+
 # Test reports
 reports/
