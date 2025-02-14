@@ -37,7 +37,15 @@ export type Database = {
           owner_id?: string
           short_name?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "companies_owner_id_fkey"
+            columns: ["owner_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       orders: {
         Row: {
@@ -201,6 +209,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_representative_identifier: {
+        Args: {
+          first_name: string
+          last_name: string
+        }
+        Returns: string
+      }
       generate_short_name: {
         Args: {
           name: string
@@ -216,7 +231,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "superuser" | "owner"
+      app_role: "superuser" | "owner" | "representative"
     }
     CompositeTypes: {
       [_ in never]: never

@@ -31,7 +31,9 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
     );
   }
 
-  const activeProducts = products.filter(product => !product.disabled);
+  const activeProducts = products
+    .filter(product => !product.disabled)
+    .sort((a, b) => a.reference.localeCompare(b.reference));
 
   if (!products.length) {
     return (
@@ -93,3 +95,4 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
     </div>
   );
 };
+
