@@ -24,7 +24,7 @@ export default function UserEdit() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['profiles'] });
       queryClient.invalidateQueries({ queryKey: ['profile', id] });
-      navigate('/admin');
+      navigate('/users');
     },
   });
 
@@ -55,7 +55,7 @@ export default function UserEdit() {
               <Button 
                 variant="ghost" 
                 size="icon"
-                onClick={() => navigate('/admin')}
+                onClick={() => navigate('/users')}
                 className="text-white hover:text-white/80"
               >
                 <ArrowLeft className="h-5 w-5" />
@@ -64,7 +64,7 @@ export default function UserEdit() {
                 src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
                 alt="COMAX Logo" 
                 className="h-8 w-auto cursor-pointer"
-                onClick={() => navigate('/admin')}
+                onClick={() => navigate('/users')}
               />
             </div>
           </div>
