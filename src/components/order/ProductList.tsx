@@ -9,15 +9,27 @@ interface ProductListProps {
   products: Product[];
   onQuantitySelect: (productId: string, size: string, quantity: number, price: number) => void;
   resetItem?: { size: string; productId: string; };
+  isLoading?: boolean;
 }
 
-export const ProductList = ({ products, onQuantitySelect, resetItem }: ProductListProps) => {
+export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading = false }: ProductListProps) => {
   const getImageUrl = async (reference: string) => {
     const { data } = supabase.storage
       .from('products')
       .getPublicUrl(`${reference}.jpeg`);
     return data.publicUrl;
   };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <h2 className="text-2xl font-semibold text-white">Itens para pedido</h2>
+        <div className="bg-white/90 rounded-lg p-8">
+          <LoadingState />
+        </div>
+      </div>
+    );
+  }
 
   const activeProducts = products.filter(product => !product.disabled);
 

@@ -70,6 +70,7 @@ export const OrderForm = ({ companyId, products, isLoading = false }: OrderFormP
         <div className="mt-8 flex justify-end">
           <OrderSummaryButton 
             onClick={() => setIsModalOpen(true)}
+            isLoading={isLoading}
           />
         </div>
       )}
