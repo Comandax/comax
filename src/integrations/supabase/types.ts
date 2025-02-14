@@ -70,7 +70,7 @@ export type Database = {
           customer_city: string
           customer_name: string
           customer_phone: string
-          customer_state?: string
+          customer_state: string
           customer_zip_code: string
           date?: string
           id?: string
