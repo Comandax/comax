@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Virtual Environment
+venv/
+env/
+
+# Selenium
+geckodriver.log
+chromedriver.log
+
+# Test reports and screenshots
+reports/
+screenshots/
+
+# Environment variables
+.env
