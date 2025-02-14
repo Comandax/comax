@@ -68,6 +68,11 @@ export const useOrderSubmission = () => {
 
       const now = new Date();
 
+      // Garantindo que todos os campos required estejam presentes
+      if (!contactData.state) {
+        throw new Error('Estado não especificado');
+      }
+
       const orderData = {
         company_id: companyId,
         customer_name: contactData.name,
@@ -87,6 +92,7 @@ export const useOrderSubmission = () => {
         .insert([orderData]);
 
       if (insertError) {
+        console.error('Insert error:', insertError);
         throw insertError;
       }
 
