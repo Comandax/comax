@@ -42,9 +42,31 @@ interface UserFormProps {
 
 export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
   const { toast } = useToast();
+
+  // Função para formatar o número de telefone inicial
+  const formatInitialPhoneNumber = (phone: string | undefined) => {
+    if (!phone) return "";
+    
+    // Remove todos os caracteres não numéricos
+    const cleaned = phone.replace(/\D/g, '');
+    
+    // Aplica a formatação apropriada baseada no comprimento
+    if (cleaned.length === 10) {
+      // Formato para telefone fixo: (XX) XXXX-XXXX
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
+    } else if (cleaned.length === 11) {
+      // Formato para celular: (XX) X XXXX-XXXX
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)}-${cleaned.slice(7)}`;
+    }
+    return cleaned;
+  };
+
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData || {
+    defaultValues: initialData ? {
+      ...initialData,
+      phone: formatInitialPhoneNumber(initialData.phone),
+    } : {
       first_name: "",
       last_name: "",
       email: "",
@@ -92,9 +114,13 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
       } else if (cleaned.length <= 7) {
         formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3)}`;
       } else if (cleaned.length <= 11) {
-        formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)}-${cleaned.slice(7)}`;
-      } else {
-        formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)}-${cleaned.slice(7, 11)}`;
+        if (cleaned.length === 10) {
+          // Formato para telefone fixo: (XX) XXXX-XXXX
+          formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
+        } else {
+          // Formato para celular: (XX) X XXXX-XXXX
+          formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)}-${cleaned.slice(7)}`;
+        }
       }
     }
     return formatted;
@@ -107,7 +133,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           control={form.control}
           name="first_name"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="text-left">
               <FormLabel>Nome</FormLabel>
               <FormControl>
                 <Input {...field} />
@@ -120,7 +146,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           control={form.control}
           name="last_name"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="text-left">
               <FormLabel>Sobrenome</FormLabel>
               <FormControl>
                 <Input {...field} />
@@ -133,7 +159,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="text-left">
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input type="email" {...field} />
@@ -146,13 +172,13 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           control={form.control}
           name="phone"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="text-left">
               <FormLabel>Celular</FormLabel>
               <FormControl>
                 <Input
                   type="tel"
                   inputMode="numeric"
-                  placeholder="(00) 0 0000-0000"
+                  placeholder="(00) 0000-0000 ou (00) 0 0000-0000"
                   {...field}
                   onChange={(e) => {
                     const formatted = formatPhoneNumber(e.target.value);
@@ -168,7 +194,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="text-left">
               <FormLabel>{initialData ? "Nova senha (opcional)" : "Senha"}</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
@@ -181,7 +207,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           control={form.control}
           name="confirmPassword"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="text-left">
               <FormLabel>{initialData ? "Confirmar nova senha" : "Confirmar senha"}</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
