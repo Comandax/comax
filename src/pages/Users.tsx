@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { LogOut, Edit, UserCog, CreditCard, XCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
@@ -96,11 +96,20 @@ export default function Users() {
       });
       setShowEditModal(false);
     } catch (error: any) {
-      toast({
-        variant: "destructive",
-        title: "Erro ao atualizar identificador",
-        description: error.message,
-      });
+      // Verifica se o erro é devido a um identificador duplicado
+      if (error.message && error.message.includes('duplicate key value violates unique constraint')) {
+        toast({
+          variant: "destructive",
+          title: "Erro ao atualizar identificador",
+          description: "Este identificador já está em uso. Por favor, escolha outro.",
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Erro ao atualizar identificador",
+          description: error.message,
+        });
+      }
     } finally {
       setIsUpdating(false);
     }
@@ -310,4 +319,4 @@ export default function Users() {
       </div>
     </div>
   );
-}
+};
