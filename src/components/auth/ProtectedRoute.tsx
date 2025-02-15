@@ -11,10 +11,19 @@ export const ProtectedRoute = ({ children, superUserOnly = false }: ProtectedRou
   const { user, loading } = useAuth();
   const location = useLocation();
 
+  // Lista de rotas públicas que não exigem autenticação
+  const publicRoutes = ['/representative/create'];
+
   if (loading) {
     return <div>Loading...</div>;
   }
 
+  // Se a rota atual está na lista de rotas públicas, permite o acesso
+  if (publicRoutes.includes(location.pathname)) {
+    return <>{children}</>;
+  }
+
+  // Se não for uma rota pública e o usuário não estiver autenticado, redireciona para login
   if (!user) {
     return <Navigate to="/login" />;
   }
