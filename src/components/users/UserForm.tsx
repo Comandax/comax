@@ -134,7 +134,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           name="first_name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Nome</FormLabel>
+              <FormLabel className="text-left">Nome</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -147,7 +147,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           name="last_name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Sobrenome</FormLabel>
+              <FormLabel className="text-left">Sobrenome</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -160,7 +160,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel className="text-left">Email</FormLabel>
               <FormControl>
                 <Input type="email" {...field} />
               </FormControl>
@@ -173,7 +173,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Celular</FormLabel>
+              <FormLabel className="text-left">Celular</FormLabel>
               <FormControl>
                 <Input
                   type="tel"
@@ -195,7 +195,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{initialData ? "Nova senha (opcional)" : "Senha"}</FormLabel>
+              <FormLabel className="text-left">{initialData ? "Nova senha (opcional)" : "Senha"}</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
@@ -208,7 +208,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>{initialData ? "Confirmar nova senha" : "Confirmar senha"}</FormLabel>
+              <FormLabel className="text-left">{initialData ? "Confirmar nova senha" : "Confirmar senha"}</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
