@@ -6,10 +6,24 @@ export async function createRepresentative(data: RepresentativeFormData): Promis
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('User not authenticated');
 
+  // Primeiro, busca o perfil do usuário para obter o nome completo
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('first_name, last_name')
+    .eq('id', user.id)
+    .single();
+
+  if (!profile) throw new Error('Profile not found');
+
+  // Gera o identificador usando o primeiro nome e a primeira letra do sobrenome
+  const identifier = (profile.first_name + profile.last_name[0])
+    .toLowerCase()
+    .replace(/\s+/g, '');
+
   const insertData: RepresentativeInsertData = {
     profile_id: user.id,
     pix_key: data.pix_key,
-    identifier: '', // This will be overwritten by the database trigger
+    identifier: identifier,
   };
 
   const { data: representative, error } = await supabase

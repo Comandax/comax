@@ -15,5 +15,5 @@ export interface RepresentativeFormData {
 export interface RepresentativeInsertData {
   profile_id: string;
   pix_key: string;
-  identifier?: string;
+  identifier: string; // Agora é obrigatório, não mais opcional
 }
