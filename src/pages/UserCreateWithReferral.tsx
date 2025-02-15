@@ -33,13 +33,11 @@ export default function UserCreateWithReferral() {
           .from('representatives')
           .select(`
             id,
-            profiles!representatives_profile_id_fkey (
+            profile_id,
+            profiles!inner (
               id,
               first_name,
-              last_name,
-              user_roles!profiles_id_fkey (
-                role
-              )
+              last_name
             )
           `)
           .eq('identifier', identifier.toLowerCase())
@@ -54,12 +52,19 @@ export default function UserCreateWithReferral() {
           throw new Error("Representante não encontrado. Verifique o link de indicação.");
         }
 
-        // Verifica se o usuário ainda tem a role de representante
-        const hasRepRole = representative.profiles?.user_roles?.some(
-          (ur: any) => ur.role === 'representative'
-        );
+        // Verifica se o usuário tem a role de representante
+        const { data: userRoles, error: rolesError } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', representative.profile_id)
+          .eq('role', 'representative');
 
-        if (!hasRepRole) {
+        if (rolesError) {
+          console.error("Erro ao verificar roles:", rolesError);
+          throw new Error("Erro ao verificar o link de indicação.");
+        }
+
+        if (!userRoles || userRoles.length === 0) {
           throw new Error("Link de indicação inválido ou expirado.");
         }
 
