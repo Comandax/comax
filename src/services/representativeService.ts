@@ -81,6 +81,11 @@ export async function updateRepresentative(id: string, data: { pix_key?: string,
     if (!data.identifier) {
       throw new Error("O identificador deve conter pelo menos uma letra ou número");
     }
+
+    // Verifica se o identificador contém pelo menos uma letra
+    if (!/[a-z]/.test(data.identifier)) {
+      throw new Error("O identificador deve conter pelo menos uma letra");
+    }
   }
 
   const { data: representative, error } = await supabase
