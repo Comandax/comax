@@ -27,12 +27,12 @@ import {
   Pagination,
   PaginationContent,
   PaginationItem,
-  PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
+import { Card, CardContent } from "@/components/ui/card";
 
 type SortField = 'name' | 'company' | 'email' | 'phone' | 'created_at';
 type SortOrder = 'asc' | 'desc';
@@ -149,119 +149,135 @@ export function UserList() {
   if (isLoading) return <div>Carregando...</div>;
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Usuários</h2>
-        {user?.roles?.includes('superuser') && (
-          <Button onClick={() => navigate('/users/create')}>
-            <Plus className="size-4" />
-            Novo Usuário
-          </Button>
-        )}
-      </div>
-
-      <div className="flex gap-4 items-center">
-        <div className="flex-1">
-          <Input
-            placeholder="Buscar por nome, empresa, email ou telefone..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="max-w-sm"
-          />
+    <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
+      <CardContent className="p-6 space-y-4">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-1 bg-primary rounded-full" />
+            <h2 className="text-2xl font-bold text-primary">Usuários</h2>
+          </div>
+          {user?.roles?.includes('superuser') && (
+            <Button onClick={() => navigate('/users/create')} className="bg-primary hover:bg-primary/90 text-white">
+              <Plus className="size-4 mr-2" />
+              Novo Usuário
+            </Button>
+          )}
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-500">Itens por página:</span>
-          <Select
-            value={String(itemsPerPage)}
-            onValueChange={(value) => {
-              setItemsPerPage(Number(value));
-              setCurrentPage(1);
-            }}
-          >
-            <SelectTrigger className="w-20">
-              <SelectValue placeholder="10" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="5">5</SelectItem>
-              <SelectItem value="10">10</SelectItem>
-              <SelectItem value="20">20</SelectItem>
-              <SelectItem value="50">50</SelectItem>
-            </SelectContent>
-          </Select>
+
+        <div className="flex gap-4 items-center">
+          <div className="flex-1">
+            <Input
+              placeholder="Buscar por nome, empresa, email ou telefone..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="max-w-sm bg-white/80 border-primary/30 focus:border-primary"
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-muted-foreground">Itens por página:</span>
+            <Select
+              value={String(itemsPerPage)}
+              onValueChange={(value) => {
+                setItemsPerPage(Number(value));
+                setCurrentPage(1);
+              }}
+            >
+              <SelectTrigger className="w-20 border-primary/30 focus:border-primary bg-white/80">
+                <SelectValue placeholder="10" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="5">5</SelectItem>
+                <SelectItem value="10">10</SelectItem>
+                <SelectItem value="20">20</SelectItem>
+                <SelectItem value="50">50</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-      </div>
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead onClick={() => handleSort('name')} className="cursor-pointer hover:bg-gray-50">
-              Nome <ArrowUpDown className="inline size-4 ml-1" />
-            </TableHead>
-            <TableHead onClick={() => handleSort('company')} className="cursor-pointer hover:bg-gray-50">
-              Empresa <ArrowUpDown className="inline size-4 ml-1" />
-            </TableHead>
-            <TableHead onClick={() => handleSort('email')} className="cursor-pointer hover:bg-gray-50">
-              Email <ArrowUpDown className="inline size-4 ml-1" />
-            </TableHead>
-            <TableHead onClick={() => handleSort('phone')} className="cursor-pointer hover:bg-gray-50">
-              Celular <ArrowUpDown className="inline size-4 ml-1" />
-            </TableHead>
-            <TableHead onClick={() => handleSort('created_at')} className="cursor-pointer hover:bg-gray-50">
-              Criado em <ArrowUpDown className="inline size-4 ml-1" />
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {currentProfiles.map((profile) => (
-            <TableRow key={profile.id}>
-              <TableCell>{profile.fullName}</TableCell>
-              <TableCell>{profile.companyName}</TableCell>
-              <TableCell>{profile.email}</TableCell>
-              <TableCell>{profile.phone}</TableCell>
-              <TableCell>
-                {format(new Date(profile.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-
-      {totalPages > 1 && (
-        <Pagination className="mt-4">
-          <PaginationContent>
-            <PaginationItem>
-              <Button
-                variant="outline"
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-              >
-                Anterior
-              </Button>
-            </PaginationItem>
-            
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <PaginationItem key={page}>
-                <Button
-                  variant={currentPage === page ? "default" : "outline"}
-                  onClick={() => setCurrentPage(page)}
+        <div className="bg-white/80 rounded-lg border border-primary/30">
+          <Table>
+            <TableHeader>
+              <TableRow className="hover:bg-primary/5">
+                <TableHead onClick={() => handleSort('name')} className="cursor-pointer">
+                  Nome <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
+                </TableHead>
+                <TableHead onClick={() => handleSort('company')} className="cursor-pointer">
+                  Empresa <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
+                </TableHead>
+                <TableHead onClick={() => handleSort('email')} className="cursor-pointer">
+                  Email <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
+                </TableHead>
+                <TableHead onClick={() => handleSort('phone')} className="cursor-pointer">
+                  Celular <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
+                </TableHead>
+                <TableHead onClick={() => handleSort('created_at')} className="cursor-pointer">
+                  Criado em <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {currentProfiles.map((profile) => (
+                <TableRow 
+                  key={profile.id} 
+                  className="hover:bg-primary/5 transition-colors"
                 >
-                  {page}
+                  <TableCell className="font-medium">{profile.fullName}</TableCell>
+                  <TableCell>{profile.companyName}</TableCell>
+                  <TableCell>{profile.email}</TableCell>
+                  <TableCell>{profile.phone}</TableCell>
+                  <TableCell>
+                    {format(new Date(profile.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
+        {totalPages > 1 && (
+          <Pagination className="mt-4">
+            <PaginationContent>
+              <PaginationItem>
+                <Button
+                  variant="outline"
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1}
+                  className="border-primary/30 hover:bg-primary/10 text-primary"
+                >
+                  Anterior
                 </Button>
               </PaginationItem>
-            ))}
+              
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <PaginationItem key={page}>
+                  <Button
+                    variant={currentPage === page ? "default" : "outline"}
+                    onClick={() => setCurrentPage(page)}
+                    className={currentPage === page 
+                      ? "bg-primary text-white hover:bg-primary/90" 
+                      : "border-primary/30 hover:bg-primary/10 text-primary"
+                    }
+                  >
+                    {page}
+                  </Button>
+                </PaginationItem>
+              ))}
 
-            <PaginationItem>
-              <Button
-                variant="outline"
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                disabled={currentPage === totalPages}
-              >
-                Próximo
-              </Button>
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      )}
-    </div>
+              <PaginationItem>
+                <Button
+                  variant="outline"
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages}
+                  className="border-primary/30 hover:bg-primary/10 text-primary"
+                >
+                  Próximo
+                </Button>
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        )}
+      </CardContent>
+    </Card>
   );
 }
