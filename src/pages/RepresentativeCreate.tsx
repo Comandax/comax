@@ -20,9 +20,9 @@ export default function RepresentativeCreate() {
       queryClient.invalidateQueries({ queryKey: ['representatives'] });
       toast({
         title: "Cadastro realizado com sucesso!",
-        description: "Você foi registrado como representante.",
+        description: "Por favor, faça login para acessar sua conta.",
       });
-      navigate('/admin');
+      navigate('/login');
     },
     onError: (error: Error) => {
       toast({
