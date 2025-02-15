@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +7,9 @@ import { UserListHeader } from "./UserListHeader";
 import { UserListControls } from "./UserListControls";
 import { UserListTable } from "./UserListTable";
 import { UserListPagination } from "./UserListPagination";
+import { UserEditModal } from "./UserEditModal";
+import { Button } from "../ui/button";
+import { UserCog } from "lucide-react";
 import { SortField, SortOrder } from "./types";
 
 export function UserList() {
@@ -17,6 +19,7 @@ export function UserList() {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const { data: profilesData, isLoading } = useQuery({
     queryKey: ['profiles'],
@@ -123,7 +126,20 @@ export function UserList() {
   return (
     <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
       <CardContent className="p-6 space-y-4">
-        <UserListHeader />
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-1 bg-primary rounded-full" />
+            <h2 className="text-2xl font-bold text-primary">Usuários</h2>
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => setShowEditModal(true)}
+            className="text-primary hover:bg-primary/10 border-primary"
+          >
+            <UserCog className="h-5 w-5 mr-2" />
+            Editar Perfil
+          </Button>
+        </div>
         
         <UserListControls
           search={search}
@@ -144,6 +160,11 @@ export function UserList() {
           currentPage={currentPage}
           totalPages={totalPages}
           onPageChange={setCurrentPage}
+        />
+
+        <UserEditModal 
+          isOpen={showEditModal}
+          onOpenChange={setShowEditModal}
         />
       </CardContent>
     </Card>
