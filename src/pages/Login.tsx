@@ -34,8 +34,8 @@ const Login = () => {
       if (user?.roles?.includes('representative') || user?.roles?.includes('superuser')) {
         navigate("/users");
       } else {
-        // Usuários normais vão para a página de pedidos
-        navigate("/orders");
+        // Usuários comuns vão para a página admin
+        navigate("/admin");
       }
     } catch (error: any) {
       // Verificar se é um erro de credenciais inválidas
