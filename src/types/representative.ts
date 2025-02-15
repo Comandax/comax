@@ -11,3 +11,9 @@ export interface Representative {
 export interface RepresentativeFormData {
   pix_key: string;
 }
+
+export interface RepresentativeInsertData {
+  profile_id: string;
+  pix_key: string;
+  identifier?: string;
+}

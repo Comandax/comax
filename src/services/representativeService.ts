@@ -1,17 +1,20 @@
 
 import { supabase } from "@/integrations/supabase/client";
-import { Representative, RepresentativeFormData } from "@/types/representative";
+import { Representative, RepresentativeFormData, RepresentativeInsertData } from "@/types/representative";
 
 export async function createRepresentative(data: RepresentativeFormData): Promise<Representative> {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error('User not authenticated');
 
+  const insertData: RepresentativeInsertData = {
+    profile_id: user.id,
+    pix_key: data.pix_key,
+    identifier: '', // This will be overwritten by the database trigger
+  };
+
   const { data: representative, error } = await supabase
     .from('representatives')
-    .insert({
-      profile_id: user.id,
-      pix_key: data.pix_key,
-    })
+    .insert(insertData)
     .select()
     .single();
 
