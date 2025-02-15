@@ -19,6 +19,8 @@ interface UserEditModalProps {
 export function UserEditModal({ isOpen, onOpenChange }: UserEditModalProps) {
   const { user, refreshUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [userProfile, setUserProfile] = useState<any>(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
 
   const handleSubmit = async (data: ProfileFormData) => {
     if (!user) return;
@@ -55,27 +57,31 @@ export function UserEditModal({ isOpen, onOpenChange }: UserEditModalProps) {
     }
   };
 
-  if (!user) return null;
-
-  const getUserData = async () => {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single();
-
-    return profile;
-  };
-
-  const [userProfile, setUserProfile] = useState<any>(null);
-
   useEffect(() => {
-    if (isOpen && user) {
-      getUserData().then(profile => {
+    const fetchUserProfile = async () => {
+      if (!user || !isOpen) return;
+      
+      setIsLoadingProfile(true);
+      try {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', user.id)
+          .single();
+
+        if (error) throw error;
         setUserProfile(profile);
-      });
-    }
+      } catch (error) {
+        console.error('Error loading profile:', error);
+      } finally {
+        setIsLoadingProfile(false);
+      }
+    };
+
+    fetchUserProfile();
   }, [isOpen, user]);
+
+  if (!user) return null;
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -87,18 +93,24 @@ export function UserEditModal({ isOpen, onOpenChange }: UserEditModalProps) {
           </DialogTitle>
         </DialogHeader>
         <div className="p-6">
-          <UserForm
-            initialData={{
-              first_name: userProfile?.first_name || '',
-              last_name: userProfile?.last_name || '',
-              email: userProfile?.email || user.email || '',
-              phone: userProfile?.phone || '',
-              password: '',
-              confirmPassword: '',
-            }}
-            onSubmit={handleSubmit}
-            isLoading={isLoading}
-          />
+          {isLoadingProfile ? (
+            <div className="flex items-center justify-center p-4">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+            </div>
+          ) : (
+            <UserForm
+              initialData={{
+                first_name: userProfile?.first_name || '',
+                last_name: userProfile?.last_name || '',
+                email: userProfile?.email || user.email || '',
+                phone: userProfile?.phone || '',
+                password: '',
+                confirmPassword: '',
+              }}
+              onSubmit={handleSubmit}
+              isLoading={isLoading}
+            />
+          )}
         </div>
       </DialogContent>
     </Dialog>
