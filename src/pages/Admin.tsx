@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Card } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 const Admin = () => {
   const { user, logout } = useAuth();
@@ -98,7 +98,8 @@ const Admin = () => {
         <div className="container mx-auto">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-between py-1.5">
-              <div className="flex items-center gap-8">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-1 bg-primary rounded-full" />
                 <img src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" alt="COMAX Logo" className="h-8 w-auto" />
                 <h1 className="text-xl font-semibold text-white">Painel Administrativo</h1>
               </div>
@@ -160,23 +161,38 @@ const Admin = () => {
 
       <div className="container mx-auto py-10">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Link to="/products" className="flex items-center p-6 bg-white/95 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <Package className="w-8 h-8 text-primary mr-4" />
-              <div>
-                <h2 className="text-xl font-semibold">Produtos</h2>
-                <p className="text-gray-600">Gerenciar catálogo de produtos</p>
+          <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
+            <CardContent className="p-6 space-y-6">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-1 bg-primary rounded-full" />
+                <h2 className="text-2xl font-bold text-primary">Módulos</h2>
               </div>
-            </Link>
 
-            <Link to="/orders" className="flex items-center p-6 bg-white/95 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <Package className="w-8 h-8 text-primary mr-4" />
-              <div>
-                <h2 className="text-xl font-semibold">Relatório de Pedidos</h2>
-                <p className="text-gray-600">Visualizar e gerenciar pedidos</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <Link 
+                  to="/products" 
+                  className="group flex items-center p-6 bg-white/5 rounded-lg border border-white/10 hover:border-primary/30 transition-all duration-300"
+                >
+                  <Package className="w-8 h-8 text-primary mr-4" />
+                  <div>
+                    <h2 className="text-xl font-semibold text-white group-hover:text-primary transition-colors">Produtos</h2>
+                    <p className="text-white/60">Gerenciar catálogo de produtos</p>
+                  </div>
+                </Link>
+
+                <Link 
+                  to="/orders" 
+                  className="group flex items-center p-6 bg-white/5 rounded-lg border border-white/10 hover:border-primary/30 transition-all duration-300"
+                >
+                  <Package className="w-8 h-8 text-primary mr-4" />
+                  <div>
+                    <h2 className="text-xl font-semibold text-white group-hover:text-primary transition-colors">Relatório de Pedidos</h2>
+                    <p className="text-white/60">Visualizar e gerenciar pedidos</p>
+                  </div>
+                </Link>
               </div>
-            </Link>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
