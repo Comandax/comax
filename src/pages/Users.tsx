@@ -146,12 +146,12 @@ export default function Users() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto py-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold">Painel de Usuários</h1>
+          <h1 className="text-2xl font-bold text-primary">Painel de Usuários</h1>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               onClick={() => navigate(`/users/${user?.id}`)}
-              className="text-gray-600 hover:text-gray-800"
+              className="text-primary hover:bg-primary/10 border-primary"
             >
               <UserCog className="h-5 w-5 mr-2" />
               Editar Perfil
@@ -159,7 +159,7 @@ export default function Users() {
             <Button
               variant="outline"
               onClick={handleLogout}
-              className="text-red-500 hover:text-red-600"
+              className="text-destructive hover:bg-destructive/10 border-destructive"
             >
               <LogOut className="h-5 w-5 mr-2" />
               Sair
@@ -169,25 +169,29 @@ export default function Users() {
 
         {user?.roles?.includes('representative') && (
           <div className="grid md:grid-cols-2 gap-4 mb-8">
-            <Card>
+            <Card className="bg-card shadow-md border-primary/20">
               <CardContent className="pt-6">
                 <div className="space-y-4">
-                  <h2 className="text-lg font-semibold">Seu Link de Indicação</h2>
-                  <p className="text-sm text-gray-500">
+                  <h2 className="text-lg font-semibold text-primary">Seu Link de Indicação</h2>
+                  <p className="text-sm text-muted-foreground">
                     Compartilhe este link para convidar novos usuários. Você poderá acompanhar todos os usuários que se cadastrarem através dele.
                   </p>
                   <div className="flex gap-2">
                     <Input
                       value={referralLink}
                       readOnly
-                      className="flex-1 bg-gray-50"
+                      className="flex-1 bg-background border-primary/20"
                     />
-                    <Button onClick={copyToClipboard}>
+                    <Button 
+                      onClick={copyToClipboard}
+                      className="bg-primary hover:bg-primary/90 text-white"
+                    >
                       Copiar Link
                     </Button>
                     <Button
                       variant="outline"
                       onClick={() => setShowEditModal(true)}
+                      className="border-primary text-primary hover:bg-primary/10"
                     >
                       <Edit className="h-4 w-4 mr-2" />
                       Editar ID
@@ -197,24 +201,25 @@ export default function Users() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="bg-card shadow-md border-primary/20">
               <CardContent className="pt-6">
                 <div className="space-y-4">
-                  <h2 className="text-lg font-semibold">Chave PIX</h2>
+                  <h2 className="text-lg font-semibold text-primary">Chave PIX</h2>
                   {representativeData?.pix_key ? (
                     <>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-muted-foreground">
                         Sua chave PIX cadastrada para recebimento de comissões:
                       </p>
                       <div className="flex gap-2 items-center">
-                        <CreditCard className="text-green-500 h-5 w-5" />
-                        <span className="flex-1 font-medium">{representativeData.pix_key}</span>
+                        <CreditCard className="text-primary h-5 w-5" />
+                        <span className="flex-1 font-medium text-foreground">{representativeData.pix_key}</span>
                         <Button
                           variant="outline"
                           onClick={() => {
                             setNewPixKey(representativeData.pix_key || "");
                             setShowPixModal(true);
                           }}
+                          className="border-primary text-primary hover:bg-primary/10"
                         >
                           <Edit className="h-4 w-4 mr-2" />
                           Editar
@@ -223,16 +228,17 @@ export default function Users() {
                     </>
                   ) : (
                     <>
-                      <div className="flex items-center gap-2 text-red-500">
+                      <div className="flex items-center gap-2 text-destructive">
                         <XCircle className="h-5 w-5" />
                         <p>Nenhuma chave PIX cadastrada</p>
                       </div>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-muted-foreground">
                         Cadastre uma chave PIX para receber suas comissões de forma automática.
                       </p>
                       <Button
-                        variant="secondary"
+                        variant="outline"
                         onClick={() => setShowPixModal(true)}
+                        className="border-primary text-primary hover:bg-primary/10"
                       >
                         <CreditCard className="h-4 w-4 mr-2" />
                         Cadastrar Chave PIX
@@ -246,18 +252,18 @@ export default function Users() {
         )}
 
         <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
-          <DialogContent>
+          <DialogContent className="bg-card">
             <DialogHeader>
-              <DialogTitle>Editar Identificador</DialogTitle>
+              <DialogTitle className="text-primary">Editar Identificador</DialogTitle>
             </DialogHeader>
             <div className="py-4">
               <Input
                 value={newIdentifier}
                 onChange={(e) => setNewIdentifier(e.target.value)}
                 placeholder="Novo identificador"
-                className="w-full"
+                className="w-full border-primary/20"
               />
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-sm text-muted-foreground mt-2">
                 Este identificador será usado no seu link de indicação.
               </p>
             </div>
@@ -266,12 +272,14 @@ export default function Users() {
                 variant="outline"
                 onClick={() => setShowEditModal(false)}
                 disabled={isUpdating}
+                className="border-primary text-primary hover:bg-primary/10"
               >
                 Cancelar
               </Button>
               <Button
                 onClick={updateIdentifier}
                 disabled={isUpdating}
+                className="bg-primary hover:bg-primary/90 text-white"
               >
                 {isUpdating ? "Salvando..." : "Salvar"}
               </Button>
@@ -280,9 +288,9 @@ export default function Users() {
         </Dialog>
 
         <Dialog open={showPixModal} onOpenChange={setShowPixModal}>
-          <DialogContent>
+          <DialogContent className="bg-card">
             <DialogHeader>
-              <DialogTitle>
+              <DialogTitle className="text-primary">
                 {representativeData?.pix_key ? "Editar Chave PIX" : "Cadastrar Chave PIX"}
               </DialogTitle>
             </DialogHeader>
@@ -291,9 +299,9 @@ export default function Users() {
                 value={newPixKey}
                 onChange={(e) => setNewPixKey(e.target.value)}
                 placeholder="Digite sua chave PIX"
-                className="w-full"
+                className="w-full border-primary/20"
               />
-              <p className="text-sm text-gray-500 mt-2">
+              <p className="text-sm text-muted-foreground mt-2">
                 Esta chave PIX será usada para receber suas comissões.
               </p>
             </div>
@@ -302,12 +310,14 @@ export default function Users() {
                 variant="outline"
                 onClick={() => setShowPixModal(false)}
                 disabled={isUpdating}
+                className="border-primary text-primary hover:bg-primary/10"
               >
                 Cancelar
               </Button>
               <Button
                 onClick={updatePixKey}
                 disabled={isUpdating}
+                className="bg-primary hover:bg-primary/90 text-white"
               >
                 {isUpdating ? "Salvando..." : "Salvar"}
               </Button>
@@ -319,4 +329,4 @@ export default function Users() {
       </div>
     </div>
   );
-};
+}
