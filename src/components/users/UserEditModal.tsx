@@ -57,6 +57,26 @@ export function UserEditModal({ isOpen, onOpenChange }: UserEditModalProps) {
 
   if (!user) return null;
 
+  const getUserData = async () => {
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+
+    return profile;
+  };
+
+  const [userProfile, setUserProfile] = useState<any>(null);
+
+  useEffect(() => {
+    if (isOpen && user) {
+      getUserData().then(profile => {
+        setUserProfile(profile);
+      });
+    }
+  }, [isOpen, user]);
+
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl bg-gradient-to-br from-primary/5 to-primary/10 border-2 border-primary/20">
@@ -69,10 +89,10 @@ export function UserEditModal({ isOpen, onOpenChange }: UserEditModalProps) {
         <div className="p-6">
           <UserForm
             initialData={{
-              first_name: user.firstName || '',
-              last_name: user.lastName || '',
-              email: user.email || '',
-              phone: user.phone || '',
+              first_name: userProfile?.first_name || '',
+              last_name: userProfile?.last_name || '',
+              email: userProfile?.email || user.email || '',
+              phone: userProfile?.phone || '',
               password: '',
               confirmPassword: '',
             }}
