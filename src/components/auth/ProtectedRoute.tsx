@@ -30,7 +30,7 @@ export const ProtectedRoute = ({ children, superUserOnly = false }: ProtectedRou
 
   // Se a rota requer superusuário e o usuário não é superusuário nem representante,
   // redireciona para a página de edição do próprio perfil
-  if (superUserOnly && !user.roles?.includes('superuser')) {
+  if (superUserOnly && !user.roles?.includes('superuser') && !user.roles?.includes('representative')) {
     return <Navigate to={`/users/${user.id}`} />;
   }
 
