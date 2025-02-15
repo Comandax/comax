@@ -72,6 +72,17 @@ export async function getRepresentative(profile_id: string): Promise<Representat
 }
 
 export async function updateRepresentative(id: string, data: { pix_key?: string, identifier?: string }): Promise<Representative> {
+  // Se estiver atualizando o identificador, validar o formato
+  if (data.identifier) {
+    // Remove caracteres especiais e espaços, mantendo apenas letras minúsculas e números
+    data.identifier = data.identifier.toLowerCase().replace(/[^a-z0-9]/g, '');
+    
+    // Verifica se o identificador ficou vazio após a limpeza
+    if (!data.identifier) {
+      throw new Error("O identificador deve conter pelo menos uma letra ou número");
+    }
+  }
+
   const { data: representative, error } = await supabase
     .from('representatives')
     .update(data)
@@ -79,7 +90,13 @@ export async function updateRepresentative(id: string, data: { pix_key?: string,
     .select()
     .maybeSingle();
 
-  if (error) throw error;
+  if (error) {
+    if (error.message.includes('representatives_identifier_check')) {
+      throw new Error("O identificador deve conter apenas letras minúsculas e números, sem espaços ou caracteres especiais");
+    }
+    throw error;
+  }
+  
   if (!representative) throw new Error('Representative not found');
   
   return representative;
