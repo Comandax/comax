@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,8 +9,6 @@ import { UserListControls } from "./UserListControls";
 import { UserListTable } from "./UserListTable";
 import { UserListPagination } from "./UserListPagination";
 import { UserEditModal } from "./UserEditModal";
-import { Button } from "../ui/button";
-import { UserCog } from "lucide-react";
 import { SortField, SortOrder } from "./types";
 
 export function UserList() {
@@ -131,14 +130,6 @@ export function UserList() {
             <div className="h-8 w-1 bg-primary rounded-full" />
             <h2 className="text-2xl font-bold text-primary">Usuários</h2>
           </div>
-          <Button
-            variant="outline"
-            onClick={() => setShowEditModal(true)}
-            className="text-primary hover:bg-primary/10 border-primary"
-          >
-            <UserCog className="h-5 w-5 mr-2" />
-            Editar Perfil
-          </Button>
         </div>
         
         <UserListControls
