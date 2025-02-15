@@ -1,26 +1,30 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { Representative, RepresentativeFormData, RepresentativeInsertData } from "@/types/representative";
 
 export async function createRepresentative(data: RepresentativeFormData): Promise<Representative> {
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) throw new Error('User not authenticated');
+  // Primeiro, cria o usuário usando o auth do Supabase
+  const { data: authData, error: authError } = await supabase.auth.signUp({
+    email: data.email,
+    password: data.password,
+    options: {
+      data: {
+        first_name: data.first_name,
+        last_name: data.last_name,
+      }
+    }
+  });
 
-  // Primeiro, busca o perfil do usuário para obter o nome completo
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('first_name, last_name')
-    .eq('id', user.id)
-    .single();
-
-  if (!profile) throw new Error('Profile not found');
+  if (authError) throw authError;
+  if (!authData.user) throw new Error('Failed to create user');
 
   // Gera o identificador usando o primeiro nome e a primeira letra do sobrenome
-  const identifier = (profile.first_name + profile.last_name[0])
+  const identifier = (data.first_name + data.last_name[0])
     .toLowerCase()
     .replace(/\s+/g, '');
 
   const insertData: RepresentativeInsertData = {
-    profile_id: user.id,
+    profile_id: authData.user.id,
     pix_key: data.pix_key,
     identifier: identifier,
   };
@@ -38,7 +42,7 @@ export async function createRepresentative(data: RepresentativeFormData): Promis
   const { error: roleError } = await supabase
     .from('user_roles')
     .insert({
-      user_id: user.id,
+      user_id: authData.user.id,
       role: 'representative'
     });
 

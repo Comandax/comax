@@ -15,7 +15,16 @@ import { Input } from "@/components/ui/input";
 import { RepresentativeFormData } from "@/types/representative";
 
 const formSchema = z.object({
+  first_name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
+  last_name: z.string().min(2, "Sobrenome deve ter pelo menos 2 caracteres"),
+  email: z.string().email("Email inválido"),
+  phone: z.string().min(10, "Celular deve ter pelo menos 10 dígitos"),
+  password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
+  confirmPassword: z.string(),
   pix_key: z.string().min(1, "A chave PIX é obrigatória"),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "As senhas não coincidem",
+  path: ["confirmPassword"],
 });
 
 interface RepresentativeFormProps {
@@ -27,6 +36,12 @@ export function RepresentativeForm({ onSubmit, isLoading }: RepresentativeFormPr
   const form = useForm<RepresentativeFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      first_name: "",
+      last_name: "",
+      email: "",
+      phone: "",
+      password: "",
+      confirmPassword: "",
       pix_key: "",
     },
   });
@@ -40,9 +55,113 @@ export function RepresentativeForm({ onSubmit, isLoading }: RepresentativeFormPr
     }
   };
 
+  const formatPhoneNumber = (value: string) => {
+    const cleaned = value.replace(/\D/g, '');
+    let formatted = cleaned;
+    if (cleaned.length > 0) {
+      if (cleaned.length <= 2) {
+        formatted = `(${cleaned}`;
+      } else if (cleaned.length <= 3) {
+        formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
+      } else if (cleaned.length <= 7) {
+        formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3)}`;
+      } else if (cleaned.length <= 11) {
+        formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)}-${cleaned.slice(7)}`;
+      } else {
+        formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)}-${cleaned.slice(7, 11)}`;
+      }
+    }
+    return formatted;
+  };
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+        <FormField
+          control={form.control}
+          name="first_name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Nome</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="last_name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Sobrenome</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input type="email" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="phone"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Celular</FormLabel>
+              <FormControl>
+                <Input
+                  type="tel"
+                  {...field}
+                  onChange={(e) => {
+                    const formatted = formatPhoneNumber(e.target.value);
+                    field.onChange(formatted);
+                  }}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Senha</FormLabel>
+              <FormControl>
+                <Input type="password" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirmar Senha</FormLabel>
+              <FormControl>
+                <Input type="password" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="pix_key"

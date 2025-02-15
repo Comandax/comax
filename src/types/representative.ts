@@ -9,11 +9,17 @@ export interface Representative {
 }
 
 export interface RepresentativeFormData {
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirmPassword: string;
   pix_key: string;
 }
 
 export interface RepresentativeInsertData {
   profile_id: string;
   pix_key: string;
-  identifier: string; // Agora é obrigatório, não mais opcional
+  identifier: string;
 }
