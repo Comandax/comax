@@ -1,4 +1,3 @@
-
 import { useParams, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { createProfile } from "@/services/profileService";
@@ -72,11 +71,6 @@ export default function UserCreateWithReferral() {
       <ReferralHeader />
 
       <div className="container mx-auto py-8">
-        <div className="flex items-center gap-2 mb-8">
-          <div className="h-8 w-1 bg-primary rounded-full" />
-          <h1 className="text-2xl font-bold text-[#403E43]">Criar Conta</h1>
-        </div>
-
         <Card className="w-full max-w-2xl mx-auto bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
           <div className="p-6 space-y-6">
             <div className="flex items-center gap-2 text-primary">
