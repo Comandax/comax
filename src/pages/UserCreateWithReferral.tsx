@@ -22,30 +22,57 @@ export default function UserCreateWithReferral() {
   useEffect(() => {
     const fetchRepresentative = async () => {
       if (!identifier) {
-        setError("Identificador do representante não fornecido");
+        setError("Link de indicação inválido. Por favor, verifique o link e tente novamente.");
         setLoading(false);
         return;
       }
 
       try {
-        const { data: representative, error } = await supabase
+        // Busca o representante e os dados do perfil associado
+        const { data: representative, error: repError } = await supabase
           .from('representatives')
-          .select('id, profiles!representatives_profile_id_fkey(first_name, last_name)')
-          .eq('identifier', identifier)
+          .select(`
+            id,
+            profiles!representatives_profile_id_fkey (
+              id,
+              first_name,
+              last_name,
+              user_roles!profiles_id_fkey (
+                role
+              )
+            )
+          `)
+          .eq('identifier', identifier.toLowerCase())
           .single();
 
-        if (error) throw error;
-        if (!representative) throw new Error('Representante não encontrado');
+        if (repError) {
+          console.error("Erro ao buscar representante:", repError);
+          throw new Error("Erro ao verificar o link de indicação.");
+        }
+
+        if (!representative) {
+          throw new Error("Representante não encontrado. Verifique o link de indicação.");
+        }
+
+        // Verifica se o usuário ainda tem a role de representante
+        const hasRepRole = representative.profiles?.user_roles?.some(
+          (ur: any) => ur.role === 'representative'
+        );
+
+        if (!hasRepRole) {
+          throw new Error("Link de indicação inválido ou expirado.");
+        }
 
         setRepresentativeId(representative.id);
         const profile = representative.profiles;
+        
         toast({
           title: "Representante identificado",
           description: `Você está se cadastrando através da indicação de ${profile.first_name} ${profile.last_name}.`,
         });
       } catch (err: any) {
-        setError("Representante não encontrado. Verifique o link de indicação.");
         console.error("Erro ao buscar representante:", err);
+        setError(err.message || "Erro ao verificar o link de indicação. Por favor, tente novamente.");
       } finally {
         setLoading(false);
       }
