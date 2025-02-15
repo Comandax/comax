@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Representative, RepresentativeFormData, RepresentativeInsertData } from "@/types/representative";
 
@@ -26,13 +25,33 @@ export async function createRepresentative(data: RepresentativeFormData): Promis
     identifier: identifier,
   };
 
-  const { data: representative, error } = await supabase
+  // Insere o representante
+  const { data: representative, error: insertError } = await supabase
     .from('representatives')
     .insert(insertData)
     .select()
     .single();
 
-  if (error) throw error;
+  if (insertError) throw insertError;
+
+  // Adiciona a role de representante
+  const { error: roleError } = await supabase
+    .from('user_roles')
+    .insert({
+      user_id: user.id,
+      role: 'representative'
+    });
+
+  if (roleError) {
+    // Se houver erro ao adicionar a role, remove o representante criado
+    await supabase
+      .from('representatives')
+      .delete()
+      .eq('id', representative.id);
+    
+    throw roleError;
+  }
+
   return representative as Representative;
 }
 
