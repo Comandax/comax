@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { Representative, RepresentativeFormData, RepresentativeInsertData } from "@/types/representative";
 
@@ -68,7 +69,7 @@ export async function getRepresentative(profile_id: string): Promise<Representat
   return representative as Representative | null;
 }
 
-export async function updateRepresentative(id: string, data: Partial<RepresentativeFormData>): Promise<Representative> {
+export async function updateRepresentative(id: string, data: { pix_key?: string }): Promise<Representative> {
   const { data: representative, error } = await supabase
     .from('representatives')
     .update(data)

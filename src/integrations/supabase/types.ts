@@ -194,7 +194,7 @@ export type Database = {
           created_at: string
           id: string
           identifier: string
-          pix_key: string
+          pix_key: string | null
           profile_id: string
           updated_at: string
         }
@@ -202,7 +202,7 @@ export type Database = {
           created_at?: string
           id?: string
           identifier: string
-          pix_key: string
+          pix_key?: string | null
           profile_id: string
           updated_at?: string
         }
@@ -210,7 +210,7 @@ export type Database = {
           created_at?: string
           id?: string
           identifier?: string
-          pix_key?: string
+          pix_key?: string | null
           profile_id?: string
           updated_at?: string
         }

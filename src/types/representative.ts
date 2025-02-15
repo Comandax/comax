@@ -3,7 +3,7 @@ export interface Representative {
   id: string;
   profile_id: string;
   identifier: string;
-  pix_key: string;
+  pix_key: string | null;
   created_at: string;
   updated_at: string;
 }
