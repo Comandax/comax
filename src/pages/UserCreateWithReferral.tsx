@@ -1,4 +1,3 @@
-
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
@@ -198,8 +197,8 @@ export default function UserCreateWithReferral() {
             <AlertDescription>
               {representativeName && (
                 <>
-                  Você está se cadastrando através do link de indicação de {representativeName.first_name} {representativeName.last_name}. 
-                  Por esse motivo, você está recebendo um mês grátis para utilizar a plataforma e, após esse período, terá 10% de desconto na mensalidade para sempre!
+                  Você está se cadastrando através do link de indicação de <strong>{representativeName.first_name} {representativeName.last_name}</strong>. 
+                  Por esse motivo, você está recebendo <strong>um mês grátis</strong> para utilizar a plataforma e, após esse período, terá <strong>10% de desconto</strong> na mensalidade para sempre!
                 </>
               )}
             </AlertDescription>
