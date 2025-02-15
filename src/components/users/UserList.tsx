@@ -201,31 +201,31 @@ export function UserList() {
               <TableRow className="bg-primary/15 hover:bg-primary/20">
                 <TableHead 
                   onClick={() => handleSort('name')} 
-                  className="cursor-pointer text-primary-foreground font-semibold"
+                  className="cursor-pointer font-semibold text-primary"
                 >
                   Nome <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
                 </TableHead>
                 <TableHead 
                   onClick={() => handleSort('company')} 
-                  className="cursor-pointer text-primary-foreground font-semibold"
+                  className="cursor-pointer font-semibold text-primary"
                 >
                   Empresa <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
                 </TableHead>
                 <TableHead 
                   onClick={() => handleSort('email')} 
-                  className="cursor-pointer text-primary-foreground font-semibold"
+                  className="cursor-pointer font-semibold text-primary"
                 >
                   Email <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
                 </TableHead>
                 <TableHead 
                   onClick={() => handleSort('phone')} 
-                  className="cursor-pointer text-primary-foreground font-semibold"
+                  className="cursor-pointer font-semibold text-primary"
                 >
                   Celular <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
                 </TableHead>
                 <TableHead 
                   onClick={() => handleSort('created_at')} 
-                  className="cursor-pointer text-primary-foreground font-semibold"
+                  className="cursor-pointer font-semibold text-primary"
                 >
                   Criado em <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
                 </TableHead>
