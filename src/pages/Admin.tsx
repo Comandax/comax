@@ -1,46 +1,38 @@
 
-import { LayoutDashboard, Package, Building2, LogOut, User } from "lucide-react";
+import { Package, LogOut, User, Building2 } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Card } from "@/components/ui/card";
 
 const Admin = () => {
-  const {
-    user,
-    logout
-  } = useAuth();
-  const {
-    toast
-  } = useToast();
+  const { user, logout } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
 
-  // Se não houver usuário, redireciona para login
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  // Se o usuário for um representante, redireciona para a listagem de usuários
   if (user.roles?.includes('representative')) {
     return <Navigate to="/users" replace />;
   }
 
-  const {
-    data: userCompany,
-    isError
-  } = useQuery({
+  const { data: userCompany, isError } = useQuery({
     queryKey: ['company', user?.id],
     queryFn: async () => {
-      const {
-        data,
-        error
-      } = await supabase.from('companies').select('*').eq('owner_id', user?.id).maybeSingle();
+      const { data, error } = await supabase
+        .from('companies')
+        .select('*')
+        .eq('owner_id', user?.id)
+        .maybeSingle();
+      
       if (error) {
         console.error('Error fetching company:', error);
         throw error;
@@ -50,30 +42,29 @@ const Admin = () => {
     enabled: !!user
   });
 
-  const {
-    data: userRoles
-  } = useQuery({
+  const { data: userRoles } = useQuery({
     queryKey: ['user_roles', user?.id],
     queryFn: async () => {
-      const {
-        data,
-        error
-      } = await supabase.from('user_roles').select('role').eq('user_id', user?.id);
+      const { data, error } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', user?.id);
+      
       if (error) throw error;
       return data;
     },
     enabled: !!user
   });
 
-  const {
-    data: userProfile
-  } = useQuery({
+  const { data: userProfile } = useQuery({
     queryKey: ['profile', user?.id],
     queryFn: async () => {
-      const {
-        data,
-        error
-      } = await supabase.from('profiles').select('*').eq('id', user?.id).single();
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user?.id)
+        .single();
+      
       if (error) throw error;
       return data;
     },
@@ -101,7 +92,8 @@ const Admin = () => {
   const userName = userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'Usuário';
   const isSuperuser = userRoles?.some(role => role.role === 'superuser');
 
-  return <div className="min-h-screen bg-[#1A1F2C]">
+  return (
+    <div className="min-h-screen bg-[#1A1F2C]">
       <div className="bg-gray-900/50 shadow-md">
         <div className="container mx-auto">
           <div className="max-w-6xl mx-auto px-4">
@@ -170,7 +162,7 @@ const Admin = () => {
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <Link to="/products" className="flex items-center p-6 bg-white/95 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <Package className="w-8 h-8 text-blue-500 mr-4" />
+              <Package className="w-8 h-8 text-primary mr-4" />
               <div>
                 <h2 className="text-xl font-semibold">Produtos</h2>
                 <p className="text-gray-600">Gerenciar catálogo de produtos</p>
@@ -178,7 +170,7 @@ const Admin = () => {
             </Link>
 
             <Link to="/orders" className="flex items-center p-6 bg-white/95 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <LayoutDashboard className="w-8 h-8 text-blue-500 mr-4" />
+              <Package className="w-8 h-8 text-primary mr-4" />
               <div>
                 <h2 className="text-xl font-semibold">Relatório de Pedidos</h2>
                 <p className="text-gray-600">Visualizar e gerenciar pedidos</p>
@@ -187,7 +179,8 @@ const Admin = () => {
           </div>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default Admin;
