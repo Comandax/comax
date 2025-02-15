@@ -73,15 +73,6 @@
   }
 
   body {
-    @apply bg-[#1A1F2C] text-foreground min-h-screen;
-    margin: 0;
-    padding: 0;
-  }
-
-  #root {
-    @apply min-h-screen;
-    margin: 0;
-    padding: 0;
-    max-width: none;
+    @apply bg-background text-foreground;
   }
 }

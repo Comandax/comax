@@ -67,11 +67,11 @@ export default function UserCreateWithReferral() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-[#1A1F2C]">
       <ReferralHeader />
 
       <div className="container mx-auto py-8">
-        <Card className="w-full max-w-2xl mx-auto shadow-lg p-6">
+        <Card className="w-full max-w-2xl mx-auto shadow-lg bg-white/95 p-6">
           <h1 className="text-2xl font-bold mb-6 text-gray-900">Criar Conta</h1>
           
           <ReferralInfo representativeName={representativeName} />
