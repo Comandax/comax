@@ -18,90 +18,34 @@ export default function UserCreateWithReferral() {
   const [representativeId, setRepresentativeId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [representativeName, setRepresentativeName] = useState<{ first_name: string; last_name: string } | null>(null);
 
   useEffect(() => {
     const fetchRepresentative = async () => {
       if (!identifier) {
-        setError("Link de indicação inválido. Por favor, verifique o link e tente novamente.");
+        setError("Identificador do representante não fornecido");
         setLoading(false);
         return;
       }
 
-      console.log("Buscando representante com identificador:", identifier);
-
       try {
-        // Primeiro, vamos listar todos os representantes para debug
-        const { data: allReps, error: listError } = await supabase
+        const { data: representative, error } = await supabase
           .from('representatives')
-          .select('identifier');
-        
-        console.log("Todos os identificadores de representantes:", allReps);
+          .select('id, profiles!representatives_profile_id_fkey(first_name, last_name)')
+          .eq('identifier', identifier)
+          .single();
 
-        // Agora busca o representante específico
-        const { data: representative, error: repError } = await supabase
-          .from('representatives')
-          .select()
-          .eq('identifier', identifier.toLowerCase())
-          .maybeSingle();
-
-        console.log("Resultado da busca do representante:", { representative, repError });
-
-        if (repError) {
-          console.error("Erro ao buscar representante:", repError);
-          throw new Error("Erro ao verificar o link de indicação.");
-        }
-
-        if (!representative) {
-          throw new Error("Representante não encontrado. Verifique o link de indicação.");
-        }
-
-        // Agora busca o perfil do representante
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select()
-          .eq('id', representative.profile_id)
-          .maybeSingle();
-
-        console.log("Resultado da busca do perfil:", { profile, profileError });
-
-        if (profileError) {
-          console.error("Erro ao buscar perfil:", profileError);
-          throw new Error("Erro ao verificar o link de indicação.");
-        }
-
-        if (!profile) {
-          throw new Error("Perfil do representante não encontrado.");
-        }
-
-        // Verifica se o usuário tem a role de representante
-        const { data: userRoles, error: rolesError } = await supabase
-          .from('user_roles')
-          .select()
-          .eq('user_id', representative.profile_id)
-          .eq('role', 'representative');
-
-        console.log("Resultado da busca de roles:", { userRoles, rolesError });
-
-        if (rolesError) {
-          console.error("Erro ao verificar roles:", rolesError);
-          throw new Error("Erro ao verificar o link de indicação.");
-        }
-
-        if (!userRoles || userRoles.length === 0) {
-          throw new Error("Link de indicação inválido ou expirado.");
-        }
+        if (error) throw error;
+        if (!representative) throw new Error('Representante não encontrado');
 
         setRepresentativeId(representative.id);
-        setRepresentativeName({ first_name: profile.first_name, last_name: profile.last_name });
-        
+        const profile = representative.profiles;
         toast({
           title: "Representante identificado",
           description: `Você está se cadastrando através da indicação de ${profile.first_name} ${profile.last_name}.`,
         });
       } catch (err: any) {
-        console.error("Erro detalhado:", err);
-        setError(err.message || "Erro ao verificar o link de indicação. Por favor, tente novamente.");
+        setError("Representante não encontrado. Verifique o link de indicação.");
+        console.error("Erro ao buscar representante:", err);
       } finally {
         setLoading(false);
       }
@@ -138,6 +82,7 @@ export default function UserCreateWithReferral() {
 
   const handleSubmit = async (data: ProfileFormData) => {
     return new Promise<void>((resolve, reject) => {
+      // Adiciona o ID do representante aos dados do perfil
       const profileData = {
         ...data,
         representative_id: representativeId,
@@ -194,14 +139,10 @@ export default function UserCreateWithReferral() {
           
           <Alert className="mb-6" variant="default">
             <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Informação</AlertTitle>
+            <AlertTitle>Importante</AlertTitle>
             <AlertDescription>
-              {representativeName && (
-                <>
-                  Você está se cadastrando através do link de indicação de {representativeName.first_name} {representativeName.last_name}. 
-                  Por esse motivo, você está recebendo um mês grátis para utilizar a plataforma e, após esse período, terá 10% de desconto na mensalidade para sempre!
-                </>
-              )}
+              Após criar sua conta, você precisará confirmar seu email antes de fazer login.
+              Se não receber o email de confirmação, aguarde alguns segundos e tente criar a conta novamente.
             </AlertDescription>
           </Alert>
 
