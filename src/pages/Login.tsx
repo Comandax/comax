@@ -30,12 +30,12 @@ const Login = () => {
         description: "Você será redirecionado para o painel.",
       });
       
-      // Se for superusuário, redireciona para a página de usuários
-      // Se for representante, também redireciona para a página de usuários
+      // Se for superusuário ou representante, redireciona para a página de usuários
       if (user?.roles?.includes('superuser') || user?.roles?.includes('representative')) {
         navigate("/users");
       } else {
-        navigate("/admin");
+        // Usuários normais vão para a página de pedidos
+        navigate("/orders");
       }
     } catch (error: any) {
       // Verificar se é um erro de credenciais inválidas
@@ -68,7 +68,7 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start bg-[#1A1F2C] p-4">
+    <div className="min-h-screen flex flex-col items-center justify-start p-4">
       <div className={`${isMobile ? 'mt-8' : 'mt-16'} mb-8`}>
         <img 
           src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
@@ -77,7 +77,7 @@ const Login = () => {
         />
       </div>
       
-      <Card className="w-full max-w-md mx-auto shadow-lg animate-fade-in bg-white/95">
+      <Card className="w-full max-w-md mx-auto shadow-lg">
         <CardHeader>
           <h2 className="text-2xl font-bold text-center text-gray-900">
             Acesse sua conta
