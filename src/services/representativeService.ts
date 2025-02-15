@@ -18,10 +18,15 @@ export async function createRepresentative(data: RepresentativeFormData): Promis
   if (authError) throw authError;
   if (!authData.user) throw new Error('Failed to create user');
 
+  // Gera o identificador usando o primeiro nome completo e a primeira letra do sobrenome
+  const identifier = (data.first_name + data.last_name[0])
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, ''); // Remove caracteres especiais e espaços
+
   // Insere o representante
   const insertData: RepresentativeInsertData = {
     profile_id: authData.user.id,
-    identifier: data.first_name.toLowerCase() + data.last_name[0].toLowerCase(),
+    identifier,
   };
 
   // Insere o representante
