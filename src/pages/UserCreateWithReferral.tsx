@@ -91,7 +91,7 @@ export default function UserCreateWithReferral() {
               isLoading={isCreating}
             />
           </div>
-        </div>
+        </Card>
       </div>
     </div>
   );
