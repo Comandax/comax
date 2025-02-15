@@ -148,7 +148,7 @@ export default function Users() {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             <img 
-              src="/public/lovable-uploads/1856d481-4fe4-450a-937a-54bdaffb0f22.png" 
+              src="/public/lovable-uploads/e68a99bd-7416-4566-9f5b-254b3fb39c1c.png" 
               alt="Comax Logo" 
               className="h-12 w-auto"
             />
