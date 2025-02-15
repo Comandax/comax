@@ -68,56 +68,64 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start p-4">
-      <div className={`${isMobile ? 'mt-8' : 'mt-16'} mb-8`}>
-        <img 
-          src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
-          alt="COMAX Logo" 
-          className="h-20 w-auto"
-        />
-      </div>
-      
-      <Card className="w-full max-w-md mx-auto shadow-lg">
-        <CardHeader>
-          <h2 className="text-2xl font-bold text-center text-gray-900">
-            Acesse sua conta
-          </h2>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div className="space-y-4">
-              <div>
-                <Input
-                  type="email"
-                  required
-                  placeholder="E-mail"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full"
-                />
-              </div>
-              <div>
-                <Input
-                  type="password"
-                  required
-                  placeholder="Senha"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full"
-                />
-              </div>
+    <div className="min-h-screen bg-background">
+      <div className="bg-background shadow-md">
+        <div className="container mx-auto">
+          <div className="max-w-md mx-auto px-4">
+            <div className="py-4 flex items-center gap-4">
+              <img 
+                src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
+                alt="COMAX Logo" 
+                className="h-12 w-auto"
+              />
             </div>
+          </div>
+        </div>
+      </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
-              {isLoading ? "Entrando..." : "Entrar"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+      <div className="container mx-auto py-8">
+        <Card className="w-full max-w-md mx-auto bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
+          <CardHeader>
+            <h2 className="text-2xl font-bold text-center text-primary">
+              Acesse sua conta
+            </h2>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <Input
+                    type="email"
+                    required
+                    placeholder="E-mail"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full bg-white/80 border-primary/30 focus:border-primary"
+                  />
+                </div>
+                <div>
+                  <Input
+                    type="password"
+                    required
+                    placeholder="Senha"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-white/80 border-primary/30 focus:border-primary"
+                  />
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full bg-primary hover:bg-primary/90 text-white"
+                disabled={isLoading}
+              >
+                {isLoading ? "Entrando..." : "Entrar"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };
