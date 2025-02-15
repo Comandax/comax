@@ -63,10 +63,10 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
 
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(formSchema),
-    defaultValues: {
+    defaultValues: initialData ? {
       ...initialData,
-      phone: formatInitialPhoneNumber(initialData?.phone),
-    } || {
+      phone: formatInitialPhoneNumber(initialData.phone),
+    } : {
       first_name: "",
       last_name: "",
       email: "",
