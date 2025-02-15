@@ -1,7 +1,7 @@
 
 import { UserList } from "@/components/users/UserList";
 import { Button } from "@/components/ui/button";
-import { LogOut, Edit } from "lucide-react";
+import { LogOut, Edit, UserCog } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
@@ -108,14 +108,24 @@ export default function Users() {
       <div className="container mx-auto py-8">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-2xl font-bold">Painel de Usuários</h1>
-          <Button
-            variant="outline"
-            onClick={handleLogout}
-            className="text-red-500 hover:text-red-600"
-          >
-            <LogOut className="h-5 w-5 mr-2" />
-            Sair
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={() => navigate(`/users/${user?.id}`)}
+              className="text-gray-600 hover:text-gray-800"
+            >
+              <UserCog className="h-5 w-5 mr-2" />
+              Editar Perfil
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className="text-red-500 hover:text-red-600"
+            >
+              <LogOut className="h-5 w-5 mr-2" />
+              Sair
+            </Button>
+          </div>
         </div>
 
         {user?.roles?.includes('representative') && referralLink && (
