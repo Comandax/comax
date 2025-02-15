@@ -189,6 +189,41 @@ export type Database = {
         }
         Relationships: []
       }
+      representatives: {
+        Row: {
+          created_at: string
+          id: string
+          identifier: string
+          pix_key: string
+          profile_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          identifier: string
+          pix_key: string
+          profile_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          identifier?: string
+          pix_key?: string
+          profile_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "representatives_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
