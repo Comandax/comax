@@ -1,5 +1,5 @@
 
-import { Package, LogOut, User, Building2 } from "lucide-react";
+import { Package, LogOut, User, Building2, ClipboardList } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
@@ -94,7 +94,7 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-[#1A1F2C]">
-      <div className="bg-gray-900/50 shadow-md">
+      <div className="bg-gray-900/50 border-b border-white/10">
         <div className="container mx-auto">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-between py-1.5">
@@ -159,7 +159,7 @@ const Admin = () => {
         </div>
       )}
 
-      <div className="container mx-auto py-10">
+      <div className="container mx-auto py-6">
         <div className="max-w-6xl mx-auto px-4">
           <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
             <CardContent className="p-6 space-y-6">
@@ -184,7 +184,7 @@ const Admin = () => {
                   to="/orders" 
                   className="group flex items-center p-6 bg-white/5 rounded-lg border border-white/10 hover:border-primary/30 transition-all duration-300"
                 >
-                  <Package className="w-8 h-8 text-primary mr-4" />
+                  <ClipboardList className="w-8 h-8 text-primary mr-4" />
                   <div>
                     <h2 className="text-xl font-semibold text-white group-hover:text-primary transition-colors">Relatório de Pedidos</h2>
                     <p className="text-white/60">Visualizar e gerenciar pedidos</p>
