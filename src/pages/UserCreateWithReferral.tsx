@@ -30,7 +30,14 @@ export default function UserCreateWithReferral() {
       console.log("Buscando representante com identificador:", identifier);
 
       try {
-        // Primeiro busca apenas o representante pelo identificador
+        // Primeiro, vamos listar todos os representantes para debug
+        const { data: allReps, error: listError } = await supabase
+          .from('representatives')
+          .select('identifier');
+        
+        console.log("Todos os identificadores de representantes:", allReps);
+
+        // Agora busca o representante específico
         const { data: representative, error: repError } = await supabase
           .from('representatives')
           .select()
