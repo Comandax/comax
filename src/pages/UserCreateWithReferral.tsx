@@ -27,21 +27,17 @@ export default function UserCreateWithReferral() {
         return;
       }
 
+      console.log("Buscando representante com identificador:", identifier);
+
       try {
-        // Busca o representante e os dados do perfil associado
+        // Primeiro busca apenas o representante pelo identificador
         const { data: representative, error: repError } = await supabase
           .from('representatives')
-          .select(`
-            id,
-            profile_id,
-            profiles!inner (
-              id,
-              first_name,
-              last_name
-            )
-          `)
+          .select('*')
           .eq('identifier', identifier.toLowerCase())
-          .single();
+          .maybeSingle();
+
+        console.log("Resultado da busca do representante:", { representative, repError });
 
         if (repError) {
           console.error("Erro ao buscar representante:", repError);
@@ -52,12 +48,28 @@ export default function UserCreateWithReferral() {
           throw new Error("Representante não encontrado. Verifique o link de indicação.");
         }
 
+        // Agora busca o perfil do representante
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', representative.profile_id)
+          .single();
+
+        console.log("Resultado da busca do perfil:", { profile, profileError });
+
+        if (profileError) {
+          console.error("Erro ao buscar perfil:", profileError);
+          throw new Error("Erro ao verificar o link de indicação.");
+        }
+
         // Verifica se o usuário tem a role de representante
         const { data: userRoles, error: rolesError } = await supabase
           .from('user_roles')
-          .select('role')
+          .select('*')
           .eq('user_id', representative.profile_id)
           .eq('role', 'representative');
+
+        console.log("Resultado da busca de roles:", { userRoles, rolesError });
 
         if (rolesError) {
           console.error("Erro ao verificar roles:", rolesError);
@@ -69,14 +81,13 @@ export default function UserCreateWithReferral() {
         }
 
         setRepresentativeId(representative.id);
-        const profile = representative.profiles;
         
         toast({
           title: "Representante identificado",
           description: `Você está se cadastrando através da indicação de ${profile.first_name} ${profile.last_name}.`,
         });
       } catch (err: any) {
-        console.error("Erro ao buscar representante:", err);
+        console.error("Erro detalhado:", err);
         setError(err.message || "Erro ao verificar o link de indicação. Por favor, tente novamente.");
       } finally {
         setLoading(false);
