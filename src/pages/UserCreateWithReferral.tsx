@@ -33,7 +33,7 @@ export default function UserCreateWithReferral() {
         // Primeiro busca apenas o representante pelo identificador
         const { data: representative, error: repError } = await supabase
           .from('representatives')
-          .select('*')
+          .select()
           .eq('identifier', identifier.toLowerCase())
           .maybeSingle();
 
@@ -51,9 +51,9 @@ export default function UserCreateWithReferral() {
         // Agora busca o perfil do representante
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
-          .select('*')
+          .select()
           .eq('id', representative.profile_id)
-          .single();
+          .maybeSingle();
 
         console.log("Resultado da busca do perfil:", { profile, profileError });
 
@@ -62,10 +62,14 @@ export default function UserCreateWithReferral() {
           throw new Error("Erro ao verificar o link de indicação.");
         }
 
+        if (!profile) {
+          throw new Error("Perfil do representante não encontrado.");
+        }
+
         // Verifica se o usuário tem a role de representante
         const { data: userRoles, error: rolesError } = await supabase
           .from('user_roles')
-          .select('*')
+          .select()
           .eq('user_id', representative.profile_id)
           .eq('role', 'representative');
 
@@ -125,7 +129,6 @@ export default function UserCreateWithReferral() {
 
   const handleSubmit = async (data: ProfileFormData) => {
     return new Promise<void>((resolve, reject) => {
-      // Adiciona o ID do representante aos dados do perfil
       const profileData = {
         ...data,
         representative_id: representativeId,
