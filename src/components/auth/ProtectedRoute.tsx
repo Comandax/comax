@@ -19,9 +19,12 @@ export const ProtectedRoute = ({ children, superUserOnly = false }: ProtectedRou
     return <Navigate to="/login" />;
   }
 
-  // Se a rota requer superusuário e o usuário não é superusuário,
-  // redireciona para a página de edição do próprio perfil
-  if (superUserOnly && !user.roles?.includes('superuser')) {
+  // Se a rota requer superusuário e o usuário não é superusuário nem representante,
+  // redireciona para a página de edição do próprio perfil.
+  // Representantes podem acessar a página de usuários, mas não outras páginas restritas.
+  if (superUserOnly && 
+      !user.roles?.includes('superuser') && 
+      (!user.roles?.includes('representative') || location.pathname !== '/users')) {
     return <Navigate to={`/users/${user.id}`} />;
   }
 

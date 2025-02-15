@@ -31,7 +31,8 @@ const Login = () => {
       });
       
       // Se for superusuário, redireciona para a página de usuários
-      if (user?.roles?.includes('superuser')) {
+      // Se for representante, também redireciona para a página de usuários
+      if (user?.roles?.includes('superuser') || user?.roles?.includes('representative')) {
         navigate("/users");
       } else {
         navigate("/admin");

@@ -32,12 +32,14 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 type SortField = 'name' | 'company' | 'email' | 'phone' | 'created_at';
 type SortOrder = 'asc' | 'desc';
 
 export function UserList() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -47,9 +49,24 @@ export function UserList() {
   const { data: profilesData, isLoading } = useQuery({
     queryKey: ['profiles'],
     queryFn: async () => {
-      const { data: profiles, error: profilesError } = await supabase
+      let query = supabase
         .from('profiles')
-        .select('*');
+        .select('*, companies(name)');
+
+      // Se o usuário for um representante, filtra apenas os usuários que ele indicou
+      if (user?.roles?.includes('representative')) {
+        const { data: representative } = await supabase
+          .from('representatives')
+          .select('id')
+          .eq('profile_id', user.id)
+          .single();
+
+        if (representative) {
+          query = query.eq('representative_id', representative.id);
+        }
+      }
+
+      const { data: profiles, error: profilesError } = await query;
 
       if (profilesError) throw profilesError;
 
@@ -76,7 +93,7 @@ export function UserList() {
     return (
       profile.fullName.toLowerCase().includes(searchTerm) ||
       profile.companyName.toLowerCase().includes(searchTerm) ||
-      profile.email.toLowerCase().includes(searchTerm) ||
+      profile.email?.toLowerCase().includes(searchTerm) ||
       (profile.phone && profile.phone.toLowerCase().includes(searchTerm))
     );
   }) || [];
@@ -139,10 +156,12 @@ export function UserList() {
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold">Usuários</h2>
-        <Button onClick={() => navigate('/users/create')}>
-          <Plus className="size-4" />
-          Novo Usuário
-        </Button>
+        {user?.roles?.includes('superuser') && (
+          <Button onClick={() => navigate('/users/create')}>
+            <Plus className="size-4" />
+            Novo Usuário
+          </Button>
+        )}
       </div>
 
       <div className="flex gap-4 items-center">
