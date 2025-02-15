@@ -82,6 +82,11 @@ export async function updateRepresentative(id: string, data: { pix_key?: string,
       throw new Error("O identificador deve conter pelo menos uma letra ou número");
     }
 
+    // Verifica se o identificador tem pelo menos 3 caracteres
+    if (data.identifier.length < 3) {
+      throw new Error("O identificador deve ter pelo menos 3 caracteres");
+    }
+
     // Verifica se o identificador contém pelo menos uma letra
     if (!/[a-z]/.test(data.identifier)) {
       throw new Error("O identificador deve conter pelo menos uma letra");
