@@ -12,7 +12,7 @@ export const ProtectedRoute = ({ children, superUserOnly = false }: ProtectedRou
   const location = useLocation();
 
   // Lista de rotas públicas que não exigem autenticação
-  const publicRoutes = ['/representative/create'];
+  const publicRoutes = ['/representatives/create'];
 
   if (loading) {
     return <div>Loading...</div>;
@@ -29,11 +29,8 @@ export const ProtectedRoute = ({ children, superUserOnly = false }: ProtectedRou
   }
 
   // Se a rota requer superusuário e o usuário não é superusuário nem representante,
-  // redireciona para a página de edição do próprio perfil.
-  // Representantes podem acessar a página de usuários, mas não outras páginas restritas.
-  if (superUserOnly && 
-      !user.roles?.includes('superuser') && 
-      (!user.roles?.includes('representative') || location.pathname !== '/users')) {
+  // redireciona para a página de edição do próprio perfil
+  if (superUserOnly && !user.roles?.includes('superuser')) {
     return <Navigate to={`/users/${user.id}`} />;
   }
 

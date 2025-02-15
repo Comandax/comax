@@ -43,11 +43,7 @@ function App() {
                 <Users />
               </ProtectedRoute>
             } />
-            <Route path="/representatives/create" element={
-              <ProtectedRoute superUserOnly>
-                <RepresentativeCreate />
-              </ProtectedRoute>
-            } />
+            <Route path="/representatives/create" element={<RepresentativeCreate />} />
             <Route path="/admin" element={
               <ProtectedRoute>
                 <Admin />
