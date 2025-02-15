@@ -34,7 +34,7 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/users/:id" element={
-              <ProtectedRoute superUserOnly>
+              <ProtectedRoute>
                 <UserEdit />
               </ProtectedRoute>
             } />
