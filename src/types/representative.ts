@@ -15,11 +15,9 @@ export interface RepresentativeFormData {
   phone: string;
   password: string;
   confirmPassword: string;
-  pix_key: string;
 }
 
 export interface RepresentativeInsertData {
   profile_id: string;
-  pix_key: string;
   identifier: string;
 }

@@ -21,7 +21,6 @@ const formSchema = z.object({
   phone: z.string().min(10, "Celular deve ter pelo menos 10 dígitos"),
   password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
   confirmPassword: z.string(),
-  pix_key: z.string().min(1, "A chave PIX é obrigatória"),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "As senhas não coincidem",
   path: ["confirmPassword"],
@@ -42,7 +41,6 @@ export function RepresentativeForm({ onSubmit, isLoading }: RepresentativeFormPr
       phone: "",
       password: "",
       confirmPassword: "",
-      pix_key: "",
     },
   });
 
@@ -157,19 +155,6 @@ export function RepresentativeForm({ onSubmit, isLoading }: RepresentativeFormPr
               <FormLabel>Confirmar Senha</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="pix_key"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Chave PIX</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="Informe sua chave PIX" />
               </FormControl>
               <FormMessage />
             </FormItem>

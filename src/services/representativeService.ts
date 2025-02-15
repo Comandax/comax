@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Representative, RepresentativeFormData, RepresentativeInsertData } from "@/types/representative";
 
@@ -25,7 +24,6 @@ export async function createRepresentative(data: RepresentativeFormData): Promis
 
   const insertData: RepresentativeInsertData = {
     profile_id: authData.user.id,
-    pix_key: data.pix_key,
     identifier: identifier,
   };
 
