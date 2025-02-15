@@ -104,22 +104,25 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
     // Remove todos os caracteres não numéricos
     const cleaned = value.replace(/\D/g, '');
     
+    // Limita a 11 caracteres
+    const limited = cleaned.slice(0, 11);
+    
     // Aplica a máscara conforme o usuário digita
-    let formatted = cleaned;
-    if (cleaned.length > 0) {
-      if (cleaned.length <= 2) {
-        formatted = `(${cleaned}`;
-      } else if (cleaned.length <= 3) {
-        formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
-      } else if (cleaned.length <= 7) {
-        formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3)}`;
-      } else if (cleaned.length <= 11) {
-        if (cleaned.length === 10) {
+    let formatted = limited;
+    if (limited.length > 0) {
+      if (limited.length <= 2) {
+        formatted = `(${limited}`;
+      } else if (limited.length <= 3) {
+        formatted = `(${limited.slice(0, 2)}) ${limited.slice(2)}`;
+      } else if (limited.length <= 7) {
+        formatted = `(${limited.slice(0, 2)}) ${limited.slice(2, 3)} ${limited.slice(3)}`;
+      } else if (limited.length <= 11) {
+        if (limited.length === 10) {
           // Formato para telefone fixo: (XX) XXXX-XXXX
-          formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
+          formatted = `(${limited.slice(0, 2)}) ${limited.slice(2, 6)}-${limited.slice(6)}`;
         } else {
           // Formato para celular: (XX) X XXXX-XXXX
-          formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)}-${cleaned.slice(7)}`;
+          formatted = `(${limited.slice(0, 2)}) ${limited.slice(2, 3)} ${limited.slice(3, 7)}-${limited.slice(7)}`;
         }
       }
     }
@@ -178,7 +181,6 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
                 <Input
                   type="tel"
                   inputMode="numeric"
-                  placeholder="(00) 0000-0000 ou (00) 0 0000-0000"
                   {...field}
                   onChange={(e) => {
                     const formatted = formatPhoneNumber(e.target.value);
