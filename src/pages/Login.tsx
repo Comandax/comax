@@ -30,8 +30,8 @@ const Login = () => {
         description: "Você será redirecionado para o painel.",
       });
       
-      // Se for superusuário ou representante, redireciona para a página de usuários
-      if (user?.roles?.includes('superuser') || user?.roles?.includes('representative')) {
+      // Se for representante ou superusuário, redireciona para a página de usuários
+      if (user?.roles?.includes('representative') || user?.roles?.includes('superuser')) {
         navigate("/users");
       } else {
         // Usuários normais vão para a página de pedidos
