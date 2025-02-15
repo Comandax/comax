@@ -1,3 +1,4 @@
+
 import { UserList } from "@/components/users/UserList";
 import { Button } from "@/components/ui/button";
 import { LogOut, Edit, UserCog, CreditCard, XCircle } from "lucide-react";
@@ -152,7 +153,7 @@ export default function Users() {
               alt="Comax Logo" 
               className="h-12 w-auto"
             />
-            <h1 className="text-2xl font-bold text-primary">Painel de Usuários</h1>
+            <h1 className="text-2xl font-bold text-[#403E43]">Painel de Usuários</h1>
           </div>
           <div className="flex items-center gap-2">
             <Button
