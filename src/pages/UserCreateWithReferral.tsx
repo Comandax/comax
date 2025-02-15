@@ -11,6 +11,7 @@ import { ErrorScreen } from "@/components/users/ErrorScreen";
 import { ReferralHeader } from "@/components/users/ReferralHeader";
 import { ReferralInfo } from "@/components/users/ReferralInfo";
 import { useRepresentative } from "@/hooks/useRepresentative";
+import { UserPlus } from "lucide-react";
 
 export default function UserCreateWithReferral() {
   const { identifier } = useParams();
@@ -67,20 +68,30 @@ export default function UserCreateWithReferral() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background">
       <ReferralHeader />
 
       <div className="container mx-auto py-8">
-        <Card className="w-full max-w-2xl mx-auto shadow-lg p-6">
-          <h1 className="text-2xl font-bold mb-6 text-gray-900">Criar Conta</h1>
-          
-          <ReferralInfo representativeName={representativeName} />
+        <div className="flex items-center gap-2 mb-8">
+          <div className="h-8 w-1 bg-primary rounded-full" />
+          <h1 className="text-2xl font-bold text-[#403E43]">Criar Conta</h1>
+        </div>
 
-          <UserForm
-            onSubmit={handleSubmit}
-            isLoading={isCreating}
-          />
-        </Card>
+        <Card className="w-full max-w-2xl mx-auto bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
+          <div className="p-6 space-y-6">
+            <div className="flex items-center gap-2 text-primary">
+              <UserPlus className="h-6 w-6" />
+              <h2 className="text-xl font-semibold">Nova Conta de Usuário</h2>
+            </div>
+            
+            <ReferralInfo representativeName={representativeName} />
+
+            <UserForm
+              onSubmit={handleSubmit}
+              isLoading={isCreating}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
