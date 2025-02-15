@@ -18,7 +18,7 @@ const formSchema = z.object({
   first_name: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   last_name: z.string().min(2, "Sobrenome deve ter pelo menos 2 caracteres"),
   email: z.string().email("Email inválido"),
-  phone: z.string().min(10, "Celular deve ter pelo menos 10 dígitos"),
+  phone: z.string().min(10, "Telefone deve ter pelo menos 10 dígitos"),
   password: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -54,21 +54,22 @@ export function RepresentativeForm({ onSubmit, isLoading }: RepresentativeFormPr
   };
 
   const formatPhoneNumber = (value: string) => {
+    // Remove todos os caracteres não numéricos
     const cleaned = value.replace(/\D/g, '');
     let formatted = cleaned;
-    if (cleaned.length > 0) {
-      if (cleaned.length <= 2) {
-        formatted = `(${cleaned}`;
-      } else if (cleaned.length <= 3) {
-        formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
-      } else if (cleaned.length <= 7) {
-        formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3)}`;
-      } else if (cleaned.length <= 11) {
-        formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)}-${cleaned.slice(7)}`;
-      } else {
-        formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)}-${cleaned.slice(7, 11)}`;
-      }
+
+    if (cleaned.length <= 2) {
+      formatted = `(${cleaned}`;
+    } else if (cleaned.length <= 6) {
+      formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
+    } else if (cleaned.length <= 10) {
+      // Formato para telefone fixo: (XX) XXXX-XXXX
+      formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
+    } else {
+      // Formato para celular: (XX) X XXXX-XXXX
+      formatted = `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)}-${cleaned.slice(7, 11)}`;
     }
+
     return formatted;
   };
 
@@ -119,10 +120,11 @@ export function RepresentativeForm({ onSubmit, isLoading }: RepresentativeFormPr
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Celular</FormLabel>
+              <FormLabel>Telefone</FormLabel>
               <FormControl>
                 <Input
                   type="tel"
+                  placeholder="(00) 0000-0000 ou (00) 0 0000-0000"
                   {...field}
                   onChange={(e) => {
                     const formatted = formatPhoneNumber(e.target.value);
