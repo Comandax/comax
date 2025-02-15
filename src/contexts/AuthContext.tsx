@@ -11,6 +11,7 @@ interface AuthContextType {
   userInitials: string;
   userName: string;
   handleLogout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -53,6 +54,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     window.location.href = '/login';
   }
 
+  async function refreshUser() {
+    await checkUser();
+  }
+
   const userInitials = (() => {
     if (user?.firstName && user?.lastName) {
       return (user.firstName[0] + user.lastName[0]).toUpperCase();
@@ -81,7 +86,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       logout,
       userInitials,
       userName,
-      handleLogout
+      handleLogout,
+      refreshUser
     }}>
       {children}
     </AuthContext.Provider>

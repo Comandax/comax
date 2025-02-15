@@ -9,6 +9,7 @@ export interface User {
   name?: string;
   companyId: string;
   roles?: Role[];
+  phone?: string;
 }
 
 export interface AuthProvider {
