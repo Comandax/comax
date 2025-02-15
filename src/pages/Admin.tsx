@@ -21,14 +21,8 @@ const Admin = () => {
   } = useToast();
   const navigate = useNavigate();
 
-  // Se não houver usuário, redireciona para login
   if (!user) {
     return <Navigate to="/login" replace />;
-  }
-
-  // Se o usuário for um representante, redireciona para a listagem de usuários
-  if (user.roles?.includes('representative')) {
-    return <Navigate to="/users" replace />;
   }
 
   const {
