@@ -13,7 +13,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
-import { Plus, Pencil, Trash2, ArrowUpDown } from "lucide-react";
+import { Plus, ArrowUpDown } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "../ui/input";
 import {
@@ -53,7 +53,6 @@ export function UserList() {
         .from('profiles')
         .select('*, companies(name)');
 
-      // Se o usuário for um representante, filtra apenas os usuários que ele indicou
       if (user?.roles?.includes('representative')) {
         const { data: representative } = await supabase
           .from('representatives')
@@ -87,7 +86,6 @@ export function UserList() {
     },
   });
 
-  // Filtragem
   const filteredProfiles = profilesData?.filter(profile => {
     const searchTerm = search.toLowerCase();
     return (
@@ -98,7 +96,6 @@ export function UserList() {
     );
   }) || [];
 
-  // Ordenação
   const sortedProfiles = [...filteredProfiles].sort((a, b) => {
     let compareA, compareB;
 
@@ -135,7 +132,6 @@ export function UserList() {
     }
   });
 
-  // Paginação
   const totalPages = Math.ceil(sortedProfiles.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -213,7 +209,6 @@ export function UserList() {
             <TableHead onClick={() => handleSort('created_at')} className="cursor-pointer hover:bg-gray-50">
               Criado em <ArrowUpDown className="inline size-4 ml-1" />
             </TableHead>
-            <TableHead className="text-right">Ações</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -225,22 +220,6 @@ export function UserList() {
               <TableCell>{profile.phone}</TableCell>
               <TableCell>
                 {format(new Date(profile.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
-              </TableCell>
-              <TableCell className="text-right space-x-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => navigate(`/users/${profile.id}`)}
-                >
-                  <Pencil className="size-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="text-red-500 hover:text-red-600"
-                >
-                  <Trash2 className="size-4" />
-                </Button>
               </TableCell>
             </TableRow>
           ))}
