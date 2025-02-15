@@ -168,11 +168,14 @@ export default function Users() {
         </div>
 
         {user?.roles?.includes('representative') && (
-          <div className="grid md:grid-cols-2 gap-4 mb-8">
-            <Card className="bg-card shadow-md border-primary/20">
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
               <CardContent className="pt-6">
                 <div className="space-y-4">
-                  <h2 className="text-lg font-semibold text-primary">Seu Link de Indicação</h2>
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-1 bg-primary rounded-full" />
+                    <h2 className="text-xl font-semibold text-primary">Seu Link de Indicação</h2>
+                  </div>
                   <p className="text-sm text-muted-foreground">
                     Compartilhe este link para convidar novos usuários. Você poderá acompanhar todos os usuários que se cadastrarem através dele.
                   </p>
@@ -180,7 +183,7 @@ export default function Users() {
                     <Input
                       value={referralLink}
                       readOnly
-                      className="flex-1 bg-background border-primary/20"
+                      className="flex-1 bg-white/80 border-primary/30 focus:border-primary"
                     />
                     <Button 
                       onClick={copyToClipboard}
@@ -201,16 +204,19 @@ export default function Users() {
               </CardContent>
             </Card>
 
-            <Card className="bg-card shadow-md border-primary/20">
+            <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
               <CardContent className="pt-6">
                 <div className="space-y-4">
-                  <h2 className="text-lg font-semibold text-primary">Chave PIX</h2>
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-1 bg-primary rounded-full" />
+                    <h2 className="text-xl font-semibold text-primary">Chave PIX</h2>
+                  </div>
                   {representativeData?.pix_key ? (
                     <>
                       <p className="text-sm text-muted-foreground">
                         Sua chave PIX cadastrada para recebimento de comissões:
                       </p>
-                      <div className="flex gap-2 items-center">
+                      <div className="flex gap-2 items-center p-3 bg-white/80 rounded-lg border border-primary/30">
                         <CreditCard className="text-primary h-5 w-5" />
                         <span className="flex-1 font-medium text-foreground">{representativeData.pix_key}</span>
                         <Button
@@ -228,7 +234,7 @@ export default function Users() {
                     </>
                   ) : (
                     <>
-                      <div className="flex items-center gap-2 text-destructive">
+                      <div className="flex items-center gap-2 text-destructive p-3 bg-destructive/5 rounded-lg">
                         <XCircle className="h-5 w-5" />
                         <p>Nenhuma chave PIX cadastrada</p>
                       </div>
