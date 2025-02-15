@@ -198,29 +198,48 @@ export function UserList() {
         <div className="bg-white/80 rounded-lg border border-primary/30">
           <Table>
             <TableHeader>
-              <TableRow className="hover:bg-primary/5">
-                <TableHead onClick={() => handleSort('name')} className="cursor-pointer">
+              <TableRow className="bg-primary/15 hover:bg-primary/20">
+                <TableHead 
+                  onClick={() => handleSort('name')} 
+                  className="cursor-pointer text-primary-foreground font-semibold"
+                >
                   Nome <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
                 </TableHead>
-                <TableHead onClick={() => handleSort('company')} className="cursor-pointer">
+                <TableHead 
+                  onClick={() => handleSort('company')} 
+                  className="cursor-pointer text-primary-foreground font-semibold"
+                >
                   Empresa <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
                 </TableHead>
-                <TableHead onClick={() => handleSort('email')} className="cursor-pointer">
+                <TableHead 
+                  onClick={() => handleSort('email')} 
+                  className="cursor-pointer text-primary-foreground font-semibold"
+                >
                   Email <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
                 </TableHead>
-                <TableHead onClick={() => handleSort('phone')} className="cursor-pointer">
+                <TableHead 
+                  onClick={() => handleSort('phone')} 
+                  className="cursor-pointer text-primary-foreground font-semibold"
+                >
                   Celular <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
                 </TableHead>
-                <TableHead onClick={() => handleSort('created_at')} className="cursor-pointer">
+                <TableHead 
+                  onClick={() => handleSort('created_at')} 
+                  className="cursor-pointer text-primary-foreground font-semibold"
+                >
                   Criado em <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
                 </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {currentProfiles.map((profile) => (
+              {currentProfiles.map((profile, index) => (
                 <TableRow 
                   key={profile.id} 
-                  className="hover:bg-primary/5 transition-colors"
+                  className={`
+                    transition-colors
+                    ${index % 2 === 0 ? 'bg-white' : 'bg-primary/5'}
+                    hover:bg-primary/10
+                  `}
                 >
                   <TableCell className="font-medium">{profile.fullName}</TableCell>
                   <TableCell>{profile.companyName}</TableCell>
