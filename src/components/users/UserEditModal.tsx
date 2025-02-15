@@ -8,7 +8,7 @@ import {
 import { UserForm } from "./UserForm";
 import { ProfileFormData } from "@/types/profile";
 import { useAuth } from "@/contexts/AuthContext";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 interface UserEditModalProps {
