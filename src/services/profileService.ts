@@ -88,7 +88,8 @@ export async function createProfile(profile: ProfileFormData): Promise<Profile> 
       email: profile.email,
       phone: profile.phone,
       confirmation_token: confirmationToken,
-      email_confirmed: false
+      email_confirmed: false,
+      representative_id: profile.representative_id || null
     })
     .select()
     .maybeSingle();
@@ -115,7 +116,8 @@ export async function createProfile(profile: ProfileFormData): Promise<Profile> 
           last_name: profile.last_name,
           phone: profile.phone,
           confirmation_token: confirmationToken,
-          email_confirmed: false
+          email_confirmed: false,
+          representative_id: profile.representative_id || null
         })
         .eq('id', authData.user.id)
         .select()

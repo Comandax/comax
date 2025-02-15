@@ -163,6 +163,7 @@ export type Database = {
           id: string
           last_name: string
           phone: string | null
+          representative_id: string | null
           updated_at: string
         }
         Insert: {
@@ -174,6 +175,7 @@ export type Database = {
           id: string
           last_name: string
           phone?: string | null
+          representative_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -185,9 +187,18 @@ export type Database = {
           id?: string
           last_name?: string
           phone?: string | null
+          representative_id?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_representative_id_fkey"
+            columns: ["representative_id"]
+            isOneToOne: false
+            referencedRelation: "representatives"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       representatives: {
         Row: {
