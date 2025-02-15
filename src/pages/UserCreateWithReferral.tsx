@@ -18,6 +18,7 @@ export default function UserCreateWithReferral() {
   const [representativeId, setRepresentativeId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [representativeName, setRepresentativeName] = useState<{ first_name: string; last_name: string } | null>(null);
 
   useEffect(() => {
     const fetchRepresentative = async () => {
@@ -92,6 +93,7 @@ export default function UserCreateWithReferral() {
         }
 
         setRepresentativeId(representative.id);
+        setRepresentativeName({ first_name: profile.first_name, last_name: profile.last_name });
         
         toast({
           title: "Representante identificado",
@@ -192,10 +194,14 @@ export default function UserCreateWithReferral() {
           
           <Alert className="mb-6" variant="default">
             <AlertCircle className="h-4 w-4" />
-            <AlertTitle>Importante</AlertTitle>
+            <AlertTitle>Informação</AlertTitle>
             <AlertDescription>
-              Após criar sua conta, você precisará confirmar seu email antes de fazer login.
-              Se não receber o email de confirmação, aguarde alguns segundos e tente criar a conta novamente.
+              {representativeName && (
+                <>
+                  Você está se cadastrando através do link de indicação de {representativeName.first_name} {representativeName.last_name}. 
+                  Por esse motivo, você está recebendo um mês grátis para utilizar a plataforma e, após esse período, terá 10% de desconto na mensalidade para sempre!
+                </>
+              )}
             </AlertDescription>
           </Alert>
 
