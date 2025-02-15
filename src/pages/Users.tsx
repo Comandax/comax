@@ -10,6 +10,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { updateRepresentative } from "@/services/representativeService";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
 
 export default function Users() {
   const navigate = useNavigate();
@@ -18,6 +25,8 @@ export default function Users() {
   const [referralLink, setReferralLink] = useState<string>("");
   const [representativeData, setRepresentativeData] = useState<{ id: string, identifier: string } | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [newIdentifier, setNewIdentifier] = useState("");
 
   useEffect(() => {
     const fetchRepresentativeIdentifier = async () => {
@@ -30,6 +39,7 @@ export default function Users() {
 
         if (representative) {
           setRepresentativeData(representative);
+          setNewIdentifier(representative.identifier);
           const baseUrl = window.location.origin;
           setReferralLink(`${baseUrl}/r/${representative.identifier}`);
         }
@@ -70,16 +80,18 @@ export default function Users() {
     setIsUpdating(true);
     try {
       const result = await updateRepresentative(representativeData.id, {
-        identifier: representativeData.identifier,
+        identifier: newIdentifier,
       });
       
       const baseUrl = window.location.origin;
       setReferralLink(`${baseUrl}/r/${result.identifier}`);
+      setRepresentativeData({ ...representativeData, identifier: result.identifier });
       
       toast({
         title: "Identificador atualizado!",
         description: "Seu link de indicação foi atualizado com sucesso.",
       });
+      setShowEditModal(false);
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -125,17 +137,50 @@ export default function Users() {
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={updateIdentifier}
-                    disabled={isUpdating}
+                    onClick={() => setShowEditModal(true)}
                   >
                     <Edit className="h-4 w-4 mr-2" />
-                    {isUpdating ? "Atualizando..." : "Atualizar ID"}
+                    Editar ID
                   </Button>
                 </div>
               </div>
             </CardContent>
           </Card>
         )}
+
+        <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Editar Identificador</DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <Input
+                value={newIdentifier}
+                onChange={(e) => setNewIdentifier(e.target.value)}
+                placeholder="Novo identificador"
+                className="w-full"
+              />
+              <p className="text-sm text-gray-500 mt-2">
+                Este identificador será usado no seu link de indicação.
+              </p>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setShowEditModal(false)}
+                disabled={isUpdating}
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={updateIdentifier}
+                disabled={isUpdating}
+              >
+                {isUpdating ? "Salvando..." : "Salvar"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         <UserList />
       </div>
