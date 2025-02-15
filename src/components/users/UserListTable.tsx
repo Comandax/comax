@@ -11,6 +11,7 @@ import {
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { ArrowUpDown } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface UserListTableProps {
   profiles: Profile[];
@@ -18,6 +19,9 @@ interface UserListTableProps {
 }
 
 export function UserListTable({ profiles, onSort }: UserListTableProps) {
+  const { user } = useAuth();
+  const isSuperuser = user?.roles?.includes('superuser');
+
   return (
     <div className="bg-white/80 rounded-lg border border-primary/30">
       <Table>
@@ -35,18 +39,22 @@ export function UserListTable({ profiles, onSort }: UserListTableProps) {
             >
               Empresa <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
             </TableHead>
-            <TableHead 
-              onClick={() => onSort('email')} 
-              className="cursor-pointer font-semibold text-primary"
-            >
-              Email <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
-            </TableHead>
-            <TableHead 
-              onClick={() => onSort('phone')} 
-              className="cursor-pointer font-semibold text-primary"
-            >
-              Celular <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
-            </TableHead>
+            {isSuperuser && (
+              <>
+                <TableHead 
+                  onClick={() => onSort('email')} 
+                  className="cursor-pointer font-semibold text-primary"
+                >
+                  Email <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
+                </TableHead>
+                <TableHead 
+                  onClick={() => onSort('phone')} 
+                  className="cursor-pointer font-semibold text-primary"
+                >
+                  Celular <ArrowUpDown className="inline size-4 ml-1 text-primary/70" />
+                </TableHead>
+              </>
+            )}
             <TableHead 
               onClick={() => onSort('created_at')} 
               className="cursor-pointer font-semibold text-primary"
@@ -67,8 +75,12 @@ export function UserListTable({ profiles, onSort }: UserListTableProps) {
             >
               <TableCell className="font-medium">{profile.fullName}</TableCell>
               <TableCell>{profile.companyName}</TableCell>
-              <TableCell>{profile.email}</TableCell>
-              <TableCell>{profile.phone}</TableCell>
+              {isSuperuser && (
+                <>
+                  <TableCell>{profile.email}</TableCell>
+                  <TableCell>{profile.phone}</TableCell>
+                </>
+              )}
               <TableCell>
                 {format(new Date(profile.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
               </TableCell>
