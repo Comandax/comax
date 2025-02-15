@@ -146,7 +146,14 @@ export default function Users() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto py-8">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-2xl font-bold text-primary">Painel de Usuários</h1>
+          <div className="flex items-center gap-4">
+            <img 
+              src="/public/lovable-uploads/1856d481-4fe4-450a-937a-54bdaffb0f22.png" 
+              alt="Comax Logo" 
+              className="h-12 w-auto"
+            />
+            <h1 className="text-2xl font-bold text-primary">Painel de Usuários</h1>
+          </div>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
