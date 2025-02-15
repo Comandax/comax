@@ -133,7 +133,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           control={form.control}
           name="first_name"
           render={({ field }) => (
-            <FormItem className="text-left">
+            <FormItem>
               <FormLabel>Nome</FormLabel>
               <FormControl>
                 <Input {...field} />
@@ -146,7 +146,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           control={form.control}
           name="last_name"
           render={({ field }) => (
-            <FormItem className="text-left">
+            <FormItem>
               <FormLabel>Sobrenome</FormLabel>
               <FormControl>
                 <Input {...field} />
@@ -159,7 +159,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           control={form.control}
           name="email"
           render={({ field }) => (
-            <FormItem className="text-left">
+            <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
                 <Input type="email" {...field} />
@@ -172,7 +172,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           control={form.control}
           name="phone"
           render={({ field }) => (
-            <FormItem className="text-left">
+            <FormItem>
               <FormLabel>Celular</FormLabel>
               <FormControl>
                 <Input
@@ -194,7 +194,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           control={form.control}
           name="password"
           render={({ field }) => (
-            <FormItem className="text-left">
+            <FormItem>
               <FormLabel>{initialData ? "Nova senha (opcional)" : "Senha"}</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
@@ -207,7 +207,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
           control={form.control}
           name="confirmPassword"
           render={({ field }) => (
-            <FormItem className="text-left">
+            <FormItem>
               <FormLabel>{initialData ? "Confirmar nova senha" : "Confirmar senha"}</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
