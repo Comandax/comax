@@ -69,7 +69,7 @@ export async function getRepresentative(profile_id: string): Promise<Representat
   return representative as Representative | null;
 }
 
-export async function updateRepresentative(id: string, data: { pix_key?: string }): Promise<Representative> {
+export async function updateRepresentative(id: string, data: { pix_key?: string, identifier?: string }): Promise<Representative> {
   const { data: representative, error } = await supabase
     .from('representatives')
     .update(data)

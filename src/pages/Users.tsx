@@ -1,7 +1,7 @@
 
 import { UserList } from "@/components/users/UserList";
 import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
+import { LogOut, Edit } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
@@ -9,23 +9,27 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { updateRepresentative } from "@/services/representativeService";
 
 export default function Users() {
   const navigate = useNavigate();
   const { logout, user } = useAuth();
   const { toast } = useToast();
   const [referralLink, setReferralLink] = useState<string>("");
+  const [representativeData, setRepresentativeData] = useState<{ id: string, identifier: string } | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     const fetchRepresentativeIdentifier = async () => {
       if (user?.roles?.includes('representative')) {
         const { data: representative } = await supabase
           .from('representatives')
-          .select('identifier')
+          .select('id, identifier')
           .eq('profile_id', user.id)
           .single();
 
         if (representative) {
+          setRepresentativeData(representative);
           const baseUrl = window.location.origin;
           setReferralLink(`${baseUrl}/r/${representative.identifier}`);
         }
@@ -60,6 +64,33 @@ export default function Users() {
     });
   };
 
+  const updateIdentifier = async () => {
+    if (!representativeData) return;
+    
+    setIsUpdating(true);
+    try {
+      const result = await updateRepresentative(representativeData.id, {
+        identifier: representativeData.identifier,
+      });
+      
+      const baseUrl = window.location.origin;
+      setReferralLink(`${baseUrl}/r/${result.identifier}`);
+      
+      toast({
+        title: "Identificador atualizado!",
+        description: "Seu link de indicação foi atualizado com sucesso.",
+      });
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Erro ao atualizar identificador",
+        description: error.message,
+      });
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto py-8">
@@ -91,6 +122,14 @@ export default function Users() {
                   />
                   <Button onClick={copyToClipboard}>
                     Copiar Link
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={updateIdentifier}
+                    disabled={isUpdating}
+                  >
+                    <Edit className="h-4 w-4 mr-2" />
+                    {isUpdating ? "Atualizando..." : "Atualizar ID"}
                   </Button>
                 </div>
               </div>
