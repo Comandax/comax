@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import { Representative, RepresentativeFormData, RepresentativeInsertData } from "@/types/representative";
 
@@ -37,13 +36,10 @@ export async function createRepresentative(data: RepresentativeFormData): Promis
 
   if (insertError) throw insertError;
 
-  // Adiciona a role de representante
-  const { error: roleError } = await supabase
-    .from('user_roles')
-    .insert({
-      user_id: authData.user.id,
-      role: 'representative'
-    });
+  // Adiciona a role de representante usando o novo usuário criado
+  const { error: roleError } = await supabase.auth.updateUser({
+    data: { roles: ['representative'] }
+  });
 
   if (roleError) {
     // Se houver erro ao adicionar a role, remove o representante criado
@@ -53,6 +49,24 @@ export async function createRepresentative(data: RepresentativeFormData): Promis
       .eq('id', representative.id);
     
     throw roleError;
+  }
+
+  // Adiciona o role na tabela user_roles
+  const { error: userRoleError } = await supabase
+    .from('user_roles')
+    .insert({
+      user_id: authData.user.id,
+      role: 'representative'
+    });
+
+  if (userRoleError) {
+    // Se houver erro ao adicionar na tabela user_roles, remove o representante criado
+    await supabase
+      .from('representatives')
+      .delete()
+      .eq('id', representative.id);
+    
+    throw userRoleError;
   }
 
   return representative as Representative;
