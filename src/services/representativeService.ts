@@ -1,3 +1,4 @@
+
 import { supabase } from "@/integrations/supabase/client";
 import { Representative, RepresentativeFormData, RepresentativeInsertData } from "@/types/representative";
 
@@ -17,14 +18,10 @@ export async function createRepresentative(data: RepresentativeFormData): Promis
   if (authError) throw authError;
   if (!authData.user) throw new Error('Failed to create user');
 
-  // Gera o identificador usando o primeiro nome e a primeira letra do sobrenome
-  const identifier = (data.first_name + data.last_name[0])
-    .toLowerCase()
-    .replace(/\s+/g, '');
-
+  // Insere o representante
   const insertData: RepresentativeInsertData = {
     profile_id: authData.user.id,
-    identifier: identifier,
+    identifier: data.first_name.toLowerCase() + data.last_name[0].toLowerCase(),
   };
 
   // Insere o representante
@@ -32,24 +29,10 @@ export async function createRepresentative(data: RepresentativeFormData): Promis
     .from('representatives')
     .insert(insertData)
     .select()
-    .single();
+    .maybeSingle();
 
   if (insertError) throw insertError;
-
-  // Adiciona a role de representante usando o novo usuário criado
-  const { error: roleError } = await supabase.auth.updateUser({
-    data: { roles: ['representative'] }
-  });
-
-  if (roleError) {
-    // Se houver erro ao adicionar a role, remove o representante criado
-    await supabase
-      .from('representatives')
-      .delete()
-      .eq('id', representative.id);
-    
-    throw roleError;
-  }
+  if (!representative) throw new Error('Failed to create representative');
 
   // Adiciona o role na tabela user_roles
   const { error: userRoleError } = await supabase
@@ -69,7 +52,7 @@ export async function createRepresentative(data: RepresentativeFormData): Promis
     throw userRoleError;
   }
 
-  return representative as Representative;
+  return representative;
 }
 
 export async function getRepresentative(profile_id: string): Promise<Representative | null> {
@@ -80,7 +63,7 @@ export async function getRepresentative(profile_id: string): Promise<Representat
     .maybeSingle();
 
   if (error) throw error;
-  return representative as Representative | null;
+  return representative;
 }
 
 export async function updateRepresentative(id: string, data: { pix_key?: string, identifier?: string }): Promise<Representative> {
@@ -89,8 +72,10 @@ export async function updateRepresentative(id: string, data: { pix_key?: string,
     .update(data)
     .eq('id', id)
     .select()
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
-  return representative as Representative;
+  if (!representative) throw new Error('Representative not found');
+  
+  return representative;
 }
