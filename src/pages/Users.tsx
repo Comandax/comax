@@ -1,4 +1,3 @@
-
 import { UserList } from "@/components/users/UserList";
 import { Button } from "@/components/ui/button";
 import { LogOut, Edit, UserCog, CreditCard, XCircle } from "lucide-react";
@@ -10,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { updateRepresentative } from "@/services/representativeService";
+import { UserEditModal } from "@/components/users/UserEditModal";
 import {
   Dialog,
   DialogContent,
@@ -157,7 +157,7 @@ export default function Users() {
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
-              onClick={() => navigate(`/users/${user?.id}`)}
+              onClick={() => setShowEditModal(true)}
               className="text-primary hover:bg-primary/10 border-primary"
             >
               <UserCog className="h-5 w-5 mr-2" />
@@ -264,42 +264,6 @@ export default function Users() {
           </div>
         )}
 
-        <Dialog open={showEditModal} onOpenChange={setShowEditModal}>
-          <DialogContent className="bg-card">
-            <DialogHeader>
-              <DialogTitle className="text-primary">Editar Identificador</DialogTitle>
-            </DialogHeader>
-            <div className="py-4">
-              <Input
-                value={newIdentifier}
-                onChange={(e) => setNewIdentifier(e.target.value)}
-                placeholder="Novo identificador"
-                className="w-full border-primary/20"
-              />
-              <p className="text-sm text-muted-foreground mt-2">
-                Este identificador será usado no seu link de indicação.
-              </p>
-            </div>
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setShowEditModal(false)}
-                disabled={isUpdating}
-                className="border-primary text-primary hover:bg-primary/10"
-              >
-                Cancelar
-              </Button>
-              <Button
-                onClick={updateIdentifier}
-                disabled={isUpdating}
-                className="bg-primary hover:bg-primary/90 text-white"
-              >
-                {isUpdating ? "Salvando..." : "Salvar"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
         <Dialog open={showPixModal} onOpenChange={setShowPixModal}>
           <DialogContent className="bg-card">
             <DialogHeader>
@@ -337,6 +301,11 @@ export default function Users() {
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        <UserEditModal 
+          isOpen={showEditModal}
+          onOpenChange={setShowEditModal}
+        />
 
         <UserList />
       </div>
