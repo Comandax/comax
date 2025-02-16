@@ -14,7 +14,7 @@ import Users from "@/pages/Users";
 import NotFound from "@/pages/NotFound";
 import Index from "@/pages/Index";
 import OrderSuccess from "@/pages/OrderSuccess";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import UserCreateWithReferral from "@/pages/UserCreateWithReferral";
 import UserEdit from "@/pages/UserEdit";
 import Companies from "@/pages/Companies";
