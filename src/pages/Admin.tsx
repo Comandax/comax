@@ -7,6 +7,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
+import { CompanyEditShortNameModal } from "@/components/companies/details/CompanyEditShortNameModal";
+import { useState } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -22,6 +24,7 @@ const Admin = () => {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -83,7 +86,6 @@ const Admin = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-        {/* Sidebar */}
         <Sidebar className="border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
           <SidebarHeader className="border-b border-gray-200 dark:border-gray-700 px-6 py-6">
             <div className="flex flex-col items-center space-y-4">
@@ -156,7 +158,6 @@ const Admin = () => {
           </SidebarContent>
         </Sidebar>
 
-        {/* Main Content */}
         <main className="flex-1 p-8">
           <div className="flex items-center justify-between mb-8">
             <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
@@ -170,7 +171,6 @@ const Admin = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Card de Módulos */}
             <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 pointer-events-none" />
               <CardContent className="p-6 space-y-6 relative">
@@ -219,7 +219,6 @@ const Admin = () => {
               </CardContent>
             </Card>
 
-            {/* Card de Link para Pedidos */}
             <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-primary/5 pointer-events-none" />
               <CardContent className="p-6 space-y-6 relative">
@@ -265,7 +264,7 @@ const Admin = () => {
                       <Button
                         variant="outline"
                         className="flex-1 bg-white dark:bg-gray-900"
-                        onClick={() => navigate('/orders/edit')}
+                        onClick={() => setIsEditModalOpen(true)}
                       >
                         <Edit className="w-4 h-4 mr-2" />
                         Editar
@@ -277,6 +276,19 @@ const Admin = () => {
             </Card>
           </div>
         </main>
+
+        {userCompany && (
+          <CompanyEditShortNameModal
+            open={isEditModalOpen}
+            onOpenChange={setIsEditModalOpen}
+            companyId={userCompany.id}
+            currentShortName={userCompany.short_name}
+            onSuccess={() => {
+              // Recarrega os dados da empresa após a atualização
+              refetch();
+            }}
+          />
+        )}
       </div>
     </SidebarProvider>
   );
