@@ -44,7 +44,7 @@ export const FloatingTotal = ({
 
   return (
     <>
-      <div className="fixed top-4 right-4 bg-[#8B5CF6] shadow-lg rounded-lg p-4 animate-float-in text-white">
+      <div className="fixed top-4 right-4 z-50 bg-[#8B5CF6] shadow-lg rounded-lg p-4 animate-float-in text-white">
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <ShoppingBag className="w-6 h-6" />
