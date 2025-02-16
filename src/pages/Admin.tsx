@@ -1,4 +1,3 @@
-
 import { Package, LogOut, User, Building2, ClipboardList } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -93,107 +92,69 @@ const Admin = () => {
   const isSuperuser = userRoles?.some(role => role.role === 'superuser');
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#1A1F2C] to-[#1A1F2C]/90">
-      <div className="bg-gray-900/50 border-b border-white/10">
-        <div className="container mx-auto">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center justify-between py-4">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-1 bg-primary rounded-full" />
-                <img src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" alt="COMAX Logo" className="h-8 w-auto" />
-                <h1 className="text-xl font-semibold text-white">Painel Administrativo</h1>
-              </div>
-              <div className="flex items-center gap-4">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                      <Avatar className="h-10 w-10">
-                        <AvatarFallback className="bg-primary text-primary-foreground">
-                          {userInitials}
-                        </AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end">
-                    <DropdownMenuItem disabled className="font-semibold">
-                      {userName}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate(`/profile/${user.id}`)}>
-                      <User className="mr-2 h-4 w-4" />
-                      Meu Perfil
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => navigate('/companies')}>
-                      <Building2 className="mr-2 h-4 w-4" />
-                      {isSuperuser ? "Gerenciar Empresas" : userCompany ? "Minha Empresa" : "Criar Empresa"}
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout} className="text-red-600">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Sair
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
+    <div className="min-h-screen bg-background">
+      <div className="container mx-auto py-8">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-4">
+            <img 
+              src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
+              alt="Comax Logo" 
+              className="h-12 w-auto"
+            />
+            <h1 className="text-2xl font-bold text-[#403E43]">Painel Administrativo</h1>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              onClick={() => navigate(`/profile/${user.id}`)}
+              className="text-primary hover:bg-primary/10 border-primary"
+            >
+              <User className="h-5 w-5 mr-2" />
+              Editar Perfil
+            </Button>
+            <Button
+              variant="outline"
+              onClick={handleLogout}
+              className="text-destructive hover:bg-destructive/10 border-destructive"
+            >
+              <LogOut className="h-5 w-5 mr-2" />
+              Sair
+            </Button>
           </div>
         </div>
-      </div>
 
-      {userCompany && (
-        <div className="bg-white/5 border-b border-white/10">
-          <div className="container mx-auto">
-            <div className="max-w-6xl mx-auto px-4">
-              <div className="flex items-center gap-4 py-2">
-                {userCompany.logo_url && (
-                  <img 
-                    src={userCompany.logo_url} 
-                    alt={`Logo ${userCompany.name}`} 
-                    className="w-8 h-8 object-contain rounded"
-                  />
-                )}
-                <h2 className="text-sm font-medium text-white/90">{userCompany.name}</h2>
-              </div>
+        <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
+          <CardContent className="p-6 space-y-6">
+            <div className="flex items-center gap-2">
+              <div className="h-8 w-1 bg-primary rounded-full" />
+              <h2 className="text-2xl font-bold text-primary">Módulos</h2>
             </div>
-          </div>
-        </div>
-      )}
 
-      <div className="container mx-auto py-6">
-        <div className="max-w-6xl mx-auto px-4">
-          <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
-            <CardContent className="p-6 space-y-6">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-1 bg-primary rounded-full" />
-                <h2 className="text-2xl font-bold text-primary">Módulos</h2>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Link 
+                to="/products" 
+                className="group flex items-center p-6 bg-white rounded-lg border border-primary/20 hover:border-primary/30 transition-all duration-300"
+              >
+                <Package className="w-8 h-8 text-primary mr-4" />
+                <div>
+                  <h2 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">Produtos</h2>
+                  <p className="text-muted-foreground">Gerenciar catálogo de produtos</p>
+                </div>
+              </Link>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <Link 
-                  to="/products" 
-                  className="group flex items-center p-6 bg-white/5 rounded-lg border border-white/10 hover:border-primary/30 transition-all duration-300"
-                >
-                  <Package className="w-8 h-8 text-primary mr-4" />
-                  <div>
-                    <h2 className="text-xl font-semibold text-white group-hover:text-primary transition-colors">Produtos</h2>
-                    <p className="text-white/60">Gerenciar catálogo de produtos</p>
-                  </div>
-                </Link>
-
-                <Link 
-                  to="/orders" 
-                  className="group flex items-center p-6 bg-white/5 rounded-lg border border-white/10 hover:border-primary/30 transition-all duration-300"
-                >
-                  <ClipboardList className="w-8 h-8 text-primary mr-4" />
-                  <div>
-                    <h2 className="text-xl font-semibold text-white group-hover:text-primary transition-colors">Relatório de Pedidos</h2>
-                    <p className="text-white/60">Visualizar e gerenciar pedidos</p>
-                  </div>
-                </Link>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              <Link 
+                to="/orders" 
+                className="group flex items-center p-6 bg-white rounded-lg border border-primary/20 hover:border-primary/30 transition-all duration-300"
+              >
+                <ClipboardList className="w-8 h-8 text-primary mr-4" />
+                <div>
+                  <h2 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">Relatório de Pedidos</h2>
+                  <p className="text-muted-foreground">Visualizar e gerenciar pedidos</p>
+                </div>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
