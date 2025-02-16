@@ -264,7 +264,7 @@ const Admin = () => {
                                 {order.customerName}
                               </h3>
                             </div>
-                            <div>
+                            <div className="min-w-[30%] text-center">
                               <p className="text-sm text-gray-500">
                                 {order.customerCity} / {order.customerState}
                               </p>
