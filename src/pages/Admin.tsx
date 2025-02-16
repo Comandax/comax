@@ -67,7 +67,21 @@ const Admin = () => {
         console.error('Error fetching recent orders:', error);
         throw error;
       }
-      return data as Order[];
+
+      return (data || []).map(order => ({
+        _id: order.id,
+        customerName: order.customer_name,
+        customerPhone: order.customer_phone,
+        customerCity: order.customer_city,
+        customerState: order.customer_state,
+        customerZipCode: order.customer_zip_code,
+        date: order.date,
+        time: order.time,
+        items: order.items as Order['items'],
+        total: order.total,
+        companyId: order.company_id,
+        notes: order.notes || undefined
+      }));
     },
     enabled: !!userCompany?.id
   });
