@@ -19,7 +19,8 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import type { Order } from "@/types/order";
+import type { Order, OrderItem } from "@/types/order";
+import type { Json } from "@/integrations/supabase/types";
 
 const Admin = () => {
   const { user, logout } = useAuth();
@@ -77,7 +78,17 @@ const Admin = () => {
         customerZipCode: order.customer_zip_code,
         date: order.date,
         time: order.time,
-        items: order.items as Order['items'],
+        items: (order.items as any[]).map((item: any) => ({
+          productId: item.productId,
+          reference: item.reference,
+          name: item.name,
+          sizes: item.sizes.map((size: any) => ({
+            size: size.size,
+            price: size.price,
+            quantity: size.quantity,
+            subtotal: size.subtotal
+          }))
+        })) as OrderItem[],
         total: order.total,
         companyId: order.company_id,
         notes: order.notes || undefined
