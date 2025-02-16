@@ -101,17 +101,17 @@ const Admin = () => {
       <div className="min-h-screen flex w-full bg-background">
         {/* Sidebar */}
         <Sidebar>
-          <SidebarHeader className="border-b px-6 py-4">
-            <div className="flex items-center space-x-4">
+          <SidebarHeader className="border-b px-6 py-6">
+            <div className="flex flex-col items-center space-y-4">
               {userCompany?.logo_url && (
                 <img
                   src={userCompany.logo_url}
                   alt={`Logo ${userCompany.name}`}
-                  className="w-10 h-10 object-contain"
+                  className="w-32 h-32 object-contain"
                 />
               )}
-              <div className="flex-1 overflow-hidden">
-                <h2 className="text-lg font-semibold text-foreground truncate">
+              <div className="w-full text-center">
+                <h2 className="text-xl font-semibold text-foreground">
                   {userCompany?.name || 'Empresa'}
                 </h2>
               </div>
