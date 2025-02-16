@@ -9,7 +9,6 @@ import { CompanyInfo } from "@/components/index/CompanyInfo";
 import { OrderForm } from "@/components/index/OrderForm";
 import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
-import { Package } from "lucide-react";
 
 const Index = () => {
   const [company, setCompany] = useState<any>(null);
@@ -69,40 +68,25 @@ const Index = () => {
     enabled: !!company?.id,
   });
 
-  console.log('🔄 Estado atual:', {
-    isLoading,
-    error,
-    company,
-    productsCount: products.length,
-    isLoadingProducts
-  });
+  if (isLoading) return <LoadingState />;
+  if (error || !company) return <NotFoundState error={error} />;
 
-  if (isLoading) {
-    console.log('⏳ Exibindo estado de carregamento');
-    return <LoadingState />;
-  }
-
-  if (error || !company) {
-    console.log('❌ Exibindo estado de erro:', error);
-    return <NotFoundState error={error} />;
-  }
-
-  console.log('✅ Renderizando página principal');
   return (
-    <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-background to-background/80 dark:from-background dark:to-background/90">
       <main className="flex-1">
         <CompanyInfo company={company} />
         
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-6xl mx-auto space-y-8">
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent text-center">
-              Simulações e Pedidos
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-6xl mx-auto space-y-10">
+            <h1 className="text-4xl font-bold text-center">
+              <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+                Simulações e Pedidos
+              </span>
             </h1>
 
-            <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 pointer-events-none" />
-              <CardContent className="p-6 space-y-6 relative">
-                <div className="p-4 rounded-xl bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700">
+            <Card className="border-border/30 bg-card/95 shadow-lg backdrop-blur-sm">
+              <CardContent className="p-8">
+                <div className="rounded-lg border border-border/50 bg-gradient-to-br from-background/50 to-background p-6">
                   <OrderForm 
                     companyId={company.id} 
                     products={products} 
