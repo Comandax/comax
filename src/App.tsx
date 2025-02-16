@@ -1,70 +1,55 @@
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
-import { AuthProvider } from "@/contexts/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
-import Products from "@/pages/Products";
-import Users from "@/pages/Users";
-import Admin from "@/pages/Admin";
-import Login from "@/pages/Login";
-import UserCreate from "@/pages/UserCreate";
-import UserEdit from "@/pages/UserEdit";
-import RepresentativeCreate from "@/pages/RepresentativeCreate";
-import Orders from "@/pages/Orders";
-import OrderSuccess from "@/pages/OrderSuccess";
-import Index from "@/pages/Index";
-import UserCreateWithReferral from "@/pages/UserCreateWithReferral";
-import "./App.css";
+import { AuthProvider } from "@/contexts/AuthContext";
 
-// Create a client
+// Pages
+import Login from "@/pages/Login";
+import Admin from "@/pages/Admin";
+import Products from "@/pages/Products";
+import Orders from "@/pages/Orders";
+import UserCreate from "@/pages/UserCreate";
+import Users from "@/pages/Users";
+import NotFound from "@/pages/NotFound";
+import Index from "@/pages/Index";
+import OrderSuccess from "@/pages/OrderSuccess";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import UserCreateWithReferral from "@/pages/UserCreateWithReferral";
+import UserEdit from "@/pages/UserEdit";
+import Companies from "@/pages/Companies";
+
 const queryClient = new QueryClient();
 
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <Router>
+      <BrowserRouter>
+        <AuthProvider>
           <Routes>
+            {/* Public routes */}
             <Route path="/login" element={<Login />} />
-            <Route path="/r/:identifier" element={<UserCreateWithReferral />} />
-            <Route path="/users/create" element={
-              <ProtectedRoute superUserOnly>
-                <UserCreate />
-              </ProtectedRoute>
-            } />
-            <Route path="/users/:id" element={
-              <ProtectedRoute>
-                <UserEdit />
-              </ProtectedRoute>
-            } />
-            <Route path="/users" element={
-              <ProtectedRoute superUserOnly>
-                <Users />
-              </ProtectedRoute>
-            } />
-            <Route path="/representatives/create" element={<RepresentativeCreate />} />
-            <Route path="/admin" element={
-              <ProtectedRoute>
-                <Admin />
-              </ProtectedRoute>
-            } />
-            <Route path="/products" element={
-              <ProtectedRoute>
-                <Products />
-              </ProtectedRoute>
-            } />
-            <Route path="/orders" element={
-              <ProtectedRoute>
-                <Orders />
-              </ProtectedRoute>
-            } />
-            <Route path="/orders/success" element={<OrderSuccess />} />
-            <Route path="/" element={<Index />} />
+            <Route path="/users/create" element={<UserCreate />} />
+            <Route path="/users/create/:referralCode" element={<UserCreateWithReferral />} />
+            <Route path="/:shortName" element={<Index />} />
+            <Route path="/order/success" element={<OrderSuccess />} />
+
+            {/* Protected routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/users" element={<Users />} />
+              <Route path="/users/:id" element={<UserEdit />} />
+              <Route path="/companies" element={<Companies />} />
+            </Route>
+
+            {/* Fallback route */}
+            <Route path="*" element={<NotFound />} />
           </Routes>
           <Toaster />
-        </Router>
-      </AuthProvider>
+        </AuthProvider>
+      </BrowserRouter>
     </QueryClientProvider>
   );
 }
