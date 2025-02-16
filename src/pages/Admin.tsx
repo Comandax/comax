@@ -93,11 +93,11 @@ const Admin = () => {
   const isSuperuser = userRoles?.some(role => role.role === 'superuser');
 
   return (
-    <div className="min-h-screen bg-[#1A1F2C]">
+    <div className="min-h-screen bg-gradient-to-b from-[#1A1F2C] to-[#1A1F2C]/90">
       <div className="bg-gray-900/50 border-b border-white/10">
         <div className="container mx-auto">
           <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center justify-between py-1.5">
+            <div className="flex items-center justify-between py-4">
               <div className="flex items-center gap-2">
                 <div className="h-8 w-1 bg-primary rounded-full" />
                 <img src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" alt="COMAX Logo" className="h-8 w-auto" />
