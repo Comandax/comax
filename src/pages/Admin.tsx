@@ -256,7 +256,7 @@ const Admin = () => {
                           className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-primary/30 transition-colors"
                         >
                           <div className="flex justify-between items-start">
-                            <div className="max-w-[35%]">
+                            <div className="w-[35%]">
                               <p className="text-sm font-medium text-gray-500 truncate">
                                 {formatDate(order.date)}
                               </p>
