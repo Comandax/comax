@@ -256,11 +256,11 @@ const Admin = () => {
                           className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-primary/30 transition-colors"
                         >
                           <div className="flex justify-between items-start">
-                            <div>
-                              <p className="text-sm font-medium text-gray-500">
+                            <div className="max-w-[35%]">
+                              <p className="text-sm font-medium text-gray-500 truncate">
                                 {formatDate(order.date)}
                               </p>
-                              <h3 className="font-semibold text-gray-900 dark:text-white mt-1">
+                              <h3 className="font-semibold text-gray-900 dark:text-white mt-1 truncate">
                                 {order.customerName}
                               </h3>
                             </div>
