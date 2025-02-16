@@ -54,7 +54,7 @@ const Admin = () => {
   });
 
   const handleCopyLink = () => {
-    const link = `${window.location.origin}/orders/${userCompany?.id}`;
+    const link = `${window.location.origin}/${userCompany?.short_name}`;
     navigator.clipboard.writeText(link);
     toast({
       title: "Link copiado!",
@@ -63,7 +63,7 @@ const Admin = () => {
   };
 
   const handleOpenLink = () => {
-    const link = `${window.location.origin}/orders/${userCompany?.id}`;
+    const link = `${window.location.origin}/${userCompany?.short_name}`;
     window.open(link, '_blank');
   };
 
@@ -243,7 +243,7 @@ const Admin = () => {
                     
                     <div className="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
                       <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
-                        {`${window.location.origin}/orders/${userCompany?.id}`}
+                        {`${window.location.origin}/${userCompany?.short_name}`}
                       </p>
                     </div>
 
