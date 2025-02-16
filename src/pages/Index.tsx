@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
@@ -9,7 +8,7 @@ import { NotFoundState } from "@/components/index/NotFoundState";
 import { CompanyInfo } from "@/components/index/CompanyInfo";
 import { OrderForm } from "@/components/index/OrderForm";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 
 const Index = () => {
   const [company, setCompany] = useState<any>(null);
@@ -85,16 +84,12 @@ const Index = () => {
               </span>
             </h1>
 
-            <Card className="border-border/30 bg-card/95 shadow-lg backdrop-blur-sm">
-              <CardContent className="p-8">
-                <div className="rounded-lg border border-border/50 bg-gradient-to-br from-background/50 to-background p-6">
-                  <OrderForm 
-                    companyId={company.id} 
-                    products={products} 
-                    isLoading={isLoadingProducts} 
-                  />
-                </div>
-              </CardContent>
+            <Card className="border-border/30 bg-card/95 shadow-lg backdrop-blur-sm p-8">
+              <OrderForm 
+                companyId={company.id} 
+                products={products} 
+                isLoading={isLoadingProducts} 
+              />
             </Card>
           </div>
         </div>
