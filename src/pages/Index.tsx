@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
@@ -103,14 +102,6 @@ const Index = () => {
             <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 pointer-events-none" />
               <CardContent className="p-6 space-y-6 relative">
-                <div className="flex items-center gap-3">
-                  <div className="h-8 w-1 bg-gradient-to-b from-primary to-secondary rounded-full" />
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent flex items-center gap-2">
-                    <Package className="w-6 h-6 text-primary" />
-                    Faça seu Pedido
-                  </h2>
-                </div>
-
                 <div className="p-4 rounded-xl bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700">
                   <OrderForm 
                     companyId={company.id} 
