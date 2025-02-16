@@ -1,5 +1,5 @@
 
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -35,7 +35,7 @@ function App() {
             <Route path="/order/success" element={<OrderSuccess />} />
 
             {/* Protected routes */}
-            <Route element={<ProtectedRoute />}>
+            <Route element={<ProtectedRoute><Outlet /></ProtectedRoute>}>
               <Route path="/admin" element={<Admin />} />
               <Route path="/products" element={<Products />} />
               <Route path="/orders" element={<Orders />} />
