@@ -359,13 +359,20 @@ const Admin = () => {
                           className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-primary/30 transition-colors"
                         >
                           <div className="flex justify-between items-start">
-                            <div>
-                              <h3 className="font-semibold text-gray-900 dark:text-white">
-                                {order.customerName}
-                              </h3>
-                              <p className="text-sm text-gray-500">
-                                {formatDate(order.date)}
-                              </p>
+                            <div className="flex gap-6">
+                              <div>
+                                <p className="text-sm font-medium text-gray-500">
+                                  {formatDate(order.date)}
+                                </p>
+                                <h3 className="font-semibold text-gray-900 dark:text-white mt-1">
+                                  {order.customerName}
+                                </h3>
+                              </div>
+                              <div>
+                                <p className="text-sm text-gray-500">
+                                  {order.customerCity} / {order.customerState}
+                                </p>
+                              </div>
                             </div>
                             <div className="text-right">
                               <p className="font-medium text-primary">
