@@ -8,7 +8,9 @@ import { LoadingState } from "@/components/index/LoadingState";
 import { NotFoundState } from "@/components/index/NotFoundState";
 import { CompanyInfo } from "@/components/index/CompanyInfo";
 import { OrderForm } from "@/components/index/OrderForm";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/toaster";
+import { Card, CardContent } from "@/components/ui/card";
+import { Package } from "lucide-react";
 
 const Index = () => {
   const [company, setCompany] = useState<any>(null);
@@ -88,18 +90,39 @@ const Index = () => {
 
   console.log('✅ Renderizando página principal');
   return (
-    <div className="min-h-screen bg-[#1A1F2C]">
-      <CompanyInfo company={company} />
-      <div className="container mx-auto px-4 py-0">
-        <div className="max-w-6xl mx-auto space-y-8">
-          <h1 className="text-3xl font-bold text-white text-center">Simulações e Pedidos</h1>
-          <OrderForm 
-            companyId={company.id} 
-            products={products} 
-            isLoading={isLoadingProducts} 
-          />
+    <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <main className="flex-1">
+        <CompanyInfo company={company} />
+        
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-6xl mx-auto space-y-8">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent text-center">
+              Simulações e Pedidos
+            </h1>
+
+            <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 pointer-events-none" />
+              <CardContent className="p-6 space-y-6 relative">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-1 bg-gradient-to-b from-primary to-secondary rounded-full" />
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent flex items-center gap-2">
+                    <Package className="w-6 h-6 text-primary" />
+                    Faça seu Pedido
+                  </h2>
+                </div>
+
+                <div className="p-4 rounded-xl bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700">
+                  <OrderForm 
+                    companyId={company.id} 
+                    products={products} 
+                    isLoading={isLoadingProducts} 
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 };
