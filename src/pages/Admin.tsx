@@ -1,5 +1,4 @@
-
-import { Package, LogOut, User, Building2, ClipboardList, Menu, Share2, ExternalLink, Copy, Edit } from "lucide-react";
+import { Package, LogOut, User, Building2, ClipboardList, Menu, Share2, ExternalLink, Copy, Edit, ArrowRight } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
@@ -20,6 +19,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import type { Order } from "@/types/order";
 
 const Admin = () => {
   const { user, logout } = useAuth();
@@ -53,6 +53,25 @@ const Admin = () => {
     enabled: !!user
   });
 
+  const { data: recentOrders = [], isLoading: isLoadingOrders } = useQuery({
+    queryKey: ['recent-orders', userCompany?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('company_id', userCompany?.id)
+        .order('created_at', { ascending: false })
+        .limit(5);
+
+      if (error) {
+        console.error('Error fetching recent orders:', error);
+        throw error;
+      }
+      return data as Order[];
+    },
+    enabled: !!userCompany?.id
+  });
+
   const handleCopyLink = () => {
     const link = `${window.location.origin}/${userCompany?.short_name}`;
     navigator.clipboard.writeText(link);
@@ -82,6 +101,22 @@ const Admin = () => {
         description: "Por favor, tente novamente."
       });
     }
+  };
+
+  const formatDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    return new Intl.DateTimeFormat('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    }).format(date);
+  };
+
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value);
   };
 
   return (
@@ -172,7 +207,6 @@ const Admin = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Card de Módulos */}
             <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 pointer-events-none" />
               <CardContent className="p-6 space-y-6 relative">
@@ -221,7 +255,6 @@ const Admin = () => {
               </CardContent>
             </Card>
 
-            {/* Card de Link para Pedidos */}
             <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-primary/5 pointer-events-none" />
               <CardContent className="p-6 space-y-6 relative">
@@ -274,6 +307,69 @@ const Admin = () => {
                       </Button>
                     </div>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="md:col-span-2 bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 pointer-events-none" />
+              <CardContent className="p-6 space-y-6 relative">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-1 bg-gradient-to-b from-primary to-secondary rounded-full" />
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    Pedidos Recentes
+                  </h2>
+                </div>
+
+                <div className="space-y-4">
+                  {isLoadingOrders ? (
+                    <div className="text-center py-8 text-gray-500">
+                      Carregando pedidos...
+                    </div>
+                  ) : recentOrders.length > 0 ? (
+                    <div className="space-y-4">
+                      {recentOrders.map((order) => (
+                        <div 
+                          key={order._id} 
+                          className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-primary/30 transition-colors"
+                        >
+                          <div className="flex justify-between items-start">
+                            <div>
+                              <h3 className="font-semibold text-gray-900 dark:text-white">
+                                {order.customerName}
+                              </h3>
+                              <p className="text-sm text-gray-500">
+                                {formatDate(order.date)}
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-medium text-primary">
+                                {formatCurrency(order.total)}
+                              </p>
+                              <p className="text-sm text-gray-500">
+                                {order.items.length} {order.items.length === 1 ? 'item' : 'itens'}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+
+                      <Button
+                        asChild
+                        className="w-full"
+                        variant="outline"
+                      >
+                        <Link to="/orders" className="flex items-center justify-center gap-2">
+                          <span>Ver todos os pedidos</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </Link>
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      Nenhum pedido encontrado
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
