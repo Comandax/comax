@@ -8,7 +8,7 @@ import { LoadingState } from "@/components/index/LoadingState";
 import { NotFoundState } from "@/components/index/NotFoundState";
 import { CompanyInfo } from "@/components/index/CompanyInfo";
 import { OrderForm } from "@/components/index/OrderForm";
-import { useToast } from "@/components/ui/toaster";
+import { useToast } from "@/hooks/use-toast";
 import { Card, CardContent } from "@/components/ui/card";
 import { Package } from "lucide-react";
 
