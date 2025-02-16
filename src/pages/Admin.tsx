@@ -1,5 +1,4 @@
-
-import { Package, LogOut, User, Building2, ClipboardList, Menu } from "lucide-react";
+import { Package, LogOut, User, Building2, ClipboardList, Menu, Wallet, ArrowRight } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
@@ -232,6 +231,45 @@ const Admin = () => {
                     </div>
                   </Link>
                 </div>
+              </CardContent>
+            </Card>
+
+            {/* Card de Pedidos */}
+            <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-primary/5 pointer-events-none" />
+              <CardContent className="p-6 space-y-6 relative">
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-1 bg-gradient-to-b from-secondary to-primary rounded-full" />
+                  <h2 className="text-2xl font-bold bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
+                    Pedidos da Empresa
+                  </h2>
+                </div>
+
+                <Link 
+                  to="/orders" 
+                  className="block group relative overflow-hidden"
+                >
+                  <div className="p-6 rounded-xl bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 hover:border-secondary/30 transition-all duration-300 shadow-sm hover:shadow-md">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4">
+                        <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-secondary/10 group-hover:bg-secondary/20 transition-colors">
+                          <Wallet className="w-6 h-6 text-secondary" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white group-hover:text-secondary transition-colors">
+                            Visualizar Pedidos
+                          </h3>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            Acesse o histórico completo de pedidos
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-secondary opacity-0 group-hover:opacity-100 transition-opacity">
+                        <ArrowRight className="w-6 h-6" />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
               </CardContent>
             </Card>
           </div>
