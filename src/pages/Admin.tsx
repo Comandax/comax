@@ -1,4 +1,5 @@
-import { Package, LogOut, User, Building2, ClipboardList } from "lucide-react";
+
+import { Package, LogOut, User, Building2, ClipboardList, Copy } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
@@ -9,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 const Admin = () => {
   const { user, logout } = useAuth();
@@ -87,6 +89,16 @@ const Admin = () => {
     }
   };
 
+  const handleCopyLink = () => {
+    if (userCompany) {
+      navigator.clipboard.writeText(`${window.location.origin}/${userCompany.short_name}`);
+      toast({
+        title: "Link copiado!",
+        description: "O link para pedidos foi copiado para sua área de transferência."
+      });
+    }
+  };
+
   const userInitials = userProfile ? `${userProfile.first_name[0]}${userProfile.last_name[0]}`.toUpperCase() : 'U';
   const userName = userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'Usuário';
   const isSuperuser = userRoles?.some(role => role.role === 'superuser');
@@ -123,38 +135,95 @@ const Admin = () => {
           </div>
         </div>
 
-        <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
-          <CardContent className="p-6 space-y-6">
-            <div className="flex items-center gap-2">
-              <div className="h-8 w-1 bg-primary rounded-full" />
-              <h2 className="text-2xl font-bold text-primary">Módulos</h2>
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          {/* Card de Informações da Empresa */}
+          <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
+            <CardContent className="p-6 space-y-6">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-1 bg-primary rounded-full" />
+                <h2 className="text-2xl font-bold text-primary">Informações da Empresa</h2>
+              </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Link 
-                to="/products" 
-                className="group flex items-center p-6 bg-white rounded-lg border border-primary/20 hover:border-primary/30 transition-all duration-300"
-              >
-                <Package className="w-8 h-8 text-primary mr-4" />
-                <div>
-                  <h2 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">Produtos</h2>
-                  <p className="text-muted-foreground">Gerenciar catálogo de produtos</p>
-                </div>
-              </Link>
+              {userCompany && (
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4">
+                    {userCompany.logo_url && (
+                      <img
+                        src={userCompany.logo_url}
+                        alt={`Logo ${userCompany.name}`}
+                        className="w-24 h-24 object-contain rounded-lg border border-primary/20"
+                      />
+                    )}
+                    <div>
+                      <h3 className="text-xl font-semibold text-foreground">{userCompany.name}</h3>
+                      {userProfile && (
+                        <>
+                          <p className="text-muted-foreground">Responsável: {userProfile.first_name} {userProfile.last_name}</p>
+                          <p className="text-muted-foreground">Email: {userProfile.email}</p>
+                          {userProfile.phone && (
+                            <p className="text-muted-foreground">Telefone: {userProfile.phone}</p>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  </div>
 
-              <Link 
-                to="/orders" 
-                className="group flex items-center p-6 bg-white rounded-lg border border-primary/20 hover:border-primary/30 transition-all duration-300"
-              >
-                <ClipboardList className="w-8 h-8 text-primary mr-4" />
-                <div>
-                  <h2 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">Relatório de Pedidos</h2>
-                  <p className="text-muted-foreground">Visualizar e gerenciar pedidos</p>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-foreground">Link para Pedidos:</label>
+                    <div className="flex gap-2">
+                      <Input
+                        readOnly
+                        value={`${window.location.origin}/${userCompany.short_name}`}
+                        className="bg-white/80 border-primary/30"
+                      />
+                      <Button
+                        variant="outline"
+                        className="text-primary hover:bg-primary/10 border-primary"
+                        onClick={handleCopyLink}
+                      >
+                        <Copy className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-              </Link>
-            </div>
-          </CardContent>
-        </Card>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Card de Módulos */}
+          <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
+            <CardContent className="p-6 space-y-6">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-1 bg-primary rounded-full" />
+                <h2 className="text-2xl font-bold text-primary">Módulos</h2>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4">
+                <Link 
+                  to="/products" 
+                  className="group flex items-center p-6 bg-white rounded-lg border border-primary/20 hover:border-primary/30 transition-all duration-300"
+                >
+                  <Package className="w-8 h-8 text-primary mr-4" />
+                  <div>
+                    <h2 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">Produtos</h2>
+                    <p className="text-muted-foreground">Gerenciar catálogo de produtos</p>
+                  </div>
+                </Link>
+
+                <Link 
+                  to="/orders" 
+                  className="group flex items-center p-6 bg-white rounded-lg border border-primary/20 hover:border-primary/30 transition-all duration-300"
+                >
+                  <ClipboardList className="w-8 h-8 text-primary mr-4" />
+                  <div>
+                    <h2 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors">Relatório de Pedidos</h2>
+                    <p className="text-muted-foreground">Visualizar e gerenciar pedidos</p>
+                  </div>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </div>
   );
