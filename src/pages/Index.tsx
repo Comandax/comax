@@ -9,7 +9,7 @@ import { NotFoundState } from "@/components/index/NotFoundState";
 import { CompanyInfo } from "@/components/index/CompanyInfo";
 import { OrderForm } from "@/components/index/OrderForm";
 import { useToast } from "@/hooks/use-toast";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 
 const Index = () => {
   const [company, setCompany] = useState<any>(null);
@@ -77,24 +77,20 @@ const Index = () => {
       <main className="flex-1">
         <CompanyInfo company={company} />
         
-        <div className="container mx-auto px-4 py-6">
-          <div className="max-w-6xl mx-auto space-y-8">
-            <h1 className="text-4xl font-bold text-center mt-2">
+        <div className="container mx-auto px-4 py-2">
+          <div className="max-w-6xl mx-auto space-y-6">
+            <h1 className="text-4xl font-bold text-center">
               <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
                 Simulações e Pedidos
               </span>
             </h1>
 
-            <Card className="border-border/30 bg-card/95 shadow-lg backdrop-blur-sm">
-              <CardContent className="p-8">
-                <div className="rounded-lg border border-border/50 bg-gradient-to-br from-background/50 to-background p-6">
-                  <OrderForm 
-                    companyId={company.id} 
-                    products={products} 
-                    isLoading={isLoadingProducts} 
-                  />
-                </div>
-              </CardContent>
+            <Card className="border-border/30 bg-card/95 shadow-lg backdrop-blur-sm p-8">
+              <OrderForm 
+                companyId={company.id} 
+                products={products} 
+                isLoading={isLoadingProducts} 
+              />
             </Card>
           </div>
         </div>
