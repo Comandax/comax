@@ -1,3 +1,4 @@
+
 import { Package, LogOut, User, Building2, ClipboardList, Menu, Share2, ExternalLink, Copy, Edit } from "lucide-react";
 import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -34,7 +35,7 @@ const Admin = () => {
     return <Navigate to="/users" replace />;
   }
 
-  const { data: userCompany, isError } = useQuery({
+  const { data: userCompany, isError, refetch } = useQuery({
     queryKey: ['company', user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -171,6 +172,7 @@ const Admin = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Card de Módulos */}
             <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 pointer-events-none" />
               <CardContent className="p-6 space-y-6 relative">
@@ -219,6 +221,7 @@ const Admin = () => {
               </CardContent>
             </Card>
 
+            {/* Card de Link para Pedidos */}
             <Card className="bg-white dark:bg-gray-800 shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-primary/5 pointer-events-none" />
               <CardContent className="p-6 space-y-6 relative">
@@ -284,7 +287,6 @@ const Admin = () => {
             companyId={userCompany.id}
             currentShortName={userCompany.short_name}
             onSuccess={() => {
-              // Recarrega os dados da empresa após a atualização
               refetch();
             }}
           />
