@@ -73,28 +73,26 @@ const Index = () => {
   if (error || !company) return <NotFoundState error={error} />;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-background/80 dark:from-background dark:to-background/90">
-      <main className="flex-1">
-        <CompanyInfo company={company} />
-        
-        <div className="container mx-auto px-4 py-2">
-          <div className="max-w-6xl mx-auto space-y-6">
-            <h1 className="text-4xl font-bold text-center">
-              <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                Simulações e Pedidos
-              </span>
-            </h1>
+    <div className="min-h-screen bg-gradient-to-br from-background to-background/80 dark:from-background dark:to-background/90 flex flex-col">
+      <CompanyInfo company={company} />
+      
+      <div className="container mx-auto px-4 py-2 flex-grow">
+        <div className="max-w-6xl mx-auto space-y-6">
+          <h1 className="text-4xl font-bold text-center">
+            <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+              Simulações e Pedidos
+            </span>
+          </h1>
 
-            <Card className="border-border/30 bg-card/95 shadow-lg backdrop-blur-sm p-8">
-              <OrderForm 
-                companyId={company.id} 
-                products={products} 
-                isLoading={isLoadingProducts} 
-              />
-            </Card>
-          </div>
+          <Card className="border-border/30 bg-card/95 shadow-lg backdrop-blur-sm p-8">
+            <OrderForm 
+              companyId={company.id} 
+              products={products} 
+              isLoading={isLoadingProducts} 
+            />
+          </Card>
         </div>
-      </main>
+      </div>
     </div>
   );
 };
