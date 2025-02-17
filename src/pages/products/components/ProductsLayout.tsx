@@ -65,8 +65,12 @@ export function ProductsLayout({
             <div className="flex items-center gap-4">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                    <User className="h-5 w-5 text-primary" />
+                  <Button 
+                    variant="ghost" 
+                    size="icon" 
+                    className="relative h-10 w-10 rounded-full bg-[#E5DEFF] hover:bg-[#E5DEFF]/90"
+                  >
+                    <User className="h-5 w-5 text-[#0FA0CE]" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end">
