@@ -116,11 +116,11 @@ const Admin = () => {
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-        <Sidebar className="border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-          <SidebarHeader>
+        <Sidebar className="border-r border-gray-200 dark:border-gray-700 bg-white lg:bg-white lg:dark:bg-white">
+          <SidebarHeader className="bg-white">
             <CompanyHeader company={userCompany} />
           </SidebarHeader>
-          <SidebarContent className="px-4">
+          <SidebarContent className="px-4 bg-white">
             <AdminSidebarMenu userId={user.id} onLogout={handleLogout} />
           </SidebarContent>
         </Sidebar>
