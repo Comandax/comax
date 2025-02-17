@@ -50,25 +50,27 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
                   key={order._id} 
                   className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-primary/30 transition-colors"
                 >
-                  <div className="flex justify-between items-start">
-                    <div className="w-[35%]">
-                      <p className="text-sm font-medium text-gray-500 truncate">
-                        {formatDate(order.date)}
-                      </p>
-                      <h3 className="font-semibold text-gray-900 dark:text-white mt-1 truncate">
-                        {order.customerName}
-                      </h3>
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-grow">
+                      <div className="min-w-[120px]">
+                        <p className="text-sm font-medium text-gray-500">
+                          {formatDate(order.date)}
+                        </p>
+                      </div>
+                      <div className="flex-grow">
+                        <h3 className="font-semibold text-gray-900 dark:text-white truncate">
+                          {order.customerName}
+                        </h3>
+                        <p className="text-sm text-gray-500 mt-1">
+                          {order.customerCity} / {order.customerState}
+                        </p>
+                      </div>
                     </div>
-                    <div className="min-w-[30%] text-left">
-                      <p className="text-sm text-gray-500">
-                        {order.customerCity} / {order.customerState}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-medium text-primary">
+                    <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 sm:gap-1 ml-auto">
+                      <p className="font-medium text-primary order-2 sm:order-1">
                         {formatCurrency(order.total)}
                       </p>
-                      <p className="text-sm text-gray-500">
+                      <p className="text-sm text-gray-500 order-1 sm:order-2">
                         {order.items.length} {order.items.length === 1 ? 'item' : 'itens'}
                       </p>
                     </div>
