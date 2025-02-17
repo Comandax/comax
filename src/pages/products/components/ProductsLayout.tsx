@@ -5,19 +5,22 @@ import { ArrowLeft, Building2, LogOut, User, Menu } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import type { Company } from "@/types/company";
 
 interface ProductsLayoutProps {
   children: React.ReactNode;
   userName: string;
   userInitials: string;
   onLogout: () => Promise<void>;
+  company: Company;
 }
 
 export function ProductsLayout({
   children,
   userName,
   userInitials,
-  onLogout
+  onLogout,
+  company
 }: ProductsLayoutProps) {
   const navigate = useNavigate();
 
@@ -37,9 +40,20 @@ export function ProductsLayout({
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
               </div>
-              <h1 className="text-xl font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                Produtos
-              </h1>
+              <div className="flex items-center gap-4">
+                {company.logo_url ? (
+                  <img 
+                    src={company.logo_url} 
+                    alt={`${company.name} logo`}
+                    className="h-8 w-8 object-contain rounded"
+                  />
+                ) : (
+                  <Building2 className="h-8 w-8 text-primary" />
+                )}
+                <h1 className="text-xl font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                  {company.name}
+                </h1>
+              </div>
             </div>
 
             <div className="flex items-center gap-4">
