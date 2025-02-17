@@ -115,9 +115,9 @@ const Admin = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 to-gray-100">
-        <Sidebar className="border-r border-gray-200 bg-white shadow-lg">
-          <SidebarHeader className="border-b border-gray-200">
+      <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+        <Sidebar className="border-r border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+          <SidebarHeader>
             <CompanyHeader company={userCompany} />
           </SidebarHeader>
           <SidebarContent className="px-4">
