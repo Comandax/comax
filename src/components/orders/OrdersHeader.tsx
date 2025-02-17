@@ -16,7 +16,6 @@ interface OrdersHeaderProps {
 
 export const OrdersHeader = ({ userProfile, company, onLogout }: OrdersHeaderProps) => {
   const navigate = useNavigate();
-  const userInitials = userProfile ? `${userProfile.first_name[0]}${userProfile.last_name[0]}`.toUpperCase() : 'U';
   const userName = userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'Usuário';
   const { user } = useAuth();
 
@@ -45,8 +44,8 @@ export const OrdersHeader = ({ userProfile, company, onLogout }: OrdersHeaderPro
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                     <Avatar className="h-10 w-10">
-                      <AvatarFallback className="bg-primary text-primary-foreground">
-                        {userInitials}
+                      <AvatarFallback className="bg-primary/10 text-primary">
+                        <User className="h-5 w-5" />
                       </AvatarFallback>
                     </Avatar>
                   </Button>
