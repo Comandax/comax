@@ -190,7 +190,7 @@ const Orders = () => {
   const hasNoOrders = ordersData.orders.length === 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-[#1A1F2C]">
       <OrdersHeader 
         userProfile={userProfile}
         company={company}
@@ -203,12 +203,12 @@ const Orders = () => {
             <div className="space-y-4 mb-6">
               <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
                     placeholder="Buscar por cliente..."
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
-                    className="pl-10 w-full md:w-64 bg-white border-gray-200"
+                    className="pl-10 w-full md:w-64"
                   />
                 </div>
                 <Select
@@ -218,7 +218,7 @@ const Orders = () => {
                     setCurrentPage(1);
                   }}
                 >
-                  <SelectTrigger className="w-full md:w-32 bg-white border-gray-200">
+                  <SelectTrigger className="w-full md:w-32">
                     <SelectValue placeholder="Itens por página" />
                   </SelectTrigger>
                   <SelectContent>
@@ -234,26 +234,26 @@ const Orders = () => {
           )}
 
           {hasNoOrders ? (
-            <Card className="p-8 text-center space-y-4 bg-white border-gray-200">
+            <Card className="p-8 text-center space-y-4 bg-white/95">
               <ShoppingBag className="w-12 h-12 mx-auto text-primary" />
               <h2 className="text-2xl font-semibold">Nenhum pedido realizado</h2>
               <p className="text-muted-foreground">
                 Compartilhe o link da sua página para começar a receber pedidos.
               </p>
-              <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+              <div className="mt-4 p-4 bg-muted rounded-lg">
                 <p className="text-sm text-muted-foreground mb-2">Página de pedidos:</p>
                 <code className="text-sm">
                   {window.location.origin}/{company?.short_name}
                 </code>
                 <div className="flex justify-center gap-4 mt-4">
                   <div className="flex flex-col items-center gap-2">
-                    <Button variant="outline" size="icon" onClick={handleCopyLink} className="border-gray-200 hover:bg-gray-50">
+                    <Button variant="outline" size="icon" onClick={handleCopyLink}>
                       <Copy className="h-4 w-4" />
                     </Button>
                     <span className="text-xs text-muted-foreground">Copiar</span>
                   </div>
                   <div className="flex flex-col items-center gap-2">
-                    <Button variant="outline" size="icon" onClick={handleOpenLink} className="border-gray-200 hover:bg-gray-50">
+                    <Button variant="outline" size="icon" onClick={handleOpenLink}>
                       <ExternalLink className="h-4 w-4" />
                     </Button>
                     <span className="text-xs text-muted-foreground">Abrir</span>
@@ -262,7 +262,7 @@ const Orders = () => {
               </div>
             </Card>
           ) : filteredOrders.length === 0 ? (
-            <Card className="p-8 text-center space-y-4 bg-white border-gray-200">
+            <Card className="p-8 text-center space-y-4 bg-white/95">
               <Search className="w-12 h-12 mx-auto text-primary" />
               <h2 className="text-2xl font-semibold">Nenhum resultado encontrado</h2>
               <p className="text-muted-foreground">
@@ -270,45 +270,47 @@ const Orders = () => {
               </p>
             </Card>
           ) : (
-            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-              <OrdersTable
-                orders={paginatedOrders}
-                sortConfig={sortConfig}
-                onSort={handleSort}
-                onOrderClick={setSelectedOrder}
-              />
+            <Card className="bg-white/95">
+              <div className="p-6 space-y-6">
+                <OrdersTable
+                  orders={paginatedOrders}
+                  sortConfig={sortConfig}
+                  onSort={handleSort}
+                  onOrderClick={setSelectedOrder}
+                />
 
-              {totalPages > 1 && (
-                <div className="mt-4">
-                  <Pagination>
-                    <PaginationContent>
-                      <PaginationItem>
-                        <PaginationPrevious
-                          onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                          className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
-                        />
-                      </PaginationItem>
-                      {Array.from({ length: totalPages }).map((_, i) => (
-                        <PaginationItem key={i}>
-                          <PaginationLink
-                            onClick={() => setCurrentPage(i + 1)}
-                            isActive={currentPage === i + 1}
-                          >
-                            {i + 1}
-                          </PaginationLink>
+                {totalPages > 1 && (
+                  <div className="mt-4">
+                    <Pagination>
+                      <PaginationContent>
+                        <PaginationItem>
+                          <PaginationPrevious
+                            onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                            className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                          />
                         </PaginationItem>
-                      ))}
-                      <PaginationItem>
-                        <PaginationNext
-                          onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                          className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
-                        />
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                </div>
-              )}
-            </div>
+                        {Array.from({ length: totalPages }).map((_, i) => (
+                          <PaginationItem key={i}>
+                            <PaginationLink
+                              onClick={() => setCurrentPage(i + 1)}
+                              isActive={currentPage === i + 1}
+                            >
+                              {i + 1}
+                            </PaginationLink>
+                          </PaginationItem>
+                        ))}
+                        <PaginationItem>
+                          <PaginationNext
+                            onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                            className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                          />
+                        </PaginationItem>
+                      </PaginationContent>
+                    </Pagination>
+                  </div>
+                )}
+              </div>
+            </Card>
           )}
 
           <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
