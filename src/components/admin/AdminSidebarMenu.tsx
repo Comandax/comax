@@ -25,7 +25,7 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
         <SidebarMenuButton asChild>
           <Link 
             to="/products" 
-            className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
+            className="flex items-center space-x-2 px-6 py-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
           >
             <Package className="w-5 h-5 text-primary" />
             <span className="font-medium">Produtos</span>
@@ -36,7 +36,7 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
         <SidebarMenuButton asChild>
           <Link 
             to="/orders" 
-            className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
+            className="flex items-center space-x-2 px-6 py-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
           >
             <ClipboardList className="w-5 h-5 text-primary" />
             <span className="font-medium">Pedidos</span>
@@ -46,7 +46,7 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
       <SidebarMenuItem>
         <SidebarMenuButton 
           onClick={() => setIsProfileModalOpen(true)}
-          className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
+          className="flex items-center space-x-2 px-6 py-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
         >
           <User className="w-5 h-5 text-primary" />
           <span className="font-medium">Meu Perfil</span>
@@ -55,7 +55,7 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
       <SidebarMenuItem>
         <SidebarMenuButton 
           onClick={onLogout}
-          className="flex items-center space-x-2 p-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors w-full"
+          className="flex items-center space-x-2 px-6 py-3 rounded-lg text-destructive hover:bg-destructive/10 transition-colors w-full"
         >
           <LogOut className="w-5 h-5" />
           <span className="font-medium">Sair</span>
