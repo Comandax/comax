@@ -190,7 +190,7 @@ const Orders = () => {
   const hasNoOrders = ordersData.orders.length === 0;
 
   return (
-    <div className="min-h-screen bg-[#1A1F2C]">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <OrdersHeader 
         userProfile={userProfile}
         company={company}
@@ -208,7 +208,7 @@ const Orders = () => {
                     placeholder="Buscar por cliente..."
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
-                    className="pl-10 w-full md:w-64"
+                    className="pl-10 w-full md:w-64 bg-white border-gray-200"
                   />
                 </div>
                 <Select
@@ -218,7 +218,7 @@ const Orders = () => {
                     setCurrentPage(1);
                   }}
                 >
-                  <SelectTrigger className="w-full md:w-32">
+                  <SelectTrigger className="w-full md:w-32 bg-white border-gray-200">
                     <SelectValue placeholder="Itens por página" />
                   </SelectTrigger>
                   <SelectContent>
@@ -234,26 +234,26 @@ const Orders = () => {
           )}
 
           {hasNoOrders ? (
-            <Card className="p-8 text-center space-y-4">
+            <Card className="p-8 text-center space-y-4 bg-white border-gray-200">
               <ShoppingBag className="w-12 h-12 mx-auto text-primary" />
               <h2 className="text-2xl font-semibold">Nenhum pedido realizado</h2>
               <p className="text-muted-foreground">
                 Compartilhe o link da sua página para começar a receber pedidos.
               </p>
-              <div className="mt-4 p-4 bg-muted rounded-lg">
+              <div className="mt-4 p-4 bg-gray-50 rounded-lg">
                 <p className="text-sm text-muted-foreground mb-2">Página de pedidos:</p>
                 <code className="text-sm">
                   {window.location.origin}/{company?.short_name}
                 </code>
                 <div className="flex justify-center gap-4 mt-4">
                   <div className="flex flex-col items-center gap-2">
-                    <Button variant="outline" size="icon" onClick={handleCopyLink}>
+                    <Button variant="outline" size="icon" onClick={handleCopyLink} className="border-gray-200 hover:bg-gray-50">
                       <Copy className="h-4 w-4" />
                     </Button>
                     <span className="text-xs text-muted-foreground">Copiar</span>
                   </div>
                   <div className="flex flex-col items-center gap-2">
-                    <Button variant="outline" size="icon" onClick={handleOpenLink}>
+                    <Button variant="outline" size="icon" onClick={handleOpenLink} className="border-gray-200 hover:bg-gray-50">
                       <ExternalLink className="h-4 w-4" />
                     </Button>
                     <span className="text-xs text-muted-foreground">Abrir</span>
@@ -262,7 +262,7 @@ const Orders = () => {
               </div>
             </Card>
           ) : filteredOrders.length === 0 ? (
-            <Card className="p-8 text-center space-y-4">
+            <Card className="p-8 text-center space-y-4 bg-white border-gray-200">
               <Search className="w-12 h-12 mx-auto text-primary" />
               <h2 className="text-2xl font-semibold">Nenhum resultado encontrado</h2>
               <p className="text-muted-foreground">
@@ -270,7 +270,7 @@ const Orders = () => {
               </p>
             </Card>
           ) : (
-            <div className="bg-gray-50/95 rounded-lg p-6 shadow-lg">
+            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
               <OrdersTable
                 orders={paginatedOrders}
                 sortConfig={sortConfig}
