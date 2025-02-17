@@ -10,6 +10,7 @@ import { ProfileFormData } from "@/types/profile";
 import { useAuth } from "@/contexts/AuthContext";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface UserEditModalProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ export function UserEditModal({ isOpen, onOpenChange }: UserEditModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [userProfile, setUserProfile] = useState<any>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
+  const isMobile = useIsMobile();
 
   const handleSubmit = async (data: ProfileFormData) => {
     if (!user) return;
@@ -85,14 +87,14 @@ export function UserEditModal({ isOpen, onOpenChange }: UserEditModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl bg-gradient-to-br from-primary/5 to-primary/10 border-2 border-primary/20">
+      <DialogContent className={`${isMobile ? 'w-[95vw] max-h-[90vh] overflow-y-auto' : 'max-w-2xl'} bg-gradient-to-br from-primary/5 to-primary/10 border-2 border-primary/20`}>
         <DialogHeader>
           <DialogTitle className="text-2xl font-bold text-primary flex items-center gap-2">
             <div className="h-6 w-1 bg-primary rounded-full" />
             Editar Perfil
           </DialogTitle>
         </DialogHeader>
-        <div className="p-6">
+        <div className={`${isMobile ? 'p-4' : 'p-6'}`}>
           {isLoadingProfile ? (
             <div className="flex items-center justify-center p-4">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />

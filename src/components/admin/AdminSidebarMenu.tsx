@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/sidebar";
 import { useState } from "react";
 import { UserEditModal } from "@/components/users/UserEditModal";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface AdminSidebarMenuProps {
   userId: string;
@@ -16,6 +17,7 @@ interface AdminSidebarMenuProps {
 
 export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const isMobile = useIsMobile();
 
   return (
     <SidebarMenu>
@@ -23,7 +25,7 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
         <SidebarMenuButton asChild>
           <Link 
             to="/products" 
-            className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors"
+            className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
           >
             <Package className="w-5 h-5 text-primary" />
             <span className="font-medium">Produtos</span>
@@ -34,7 +36,7 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
         <SidebarMenuButton asChild>
           <Link 
             to="/orders" 
-            className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors"
+            className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
           >
             <ClipboardList className="w-5 h-5 text-primary" />
             <span className="font-medium">Pedidos</span>
