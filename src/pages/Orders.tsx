@@ -190,7 +190,7 @@ const Orders = () => {
   const hasNoOrders = ordersData.orders.length === 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50/80 to-white">
+    <div className="min-h-screen bg-[#F1F0FB]">
       <OrdersHeader 
         userProfile={userProfile}
         company={company}
