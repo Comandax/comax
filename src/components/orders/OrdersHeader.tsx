@@ -22,13 +22,13 @@ export const OrdersHeader = ({ userProfile, company, onLogout }: OrdersHeaderPro
 
   return (
     <>
-      <div className="bg-gray-900/50 shadow-md">
+      <div className="bg-white border-b border-gray-200">
         <div className="container mx-auto">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-8">
                 <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="icon" onClick={() => navigate('/admin')} className="text-white hover:text-white/80">
+                  <Button variant="ghost" size="icon" onClick={() => navigate('/admin')} className="text-gray-700 hover:text-gray-900">
                     <ArrowLeft className="h-5 w-5" />
                   </Button>
                   <img 
@@ -38,7 +38,7 @@ export const OrdersHeader = ({ userProfile, company, onLogout }: OrdersHeaderPro
                     onClick={() => navigate('/admin')} 
                   />
                 </div>
-                <h1 className="text-xl font-semibold text-white">Pedidos</h1>
+                <h1 className="text-xl font-semibold text-gray-900">Pedidos</h1>
               </div>
               
               <DropdownMenu>
@@ -77,7 +77,7 @@ export const OrdersHeader = ({ userProfile, company, onLogout }: OrdersHeaderPro
       </div>
 
       {company && (
-        <div className="bg-white/5 border-b border-white/10">
+        <div className="bg-white/5 border-b border-gray-200">
           <div className="container mx-auto">
             <div className="max-w-6xl mx-auto px-4">
               <div className="flex items-center gap-4 py-2">
@@ -88,7 +88,7 @@ export const OrdersHeader = ({ userProfile, company, onLogout }: OrdersHeaderPro
                     className="w-8 h-8 object-contain rounded" 
                   />
                 )}
-                <h2 className="text-sm font-medium text-white/90">{company.name}</h2>
+                <h2 className="text-sm font-medium text-gray-700">{company.name}</h2>
               </div>
             </div>
           </div>
