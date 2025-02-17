@@ -52,10 +52,10 @@ export const PublicLinkCard = ({ companyShortName, onEdit }: PublicLinkCardProps
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap gap-2">
               <Button
                 variant="outline"
-                className="flex-1 bg-white dark:bg-gray-900"
+                className="flex-1 min-w-[120px] bg-white dark:bg-gray-900"
                 onClick={handleCopyLink}
               >
                 <Copy className="w-4 h-4 mr-2" />
@@ -63,7 +63,7 @@ export const PublicLinkCard = ({ companyShortName, onEdit }: PublicLinkCardProps
               </Button>
               <Button
                 variant="outline"
-                className="flex-1 bg-white dark:bg-gray-900"
+                className="flex-1 min-w-[120px] bg-white dark:bg-gray-900"
                 onClick={handleOpenLink}
               >
                 <ExternalLink className="w-4 h-4 mr-2" />
@@ -71,7 +71,7 @@ export const PublicLinkCard = ({ companyShortName, onEdit }: PublicLinkCardProps
               </Button>
               <Button
                 variant="outline"
-                className="flex-1 bg-white dark:bg-gray-900"
+                className="flex-1 min-w-[120px] bg-white dark:bg-gray-900"
                 onClick={onEdit}
               >
                 <Edit className="w-4 h-4 mr-2" />
