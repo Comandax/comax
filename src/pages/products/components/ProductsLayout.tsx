@@ -50,9 +50,15 @@ export function ProductsLayout({
                 ) : (
                   <Building2 className="h-8 w-8 text-primary" />
                 )}
-                <h1 className="text-xl font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                  {company.name}
-                </h1>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-xl font-semibold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                    {company.name}
+                  </h1>
+                  <span className="text-gray-400 dark:text-gray-500">/</span>
+                  <span className="text-xl font-semibold text-gray-600 dark:text-gray-400">
+                    Produtos
+                  </span>
+                </div>
               </div>
             </div>
 
