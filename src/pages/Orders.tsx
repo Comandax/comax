@@ -190,7 +190,7 @@ const Orders = () => {
   const hasNoOrders = ordersData.orders.length === 0;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50/80 to-white">
       <OrdersHeader 
         userProfile={userProfile}
         company={company}
@@ -203,12 +203,12 @@ const Orders = () => {
             <div className="space-y-4 mb-6">
               <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-blue-500" />
                   <Input
                     placeholder="Buscar por cliente..."
                     value={searchTerm}
                     onChange={e => setSearchTerm(e.target.value)}
-                    className="pl-10 w-full md:w-64 bg-white border-gray-200"
+                    className="pl-10 w-full md:w-64 bg-white border-blue-100 focus:border-blue-200 focus:ring-blue-200"
                   />
                 </div>
                 <Select
@@ -218,7 +218,7 @@ const Orders = () => {
                     setCurrentPage(1);
                   }}
                 >
-                  <SelectTrigger className="w-full md:w-32 bg-white border-gray-200">
+                  <SelectTrigger className="w-full md:w-32 bg-white border-blue-100">
                     <SelectValue placeholder="Itens por página" />
                   </SelectTrigger>
                   <SelectContent>
@@ -234,43 +234,43 @@ const Orders = () => {
           )}
 
           {hasNoOrders ? (
-            <Card className="p-8 text-center space-y-4 bg-white border-gray-200">
-              <ShoppingBag className="w-12 h-12 mx-auto text-primary" />
-              <h2 className="text-2xl font-semibold">Nenhum pedido realizado</h2>
-              <p className="text-muted-foreground">
+            <Card className="p-8 text-center space-y-4 bg-white border-blue-100">
+              <ShoppingBag className="w-12 h-12 mx-auto text-blue-500" />
+              <h2 className="text-2xl font-semibold text-blue-900">Nenhum pedido realizado</h2>
+              <p className="text-blue-600">
                 Compartilhe o link da sua página para começar a receber pedidos.
               </p>
-              <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-                <p className="text-sm text-muted-foreground mb-2">Página de pedidos:</p>
-                <code className="text-sm">
+              <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                <p className="text-sm text-blue-600 mb-2">Página de pedidos:</p>
+                <code className="text-sm text-blue-700">
                   {window.location.origin}/{company?.short_name}
                 </code>
                 <div className="flex justify-center gap-4 mt-4">
                   <div className="flex flex-col items-center gap-2">
-                    <Button variant="outline" size="icon" onClick={handleCopyLink} className="border-gray-200 hover:bg-gray-50">
-                      <Copy className="h-4 w-4" />
+                    <Button variant="outline" size="icon" onClick={handleCopyLink} className="border-blue-200 hover:bg-blue-50">
+                      <Copy className="h-4 w-4 text-blue-500" />
                     </Button>
-                    <span className="text-xs text-muted-foreground">Copiar</span>
+                    <span className="text-xs text-blue-600">Copiar</span>
                   </div>
                   <div className="flex flex-col items-center gap-2">
-                    <Button variant="outline" size="icon" onClick={handleOpenLink} className="border-gray-200 hover:bg-gray-50">
-                      <ExternalLink className="h-4 w-4" />
+                    <Button variant="outline" size="icon" onClick={handleOpenLink} className="border-blue-200 hover:bg-blue-50">
+                      <ExternalLink className="h-4 w-4 text-blue-500" />
                     </Button>
-                    <span className="text-xs text-muted-foreground">Abrir</span>
+                    <span className="text-xs text-blue-600">Abrir</span>
                   </div>
                 </div>
               </div>
             </Card>
           ) : filteredOrders.length === 0 ? (
-            <Card className="p-8 text-center space-y-4 bg-white border-gray-200">
-              <Search className="w-12 h-12 mx-auto text-primary" />
-              <h2 className="text-2xl font-semibold">Nenhum resultado encontrado</h2>
-              <p className="text-muted-foreground">
+            <Card className="p-8 text-center space-y-4 bg-white border-blue-100">
+              <Search className="w-12 h-12 mx-auto text-blue-500" />
+              <h2 className="text-2xl font-semibold text-blue-900">Nenhum resultado encontrado</h2>
+              <p className="text-blue-600">
                 Sua busca não retornou resultados. Tente outros termos.
               </p>
             </Card>
           ) : (
-            <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
+            <div className="bg-white rounded-lg p-6 shadow-sm border border-blue-100">
               <OrdersTable
                 orders={paginatedOrders}
                 sortConfig={sortConfig}
@@ -285,7 +285,7 @@ const Orders = () => {
                       <PaginationItem>
                         <PaginationPrevious
                           onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                          className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                          className={`${currentPage === 1 ? "pointer-events-none opacity-50" : ""} text-blue-600 hover:text-blue-700`}
                         />
                       </PaginationItem>
                       {Array.from({ length: totalPages }).map((_, i) => (
@@ -293,6 +293,7 @@ const Orders = () => {
                           <PaginationLink
                             onClick={() => setCurrentPage(i + 1)}
                             isActive={currentPage === i + 1}
+                            className={currentPage === i + 1 ? "bg-blue-500 text-white" : "text-blue-600 hover:bg-blue-50"}
                           >
                             {i + 1}
                           </PaginationLink>
@@ -301,7 +302,7 @@ const Orders = () => {
                       <PaginationItem>
                         <PaginationNext
                           onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                          className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                          className={`${currentPage === totalPages ? "pointer-events-none opacity-50" : ""} text-blue-600 hover:text-blue-700`}
                         />
                       </PaginationItem>
                     </PaginationContent>
