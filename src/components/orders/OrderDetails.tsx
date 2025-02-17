@@ -69,7 +69,10 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
                   </TableHeader>
                   <TableBody>
                     {item.sizes.map((size, index) => (
-                      <TableRow key={`${item.productId}-${size.size}-${index}`}>
+                      <TableRow 
+                        key={`${item.productId}-${size.size}-${index}`}
+                        className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                      >
                         <TableCell>{size.size}</TableCell>
                         <TableCell>{size.quantity}</TableCell>
                         <TableCell className="text-right">
