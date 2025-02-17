@@ -30,12 +30,16 @@ export const OrdersHeader = ({ userProfile, company, onLogout }: OrdersHeaderPro
                   <Button variant="ghost" size="icon" onClick={() => navigate('/admin')} className="text-gray-700 hover:text-gray-900">
                     <ArrowLeft className="h-5 w-5" />
                   </Button>
-                  <img 
-                    src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
-                    alt="COMAX Logo" 
-                    className="h-8 w-auto cursor-pointer" 
-                    onClick={() => navigate('/admin')} 
-                  />
+                  <div className="flex items-center gap-3">
+                    {company?.logo_url && (
+                      <img 
+                        src={company.logo_url} 
+                        alt={`${company.name} logo`} 
+                        className="h-8 w-auto"
+                      />
+                    )}
+                    <span className="text-gray-900 font-medium">{company?.name}</span>
+                  </div>
                 </div>
                 <h1 className="text-xl font-semibold text-gray-900">Pedidos</h1>
               </div>
@@ -75,24 +79,7 @@ export const OrdersHeader = ({ userProfile, company, onLogout }: OrdersHeaderPro
         </div>
       </div>
 
-      {company && (
-        <div className="bg-white/5 border-b border-gray-200">
-          <div className="container mx-auto">
-            <div className="max-w-6xl mx-auto px-4">
-              <div className="flex items-center gap-4 py-2">
-                {company.logo_url && (
-                  <img 
-                    src={company.logo_url} 
-                    alt={`Logo ${company.name}`} 
-                    className="w-8 h-8 object-contain rounded" 
-                  />
-                )}
-                <h2 className="text-sm font-medium text-gray-700">{company.name}</h2>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Removi a segunda barra com informações da empresa pois agora estão na barra principal */}
     </>
   );
 };
