@@ -50,8 +50,8 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
                   key={order._id} 
                   className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-primary/30 transition-colors"
                 >
-                  <div className="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:justify-between sm:items-start">
-                    <div className="w-full sm:w-[35%]">
+                  <div className="flex justify-between items-start">
+                    <div className="w-[35%]">
                       <p className="text-sm font-medium text-gray-500 truncate">
                         {formatDate(order.date)}
                       </p>
@@ -59,12 +59,12 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
                         {order.customerName}
                       </h3>
                     </div>
-                    <div className="w-full sm:min-w-[30%] sm:text-left">
+                    <div className="min-w-[30%] text-left">
                       <p className="text-sm text-gray-500">
                         {order.customerCity} / {order.customerState}
                       </p>
                     </div>
-                    <div className="w-full sm:text-right">
+                    <div className="text-right">
                       <p className="font-medium text-primary">
                         {formatCurrency(order.total)}
                       </p>
