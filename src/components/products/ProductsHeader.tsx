@@ -1,6 +1,6 @@
 
 import { ProductForm } from "./ProductForm";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { Product, ProductFormData } from "@/types/product";
 import { Dispatch, SetStateAction } from "react";
 
@@ -25,15 +25,22 @@ export const ProductsHeader = ({
 
   return (
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <DialogContent>
-        <ProductForm
-          initialData={selectedProduct || undefined}
-          onSubmit={(data) => onSubmit(data, !!selectedProduct)}
-          onComplete={() => {
-            setDialogOpen(false);
-            setSelectedProduct(null);
-          }}
-        />
+      <DialogContent className="w-[95vw] max-w-3xl max-h-[90vh] overflow-y-auto p-0 gap-0">
+        <DialogHeader className="px-6 py-4 border-b sticky top-0 bg-white z-10">
+          <DialogTitle className="text-xl font-semibold">
+            {selectedProduct ? "Editar Produto" : "Novo Produto"}
+          </DialogTitle>
+        </DialogHeader>
+        <div className="p-6">
+          <ProductForm
+            initialData={selectedProduct || undefined}
+            onSubmit={(data) => onSubmit(data, !!selectedProduct)}
+            onComplete={() => {
+              setDialogOpen(false);
+              setSelectedProduct(null);
+            }}
+          />
+        </div>
       </DialogContent>
     </Dialog>
   );
