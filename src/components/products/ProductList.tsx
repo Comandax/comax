@@ -1,3 +1,4 @@
+
 import type { Product, ProductFormData } from "@/types/product";
 import { ProductTable } from "./table/ProductTable";
 import { useState } from "react";
@@ -7,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { PackageX, Search } from "lucide-react";
+import { PackageX, Plus, Search } from "lucide-react";
 import { LoadingState } from "@/components/index/LoadingState";
 import {
   Pagination,
@@ -44,6 +45,7 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortField, setSortField] = useState<SortField>('reference');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -59,8 +61,12 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
         <PackageX className="w-12 h-12 mx-auto text-primary" />
         <h2 className="text-2xl font-semibold">Nenhum produto cadastrado</h2>
         <p className="text-muted-foreground">
-          Clique no botão "Novo Produto" acima para começar a cadastrar seus produtos.
+          Clique no botão "Novo Produto" abaixo para começar a cadastrar seus produtos.
         </p>
+        <Button onClick={() => setDialogOpen(true)} className="bg-primary hover:bg-primary/90">
+          <Plus className="w-4 h-4 mr-2" />
+          Novo Produto
+        </Button>
       </Card>
     );
   }
@@ -127,6 +133,11 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
           </div>
           
           <div className="flex items-center gap-4">
+            <Button onClick={() => setDialogOpen(true)} className="bg-primary hover:bg-primary/90">
+              <Plus className="w-4 h-4 mr-2" />
+              Cadastrar Produto
+            </Button>
+
             <div className="flex items-center gap-2">
               <Switch
                 checked={showOnlyActive}
