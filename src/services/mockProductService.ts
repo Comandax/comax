@@ -1,163 +1,96 @@
-import type { Product } from "@/types/product";
 
-const mockData = {
-  "products": [
-    {
-      "_id": "65c14c53ebe1ad654f459e81",
-      "reference": "3001",
-      "name": "Calcinha Infantil com botão",
-      "sizes": [
-        {"size": "P", "value": 5.76},
-        {"size": "M", "value": 5.76},
-        {"size": "G", "value": 5.76},
-        {"size": "GG", "value": 5.76}
-      ],
-      "quantities": [
-        {"value": 6}, {"value": 12}, {"value": 18}, {"value": 24}, 
-        {"value": 36}, {"value": 48}, {"value": 60}, {"value": 72}, 
-        {"value": 84}, {"value": 96}, {"value": 108}, {"value": 120}
-      ],
-      "disabled": false,
-      "companyId": "1"
-    },
-    {
-      "_id": "65c14c98ebe1ad654f459e82",
-      "reference": "3002",
-      "name": "Cueca Feminina Infantil (algodão)",
-      "sizes": [
-        {"size": "P", "value": 7.54},
-        {"size": "M", "value": 7.54},
-        {"size": "G", "value": 7.54},
-        {"size": "GG", "value": 7.54}
-      ],
-      "quantities": [
-        {"value": 6}, {"value": 12}, {"value": 18}, {"value": 24}, 
-        {"value": 36}, {"value": 48}, {"value": 60}, {"value": 72}, 
-        {"value": 84}, {"value": 96}, {"value": 108}, {"value": 120}
-      ],
-      "disabled": false
-    },
-    {
-      "_id": "65c14cceebe1ad654f459e84",
-      "reference": "3003",
-      "name": "Calcinha Infantil Acapulco (sainha)",
-      "sizes": [
-        {"size": "PP", "value": 12.5},
-        {"size": "P", "value": 12.5},
-        {"size": "M", "value": 12.5},
-        {"size": "G", "value": 12.5}
-      ],
-      "quantities": [
-        {"value": 6}, {"value": 12}, {"value": 18}, {"value": 24}, 
-        {"value": 36}, {"value": 48}, {"value": 60}, {"value": 72}, 
-        {"value": 84}, {"value": 96}, {"value": 108}, {"value": 120}
-      ],
-      "disabled": false
-    },
-    {
-      "_id": "65c14d05ebe1ad654f459e85",
-      "reference": "3004",
-      "name": "Calcinha Infantil Babadinho Perna",
-      "sizes": [
-        {"size": "PP", "value": 5.96},
-        {"size": "P", "value": 5.96},
-        {"size": "M", "value": 5.96},
-        {"size": "G", "value": 5.96},
-        {"size": "GG", "value": 5.96}
-      ],
-      "quantities": [
-        {"value": 6}, {"value": 12}, {"value": 18}, {"value": 24}, 
-        {"value": 36}, {"value": 48}, {"value": 60}, {"value": 72}, 
-        {"value": 84}, {"value": 96}, {"value": 108}, {"value": 120}
-      ],
-      "disabled": false
-    },
-    {
-      "_id": "65c14d42ebe1ad654f459e87",
-      "reference": "3005",
-      "name": "Calcinha Infantil Cós Personalizado",
-      "sizes": [
-        {"size": "PP", "value": 5.86},
-        {"size": "P", "value": 5.86},
-        {"size": "M", "value": 5.86},
-        {"size": "G", "value": 5.86},
-        {"size": "GG", "value": 5.86}
-      ],
-      "quantities": [
-        {"value": 6}, {"value": 12}, {"value": 18}, {"value": 24}, 
-        {"value": 36}, {"value": 48}, {"value": 60}, {"value": 72}, 
-        {"value": 84}, {"value": 96}, {"value": 108}, {"value": 120}
-      ],
-      "disabled": false
-    },
-    {
-      "_id": "65c14d59ebe1ad654f459e88",
-      "reference": "3006",
-      "name": "Calcinha Infantil Babadinho no Cós",
-      "sizes": [
-        {"size": "PP", "value": 5.76},
-        {"size": "P", "value": 5.76},
-        {"size": "M", "value": 5.76},
-        {"size": "G", "value": 5.76},
-        {"size": "GG", "value": 5.76}
-      ],
-      "quantities": [
-        {"value": 6}, {"value": 12}, {"value": 18}, {"value": 24}, 
-        {"value": 36}, {"value": 48}, {"value": 60}, {"value": 72}, 
-        {"value": 84}, {"value": 96}, {"value": 108}, {"value": 120}
-      ],
-      "disabled": false
-    },
-    {
-      "_id": "65c14d73ebe1ad654f459e89",
-      "reference": "3008",
-      "name": "Calcinha Infantil Babadinho nas Costas",
-      "sizes": [
-        {"size": "P", "value": 6.96},
-        {"size": "M", "value": 6.96},
-        {"size": "G", "value": 6.96}
-      ],
-      "quantities": [
-        {"value": 6}, {"value": 12}, {"value": 18}, {"value": 24}, 
-        {"value": 36}, {"value": 48}, {"value": 60}, {"value": 72}, 
-        {"value": 84}, {"value": 96}, {"value": 108}, {"value": 120}
-      ],
-      "disabled": false
-    },
-    {
-      "_id": "65c14db4ebe1ad654f459e8b",
-      "reference": "3011",
-      "name": "Calcinha Infantil Sophia",
-      "sizes": [
-        {"size": "P", "value": 7.1},
-        {"size": "M", "value": 7.1},
-        {"size": "G", "value": 7.1}
-      ],
-      "quantities": [
-        {"value": 6}, {"value": 12}, {"value": 18}, {"value": 24}, 
-        {"value": 36}, {"value": 48}, {"value": 60}, {"value": 72}, 
-        {"value": 84}, {"value": 96}, {"value": 120}
-      ],
-      "disabled": true
-    }
-  ]
+import type { Product, ProductFormData } from "@/types/product";
+
+const mockProducts: Product[] = [
+  {
+    _id: "1",
+    reference: "REF001",
+    name: "Produto 1",
+    sizes: [
+      { size: "P", value: 50 },
+      { size: "M", value: 55 },
+      { size: "G", value: 60 }
+    ],
+    quantities: [
+      { value: 5 },
+      { value: 10 },
+      { value: 15 }
+    ],
+    disabled: false,
+    companyId: "company1",
+    isNew: false
+  },
+  {
+    _id: "2",
+    reference: "REF002",
+    name: "Produto 2",
+    sizes: [
+      { size: "P", value: 45 },
+      { size: "M", value: 50 },
+      { size: "G", value: 55 }
+    ],
+    quantities: [
+      { value: 5 },
+      { value: 10 },
+      { value: 15 }
+    ],
+    disabled: false,
+    companyId: "company1",
+    isNew: true
+  }
+];
+
+export const fetchProducts = async (companyId: string): Promise<Product[]> => {
+  return mockProducts.filter(product => product.companyId === companyId);
 };
 
-export const fetchProducts = async (companyId: string = "1"): Promise<Product[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const products = mockData.products
-        .filter(product => !companyId || product.companyId === companyId)
-        .map(product => ({
-          _id: product._id,
-          reference: product.reference,
-          name: product.name,
-          sizes: product.sizes,
-          quantities: product.quantities,
-          disabled: product.disabled,
-          companyId: product.companyId
-        }));
-      resolve(products);
-    }, 500);
-  });
+export const createProduct = async (product: ProductFormData, companyId: string): Promise<Product> => {
+  const newProduct: Product = {
+    _id: Math.random().toString(36).substr(2, 9),
+    ...product,
+    disabled: false,
+    companyId,
+    isNew: product.isNew || false
+  };
+  
+  mockProducts.push(newProduct);
+  return newProduct;
+};
+
+export const updateProduct = async (productId: string, product: ProductFormData): Promise<Product> => {
+  const index = mockProducts.findIndex(p => p._id === productId);
+  if (index === -1) {
+    throw new Error('Product not found');
+  }
+
+  const updatedProduct: Product = {
+    ...mockProducts[index],
+    ...product,
+    _id: productId,
+    companyId: mockProducts[index].companyId,
+    disabled: mockProducts[index].disabled,
+    isNew: product.isNew ?? mockProducts[index].isNew
+  };
+
+  mockProducts[index] = updatedProduct;
+  return updatedProduct;
+};
+
+export const toggleProductStatus = async (productId: string, disabled: boolean): Promise<Product> => {
+  const product = mockProducts.find(p => p._id === productId);
+  if (!product) {
+    throw new Error('Product not found');
+  }
+
+  product.disabled = disabled;
+  return product;
+};
+
+export const deleteProduct = async (productId: string): Promise<void> => {
+  const index = mockProducts.findIndex(p => p._id === productId);
+  if (index === -1) {
+    throw new Error('Product not found');
+  }
+
+  mockProducts.splice(index, 1);
 };
