@@ -43,7 +43,7 @@ export function ProductQuantities({ form, quantityArray }: ProductQuantitiesProp
                       type="number"
                       min="0"
                       placeholder="Quantidade"
-                      className="w-full min-w-[120px]"
+                      className="w-full min-w-[80px]"
                       onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
                     />
                   </FormControl>
