@@ -16,6 +16,7 @@ interface ProductListProps {
   onSubmit?: (data: ProductFormData, isEditing: boolean) => Promise<void>;
   onToggleStatus?: (productId: string, disabled: boolean) => Promise<void>;
   isLoading?: boolean;
+  onOpenNewProductModal: () => void;
 }
 
 type SortField = 'reference' | 'name';
@@ -26,7 +27,8 @@ export function ProductList({
   onEdit, 
   onDelete, 
   onSubmit, 
-  onToggleStatus, 
+  onToggleStatus,
+  onOpenNewProductModal,
   isLoading = false 
 }: ProductListProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -36,7 +38,6 @@ export function ProductList({
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortField, setSortField] = useState<SortField>('reference');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
-  const [dialogOpen, setDialogOpen] = useState(false);
 
   if (isLoading) {
     return (
@@ -47,7 +48,7 @@ export function ProductList({
   }
 
   if (!products.length) {
-    return <EmptyProductList onNewProduct={() => setDialogOpen(true)} />;
+    return <EmptyProductList onNewProduct={onOpenNewProductModal} />;
   }
 
   const handleProductClick = (product: Product) => {
@@ -110,7 +111,7 @@ export function ProductList({
             setItemsPerPage(value);
             setCurrentPage(1);
           }}
-          onNewProduct={() => setDialogOpen(true)}
+          onOpenNewProductModal={onOpenNewProductModal}
         />
 
         <div className="rounded-lg overflow-hidden border">

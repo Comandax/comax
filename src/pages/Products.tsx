@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useParams } from "react-router-dom";
@@ -118,6 +117,11 @@ const Products = () => {
     }
   };
 
+  const handleOpenNewProductModal = () => {
+    setSelectedProduct(null);
+    setDialogOpen(true);
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -174,6 +178,7 @@ const Products = () => {
                 onDelete={isPublicView ? undefined : handleDelete}
                 onSubmit={isPublicView ? undefined : (data, isEditing) => onSubmit(data, isEditing)}
                 onToggleStatus={isPublicView ? undefined : handleToggleStatus}
+                onOpenNewProductModal={handleOpenNewProductModal}
               />
             </div>
           </div>

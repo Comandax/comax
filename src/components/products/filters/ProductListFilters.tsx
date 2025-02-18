@@ -19,7 +19,7 @@ interface ProductListFiltersProps {
   onShowOnlyActiveChange: (value: boolean) => void;
   itemsPerPage: number;
   onItemsPerPageChange: (value: number) => void;
-  onNewProduct: () => void;
+  onOpenNewProductModal: () => void;
 }
 
 export function ProductListFilters({
@@ -29,7 +29,7 @@ export function ProductListFilters({
   onShowOnlyActiveChange,
   itemsPerPage,
   onItemsPerPageChange,
-  onNewProduct,
+  onOpenNewProductModal,
 }: ProductListFiltersProps) {
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -44,7 +44,7 @@ export function ProductListFilters({
       </div>
       
       <div className="flex items-center gap-4">
-        <Button onClick={onNewProduct} className="bg-primary hover:bg-primary/90">
+        <Button onClick={onOpenNewProductModal} className="bg-primary hover:bg-primary/90">
           <Plus className="w-4 h-4 mr-2" />
           Cadastrar Produto
         </Button>
