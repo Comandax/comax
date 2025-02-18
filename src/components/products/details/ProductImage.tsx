@@ -12,13 +12,13 @@ export function ProductImage({ image, name }: ProductImageProps) {
       <img
         src={image}
         alt={name}
-        className="w-48 h-48 object-cover rounded-lg border"
+        className="w-full sm:w-48 h-48 object-cover rounded-lg border"
       />
     );
   }
 
   return (
-    <div className="w-48 h-48 bg-gray-100 rounded-lg border flex items-center justify-center text-gray-400">
+    <div className="w-full sm:w-48 h-48 bg-gray-100 rounded-lg border flex items-center justify-center text-gray-400">
       <Package className="w-16 h-16" />
     </div>
   );
