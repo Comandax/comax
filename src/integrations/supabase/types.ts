@@ -113,6 +113,7 @@ export type Database = {
           disabled: boolean
           id: string
           image_url: string | null
+          is_new: boolean
           name: string
           quantities: number[]
           reference: string
@@ -125,6 +126,7 @@ export type Database = {
           disabled?: boolean
           id?: string
           image_url?: string | null
+          is_new?: boolean
           name: string
           quantities?: number[]
           reference: string
@@ -137,6 +139,7 @@ export type Database = {
           disabled?: boolean
           id?: string
           image_url?: string | null
+          is_new?: boolean
           name?: string
           quantities?: number[]
           reference?: string

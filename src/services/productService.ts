@@ -23,7 +23,8 @@ export const fetchProducts = async (companyId: string): Promise<Product[]> => {
       ? product.quantities.map(q => typeof q === 'number' ? { value: q } : q)
       : [],
     disabled: product.disabled,
-    companyId: product.company_id
+    companyId: product.company_id,
+    isNew: product.is_new
   }));
 };
 
@@ -38,7 +39,8 @@ export const createProduct = async (product: ProductFormData, companyId: string)
       image_url: product.image,
       sizes: product.sizes,
       quantities: product.quantities.map(q => q.value),
-      company_id: companyId
+      company_id: companyId,
+      is_new: product.isNew || false
     })
     .select()
     .single();
@@ -56,7 +58,8 @@ export const createProduct = async (product: ProductFormData, companyId: string)
     sizes: (data.sizes as Array<{size: string; value: number}>),
     quantities: data.quantities.map(q => typeof q === 'number' ? { value: q } : q),
     disabled: data.disabled,
-    companyId: data.company_id
+    companyId: data.company_id,
+    isNew: data.is_new
   };
 };
 
@@ -75,6 +78,7 @@ export const updateProduct = async (productId: string, product: ProductFormData)
       image_url: product.image,
       sizes: product.sizes,
       quantities: product.quantities.map(q => q.value),
+      is_new: product.isNew
     })
     .eq('id', productId)
     .select()
@@ -95,7 +99,8 @@ export const updateProduct = async (productId: string, product: ProductFormData)
     sizes: (data.sizes as Array<{size: string; value: number}>),
     quantities: data.quantities.map(q => typeof q === 'number' ? { value: q } : q),
     disabled: data.disabled,
-    companyId: data.company_id
+    companyId: data.company_id,
+    isNew: data.is_new
   };
 };
 
@@ -120,7 +125,8 @@ export const toggleProductStatus = async (productId: string, disabled: boolean):
     sizes: (data.sizes as Array<{size: string; value: number}>),
     quantities: data.quantities.map(q => typeof q === 'number' ? { value: q } : q),
     disabled: data.disabled,
-    companyId: data.company_id
+    companyId: data.company_id,
+    isNew: data.is_new
   };
 };
 
