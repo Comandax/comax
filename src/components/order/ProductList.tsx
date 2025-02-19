@@ -76,31 +76,33 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
       <h2 className="text-2xl font-semibold text-white">Itens para pedido</h2>
 
       {newProducts.length > 0 && (
-        <div className="space-y-4">
-          <div className="flex items-center gap-2 bg-white/90 rounded-lg p-4">
+        <div className="space-y-4 bg-white/95 rounded-lg p-6 border border-primary/30">
+          <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-primary" />
             <h3 className="text-lg font-medium text-primary">Lançamentos</h3>
           </div>
-          {newProducts.map((product) => (
-            <ProductSelectionCard
-              key={`new-${product._id}`}
-              product={{
-                id: product._id,
-                name: product.name,
-                image: product.image || '',
-                ref: product.reference,
-                sizes: product.sizes.map(size => ({
-                  label: size.size,
-                  price: size.value,
-                  quantities: [0, ...product.quantities.map(q => q.value)]
-                }))
-              }}
-              onQuantitySelect={(size, quantity, price) => 
-                onQuantitySelect(product._id, size, quantity, price)
-              }
-              resetItem={resetItem && resetItem.productId === product._id ? resetItem : undefined}
-            />
-          ))}
+          <div className="space-y-4">
+            {newProducts.map((product) => (
+              <ProductSelectionCard
+                key={`new-${product._id}`}
+                product={{
+                  id: product._id,
+                  name: product.name,
+                  image: product.image || '',
+                  ref: product.reference,
+                  sizes: product.sizes.map(size => ({
+                    label: size.size,
+                    price: size.value,
+                    quantities: [0, ...product.quantities.map(q => q.value)]
+                  }))
+                }}
+                onQuantitySelect={(size, quantity, price) => 
+                  onQuantitySelect(product._id, size, quantity, price)
+                }
+                resetItem={resetItem && resetItem.productId === product._id ? resetItem : undefined}
+              />
+            ))}
+          </div>
         </div>
       )}
 
