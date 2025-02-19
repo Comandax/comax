@@ -23,7 +23,7 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <h2 className="text-2xl font-semibold text-white">Itens para pedido</h2>
+        <h2 className="text-2xl font-semibold text-onSurfaceVariant">Itens para pedido</h2>
         <div className="bg-white/90 rounded-lg p-8">
           <LoadingState />
         </div>
@@ -40,7 +40,7 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
   if (!products.length) {
     return (
       <div className="space-y-6">
-        <h2 className="text-2xl font-semibold text-white">Itens para pedido</h2>
+        <h2 className="text-2xl font-semibold text-onSurfaceVariant">Itens para pedido</h2>
         <div className="bg-white/90 rounded-lg p-8 text-center">
           <PackageX className="w-16 h-16 mx-auto text-gray-400 mb-4" />
           <h3 className="text-xl font-medium text-gray-900 mb-2">
@@ -57,7 +57,7 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
   if (!activeProducts.length) {
     return (
       <div className="space-y-6">
-        <h2 className="text-2xl font-semibold text-white">Itens para pedido</h2>
+        <h2 className="text-2xl font-semibold text-onSurfaceVariant">Itens para pedido</h2>
         <div className="bg-white/90 rounded-lg p-8 text-center">
           <PackageX className="w-16 h-16 mx-auto text-gray-400 mb-4" />
           <h3 className="text-xl font-medium text-gray-900 mb-2">
@@ -73,7 +73,7 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-semibold text-white">Itens para pedido</h2>
+      <h2 className="text-2xl font-semibold text-onSurfaceVariant">Itens para pedido</h2>
 
       {newProducts.length > 0 && (
         <div className="space-y-4 rounded-lg p-6 border" style={{ backgroundColor: '#DEE0FF', borderColor: '#4C59F2' }}>
