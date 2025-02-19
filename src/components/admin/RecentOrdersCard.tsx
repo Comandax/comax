@@ -48,7 +48,7 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
               {orders.map((order) => (
                 <div 
                   key={order._id} 
-                  className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-primary/30 transition-colors"
+                  className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white hover:border-primary/30 transition-colors"
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-grow max-w-[60%]">
