@@ -44,7 +44,7 @@ export function ProductListFilters({
       </div>
       
       <div className="flex items-center gap-4">
-        <Button onClick={onOpenNewProductModal} className="bg-primary text-primary-foreground hover:bg-primary/90">
+        <Button onClick={onOpenNewProductModal} className="bg-primary text-onPrimary hover:bg-primary/90">
           <Plus className="w-4 h-4 mr-2" />
           Cadastrar Produto
         </Button>
