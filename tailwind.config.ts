@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -69,6 +70,16 @@ export default {
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         foreground: "hsl(var(--foreground))",
+
+        // Adicionando variantes extras para garantir consistência
+        popover: "#FEFBFF",
+        "popover-foreground": "#1B1B1E",
+        card: "#FEFBFF",
+        "card-foreground": "#1B1B1E",
+        muted: "#FEFBFF",
+        "muted-foreground": "#1B1B1E",
+        accent: "#FEFBFF",
+        "accent-foreground": "#1B1B1E",
       },
       borderRadius: {
         lg: "var(--radius)",
