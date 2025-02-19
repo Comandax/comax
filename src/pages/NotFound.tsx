@@ -2,7 +2,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { Settings2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 const NotFound = () => {
   const location = useLocation();
@@ -29,12 +28,6 @@ const NotFound = () => {
         <div className="text-center">
           <h1 className="text-foreground text-3xl font-bold mb-4">Página não encontrada</h1>
           <p className="text-foreground/80 text-lg mb-8">Por favor, verifique se o endereço está correto.</p>
-          <Button 
-            onClick={() => window.location.reload()}
-            className="bg-primary text-onPrimary hover:bg-primary/90"
-          >
-            Tentar novamente
-          </Button>
         </div>
       </div>
     </div>
