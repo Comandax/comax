@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -20,39 +19,56 @@ export default {
     },
     extend: {
       colors: {
+        primary: "#4C59F2",
+        onPrimary: "#FFFFFF",
+        primaryContainer: "#DEE0FF",
+        onPrimaryContainer: "#000563",
+        primaryFixed: "#DEE0FF",
+        onPrimaryFixed: "#000563",
+        primaryFixedVariant: "#BEC2FF",
+        onPrimaryFixedVariant: "#000563",
+
+        secondary: "#545F70",
+        onSecondary: "#FFFFFF",
+        secondaryContainer: "#D8E3F7",
+        onSecondaryContainer: "#131B24",
+        secondaryFixed: "#D8E3F7",
+        onSecondaryFixed: "#131B24",
+        secondaryFixedVariant: "#B9C7E8",
+        onSecondaryFixedVariant: "#131B24",
+
+        tertiary: "#715B71",
+        onTertiary: "#FFFFFF",
+        tertiaryContainer: "#FBD7FB",
+        onTertiaryContainer: "#281527",
+        tertiaryFixed: "#FBD7FB",
+        onTertiaryFixed: "#281527",
+        tertiaryFixedVariant: "#F2BDEE",
+        onTertiaryFixedVariant: "#281527",
+
+        error: "#BA1A1A",
+        onError: "#FFFFFF",
+        errorContainer: "#FFDAD6",
+        onErrorContainer: "#410002",
+
+        background: "#FEFBFF",
+        surface: "#FEFBFF",
+        surfaceDim: "#F6F2FA",
+        surfaceBright: "#FEFBFF",
+        inverseSurface: "#313033",
+        inverseOnSurface: "#F4EFF4",
+        onSurface: "#1B1B1E",
+        onSurfaceVariant: "#46464F",
+
+        outline: "#777680",
+        outlineVariant: "#C9C5D0",
+        scrim: "#000000",
+        shadow: "#000000",
+
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "#576EF2", // New primary blue
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "#6379F2", // New secondary blue
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "#D5DAF2", // New accent color
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
       },
       borderRadius: {
         lg: "var(--radius)",
