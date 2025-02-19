@@ -79,7 +79,7 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
         <div className="space-y-4 rounded-lg p-6 border" style={{ backgroundColor: '#DEE0FF', borderColor: '#4C59F2' }}>
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-primary" />
-            <h3 className="text-lg font-medium text-primary">Lançamentos</h3>
+            <h3 className="text-lg font-medium text-primary">Lançamento</h3>
           </div>
           <div className="space-y-4">
             {newProducts.map((product) => (
