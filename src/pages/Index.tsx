@@ -84,7 +84,7 @@ const Index = () => {
             </span>
           </h1>
 
-          <Card className="border-border/30 bg-outlineVariant shadow-lg backdrop-blur-sm p-8">
+          <Card className="border-border/30 bg-surfaceContainerLowest shadow-lg backdrop-blur-sm p-8">
             <OrderForm 
               companyId={company.id} 
               products={products} 
