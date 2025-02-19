@@ -78,10 +78,8 @@ const Index = () => {
       
       <div className="container mx-auto px-4 py-2 flex-1">
         <div className="max-w-6xl mx-auto space-y-6">
-          <h1 className="text-4xl font-bold text-center">
-            <span className="bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-              Simulações e Pedidos
-            </span>
+          <h1 className="text-4xl font-bold text-center text-onSurfaceVariant">
+            Simulações e Pedidos
           </h1>
 
           <Card className="border-border/30 bg-surfaceContainerLowest shadow-lg backdrop-blur-sm p-8">
