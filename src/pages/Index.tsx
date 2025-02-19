@@ -73,7 +73,7 @@ const Index = () => {
   if (error || !company) return <NotFoundState error={error} />;
 
   return (
-    <div className="flex flex-col min-h-screen h-full bg-gradient-to-br from-background to-background/80 dark:from-background dark:to-background/90">
+    <div className="flex flex-col min-h-screen h-full bg-background">
       <CompanyInfo company={company} />
       
       <div className="container mx-auto px-4 py-2 flex-1">
