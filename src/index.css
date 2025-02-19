@@ -79,7 +79,7 @@
   }
 
   body {
-    @apply bg-[#1A1F2C] text-foreground;
+    @apply bg-background text-onSurface;
   }
 
   #root {

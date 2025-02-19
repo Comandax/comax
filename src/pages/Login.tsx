@@ -69,7 +69,7 @@ const Login = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-background shadow-md">
+      <div className="bg-surfaceContainer shadow-md">
         <div className="container mx-auto">
           <div className="max-w-md mx-auto px-4">
             <div className="py-4 flex items-center gap-4">
@@ -84,9 +84,9 @@ const Login = () => {
       </div>
 
       <div className="container mx-auto py-8">
-        <Card className="w-full max-w-md mx-auto bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
+        <Card className="w-full max-w-md mx-auto bg-surface shadow-lg border-2 border-surfaceVariant">
           <CardHeader>
-            <h2 className="text-2xl font-bold text-center text-primary">
+            <h2 className="text-2xl font-bold text-center text-onSurface">
               Acesse sua conta
             </h2>
           </CardHeader>
@@ -100,7 +100,7 @@ const Login = () => {
                     placeholder="E-mail"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-white/80 border-primary/30 focus:border-primary"
+                    className="w-full bg-surfaceContainerHighest border-surfaceVariant focus:border-primary"
                   />
                 </div>
                 <div>
@@ -110,14 +110,14 @@ const Login = () => {
                     placeholder="Senha"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-white/80 border-primary/30 focus:border-primary"
+                    className="w-full bg-surfaceContainerHighest border-surfaceVariant focus:border-primary"
                   />
                 </div>
               </div>
 
               <Button
                 type="submit"
-                className="w-full bg-primary hover:bg-primary/90 text-white"
+                className="w-full bg-primary text-onPrimary hover:bg-primary/90"
                 disabled={isLoading}
               >
                 {isLoading ? "Entrando..." : "Entrar"}

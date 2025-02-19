@@ -64,8 +64,8 @@ export default function UserEdit() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A1F2C]">
-      <div className="bg-gray-900/50 shadow-md">
+    <div className="min-h-screen bg-background">
+      <div className="bg-surfaceContainer shadow-md">
         <div className="container mx-auto">
           <div className="max-w-2xl mx-auto px-4">
             <div className="flex items-center gap-2 py-1.5">
@@ -73,7 +73,7 @@ export default function UserEdit() {
                 variant="ghost" 
                 size="icon"
                 onClick={handleBackClick}
-                className="text-white hover:text-white/80"
+                className="text-onSurface hover:text-onSurface/80"
               >
                 <ArrowLeft className="h-5 w-5" />
               </Button>
@@ -89,8 +89,8 @@ export default function UserEdit() {
       </div>
 
       <div className="container mx-auto py-8">
-        <Card className="w-full max-w-2xl mx-auto shadow-lg bg-white/95 p-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-6">Editar Usuário</h1>
+        <Card className="w-full max-w-2xl mx-auto shadow-lg bg-surface p-6">
+          <h1 className="text-2xl font-bold text-onSurface mb-6">Editar Usuário</h1>
 
           <UserForm
             initialData={initialData}

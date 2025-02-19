@@ -63,8 +63,8 @@ export default function UserCreate() {
   };
 
   return (
-    <div className="min-h-screen bg-[#1A1F2C]">
-      <div className="bg-gray-900/50 shadow-md">
+    <div className="min-h-screen bg-background">
+      <div className="bg-surfaceContainer shadow-md">
         <div className="container mx-auto">
           <div className="max-w-2xl mx-auto px-4">
             <div className="py-1.5">
@@ -79,8 +79,8 @@ export default function UserCreate() {
       </div>
 
       <div className="container mx-auto py-8">
-        <Card className="w-full max-w-2xl mx-auto shadow-lg bg-white/95 p-6">
-          <h1 className="text-2xl font-bold mb-6 text-gray-900">Criar Conta</h1>
+        <Card className="w-full max-w-2xl mx-auto shadow-lg bg-surface p-6">
+          <h1 className="text-2xl font-bold mb-6 text-onSurface">Criar Conta</h1>
           
           <Alert className="mb-6" variant="default">
             <AlertCircle className="h-4 w-4" />
