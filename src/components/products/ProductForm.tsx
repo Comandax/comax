@@ -1,3 +1,4 @@
+
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -93,7 +94,6 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
   };
 
   const handleFormSubmit = async (data: ProductFormData) => {
-    // Passa o flag isEditing para o onSubmit saber se deve atualizar ou criar
     await onSubmit(data, isEditing);
     if (onComplete) {
       onComplete();
@@ -119,7 +119,7 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
           quantityArray={quantityArray} 
         />
 
-        <Button type="submit" disabled={isUploading}>
+        <Button type="submit" disabled={isUploading} className="bg-primary text-onPrimary hover:bg-primary/90">
           {isUploading ? 'Uploading...' : isEditing ? 'Atualizar' : 'Salvar'}
         </Button>
       </form>

@@ -23,6 +23,7 @@ export function ProductQuantities({ form, quantityArray }: ProductQuantitiesProp
           variant="default"
           size="sm"
           onClick={() => append({ value: 0 })}
+          className="bg-primary text-onPrimary hover:bg-primary/90"
         >
           <Plus className="mr-2 h-4 w-4" />
           Adicionar Quantidade
