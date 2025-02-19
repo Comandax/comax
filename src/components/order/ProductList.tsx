@@ -76,7 +76,7 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
       <h2 className="text-2xl font-semibold text-white">Itens para pedido</h2>
 
       {newProducts.length > 0 && (
-        <div className="space-y-4 bg-white/95 rounded-lg p-6 border border-primary/30">
+        <div className="space-y-4 rounded-lg p-6 border" style={{ backgroundColor: '#DEE0FF', borderColor: '#4C59F2' }}>
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-primary" />
             <h3 className="text-lg font-medium text-primary">Lançamentos</h3>
