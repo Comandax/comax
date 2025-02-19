@@ -20,66 +20,85 @@ export default {
     },
     extend: {
       colors: {
-        primary: "#4C59F2",
+        // Cores principais
+        primary: "#555A92",
         onPrimary: "#FFFFFF",
-        primaryContainer: "#DEE0FF",
-        onPrimaryContainer: "#000563",
-        primaryFixed: "#DEE0FF",
-        onPrimaryFixed: "#000563",
-        primaryFixedVariant: "#BEC2FF",
-        onPrimaryFixedVariant: "#000563",
+        primaryContainer: "#E0E0FF",
+        onPrimaryContainer: "#3D4279",
 
-        secondary: "#545F70",
+        secondary: "#5C5D72",
         onSecondary: "#FFFFFF",
-        secondaryContainer: "#D8E3F7",
-        onSecondaryContainer: "#131B24",
-        secondaryFixed: "#D8E3F7",
-        onSecondaryFixed: "#131B24",
-        secondaryFixedVariant: "#B9C7E8",
-        onSecondaryFixedVariant: "#131B24",
+        secondaryContainer: "#E1E0F9",
+        onSecondaryContainer: "#444559",
 
-        tertiary: "#715B71",
+        tertiary: "#78536B",
         onTertiary: "#FFFFFF",
-        tertiaryContainer: "#FBD7FB",
-        onTertiaryContainer: "#281527",
-        tertiaryFixed: "#FBD7FB",
-        onTertiaryFixed: "#281527",
-        tertiaryFixedVariant: "#F2BDEE",
-        onTertiaryFixedVariant: "#281527",
+        tertiaryContainer: "#FFD8EE",
+        onTertiaryContainer: "#5E3C53",
 
         error: "#BA1A1A",
         onError: "#FFFFFF",
         errorContainer: "#FFDAD6",
-        onErrorContainer: "#410002",
+        onErrorContainer: "#93000A",
 
-        background: "#FEFBFF",
-        surface: "#FEFBFF",
-        surfaceDim: "#F6F2FA",
-        surfaceBright: "#FEFBFF",
-        inverseSurface: "#313033",
-        inverseOnSurface: "#F4EFF4",
-        onSurface: "#1B1B1E",
+        // Superfícies e fundos
+        background: "#FBF8FF",
+        onBackground: "#1B1B21",
+        surface: "#FBF8FF",
+        onSurface: "#1B1B21",
+        surfaceVariant: "#E3E1EC",
         onSurfaceVariant: "#46464F",
-
+        
+        // Outlines e sombras
         outline: "#777680",
-        outlineVariant: "#C9C5D0",
-        scrim: "#000000",
+        outlineVariant: "#C7C5D0",
         shadow: "#000000",
+        scrim: "#000000",
 
+        // Cores inversas
+        inverseSurface: "#303036",
+        inverseOnSurface: "#F2EFF7",
+        inversePrimary: "#BEC2FF",
+
+        // Tokens fixed do MD3
+        primaryFixed: "#E0E0FF",
+        onPrimaryFixed: "#10144B",
+        primaryFixedDim: "#BEC2FF",
+        onPrimaryFixedVariant: "#3D4279",
+
+        secondaryFixed: "#E1E0F9",
+        onSecondaryFixed: "#191A2C",
+        secondaryFixedDim: "#C5C4DD",
+        onSecondaryFixedVariant: "#444559",
+
+        tertiaryFixed: "#FFD8EE",
+        onTertiaryFixed: "#2E1126",
+        tertiaryFixedDim: "#E7B9D5",
+        onTertiaryFixedVariant: "#5E3C53",
+
+        // Superfícies adicionais
+        surfaceDim: "#DBD9E0",
+        surfaceBright: "#FBF8FF",
+        surfaceContainerLowest: "#FFFFFF",
+        surfaceContainerLow: "#F5F2FA",
+        surfaceContainer: "#F0ECF4",
+        surfaceContainerHigh: "#EAE7EF",
+        surfaceContainerHighest: "#E4E1E9",
+
+        // Variantes extras para garantir consistência com shadcn/ui
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         foreground: "hsl(var(--foreground))",
 
-        // Adicionando variantes extras para garantir consistência
-        popover: "#FEFBFF",
-        "popover-foreground": "#1B1B1E",
-        card: "#FEFBFF",
-        "card-foreground": "#1B1B1E",
-        muted: "#FEFBFF",
-        "muted-foreground": "#1B1B1E",
-        accent: "#FEFBFF",
-        "accent-foreground": "#1B1B1E",
+        popover: "#FBF8FF",
+        "popover-foreground": "#1B1B21",
+        card: "#FBF8FF",
+        "card-foreground": "#1B1B21",
+        muted: "#FBF8FF",
+        "muted-foreground": "#1B1B21",
+        accent: "#FBF8FF",
+        "accent-foreground": "#1B1B21",
       },
       borderRadius: {
         lg: "var(--radius)",
