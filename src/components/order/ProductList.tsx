@@ -3,7 +3,7 @@ import type { Product } from "@/types/product";
 import { ProductSelectionCard } from "@/components/order/ProductSelectionCard";
 import { supabase } from "@/integrations/supabase/client";
 import { LoadingState } from "@/components/index/LoadingState";
-import { PackageX } from "lucide-react";
+import { PackageX, Sparkles } from "lucide-react";
 
 interface ProductListProps {
   products: Product[];
@@ -34,6 +34,8 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
   const activeProducts = products
     .filter(product => !product.disabled)
     .sort((a, b) => a.reference.localeCompare(b.reference));
+
+  const newProducts = activeProducts.filter(product => product.isNew);
 
   if (!products.length) {
     return (
@@ -72,27 +74,60 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-semibold text-white">Itens para pedido</h2>
-      {activeProducts.map((product) => (
-        <ProductSelectionCard
-          key={product._id}
-          product={{
-            id: product._id,
-            name: product.name,
-            image: product.image || '',
-            ref: product.reference,
-            sizes: product.sizes.map(size => ({
-              label: size.size,
-              price: size.value,
-              quantities: [0, ...product.quantities.map(q => q.value)]
-            }))
-          }}
-          onQuantitySelect={(size, quantity, price) => 
-            onQuantitySelect(product._id, size, quantity, price)
-          }
-          resetItem={resetItem && resetItem.productId === product._id ? resetItem : undefined}
-        />
-      ))}
+
+      {newProducts.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 bg-white/90 rounded-lg p-4">
+            <Sparkles className="w-5 h-5 text-primary" />
+            <h3 className="text-lg font-medium text-primary">Lançamentos</h3>
+          </div>
+          {newProducts.map((product) => (
+            <ProductSelectionCard
+              key={`new-${product._id}`}
+              product={{
+                id: product._id,
+                name: product.name,
+                image: product.image || '',
+                ref: product.reference,
+                sizes: product.sizes.map(size => ({
+                  label: size.size,
+                  price: size.value,
+                  quantities: [0, ...product.quantities.map(q => q.value)]
+                }))
+              }}
+              onQuantitySelect={(size, quantity, price) => 
+                onQuantitySelect(product._id, size, quantity, price)
+              }
+              resetItem={resetItem && resetItem.productId === product._id ? resetItem : undefined}
+            />
+          ))}
+        </div>
+      )}
+
+      <div className="space-y-4">
+        {activeProducts
+          .filter(product => !product.isNew)
+          .map((product) => (
+            <ProductSelectionCard
+              key={product._id}
+              product={{
+                id: product._id,
+                name: product.name,
+                image: product.image || '',
+                ref: product.reference,
+                sizes: product.sizes.map(size => ({
+                  label: size.size,
+                  price: size.value,
+                  quantities: [0, ...product.quantities.map(q => q.value)]
+                }))
+              }}
+              onQuantitySelect={(size, quantity, price) => 
+                onQuantitySelect(product._id, size, quantity, price)
+              }
+              resetItem={resetItem && resetItem.productId === product._id ? resetItem : undefined}
+            />
+          ))}
+      </div>
     </div>
   );
 };
-
