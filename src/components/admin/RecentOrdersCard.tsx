@@ -51,7 +51,7 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
                   className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-primary/30 transition-colors"
                 >
                   <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-grow max-w-[40%]">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-grow max-w-[60%]">
                       <div className="min-w-[120px] shrink-0">
                         <p className="text-sm font-medium text-gray-500">
                           {formatDate(order.date)}
