@@ -30,31 +30,38 @@ const Index = () => {
     }
 
     const fetchCompany = async () => {
-      console.log('📡 Fazendo requisição ao Supabase para shortName:', shortName);
-      
-      const { data, error } = await supabase
-        .from('companies')
-        .select('*')
-        .eq('short_name', shortName)
-        .maybeSingle();
+      try {
+        console.log('📡 Fazendo requisição ao Supabase para shortName:', shortName);
+        
+        const { data, error } = await supabase
+          .from('companies')
+          .select('*')
+          .eq('short_name', shortName)
+          .maybeSingle();
 
-      console.log('📦 Resposta do Supabase:', { data, error });
+        console.log('📦 Resposta do Supabase:', { data, error });
 
-      if (error) {
+        if (error) {
+          throw error;
+        }
+
+        if (!data) {
+          console.log('⚠️ Nenhuma empresa encontrada para shortName:', shortName);
+          setError("Empresa não encontrada. Por favor, verifique se o endereço está correto.");
+        } else {
+          console.log('✅ Empresa encontrada:', data);
+          setCompany(data);
+        }
+      } catch (error) {
         console.error('❌ Erro ao buscar empresa:', error);
         setError("Erro ao carregar informações da empresa.");
         toast({
           title: "Erro ao carregar informações da empresa",
           variant: "destructive",
         });
-      } else if (!data) {
-        console.log('⚠️ Nenhuma empresa encontrada para shortName:', shortName);
-        setError("Empresa não encontrada. Por favor, verifique se o endereço está correto.");
-      } else {
-        console.log('✅ Empresa encontrada:', data);
-        setCompany(data);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     fetchCompany();
@@ -73,27 +80,25 @@ const Index = () => {
   if (error || !company) return <NotFoundState error={error} />;
 
   return (
-    <>
-      <div className="flex flex-col min-h-screen h-full bg-background">
-        <CompanyInfo company={company} />
-        
-        <div className="container mx-auto px-4 py-2 flex-1">
-          <div className="max-w-6xl mx-auto space-y-6">
-            <h1 className="text-4xl font-bold text-center text-onSurfaceVariant">
-              Simulações e Pedidos
-            </h1>
+    <div className="flex flex-col min-h-screen h-full bg-background">
+      <CompanyInfo company={company} />
+      
+      <div className="container mx-auto px-4 py-2 flex-1">
+        <div className="max-w-6xl mx-auto space-y-6">
+          <h1 className="text-4xl font-bold text-center text-onSurfaceVariant">
+            Simulações e Pedidos
+          </h1>
 
-            <Card className="border-border/30 bg-surfaceContainerLowest shadow-lg backdrop-blur-sm p-8">
-              <OrderForm 
-                companyId={company.id} 
-                products={products} 
-                isLoading={isLoadingProducts} 
-              />
-            </Card>
-          </div>
+          <Card className="border-border/30 bg-surfaceContainerLowest shadow-lg backdrop-blur-sm p-8">
+            <OrderForm 
+              companyId={company.id} 
+              products={products} 
+              isLoading={isLoadingProducts} 
+            />
+          </Card>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
