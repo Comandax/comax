@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useParams } from "react-router-dom";
@@ -124,7 +125,7 @@ const Products = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="min-h-screen bg-surface-container-lowest">
         <div className="container mx-auto py-10">
           <LoadingState />
         </div>
@@ -138,7 +139,7 @@ const Products = () => {
 
   if (!effectiveCompany) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-surface-container-lowest flex items-center justify-center p-4">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 text-center">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
             Empresa não encontrada
@@ -152,7 +153,7 @@ const Products = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-surface-container-lowest">
       <ProductsLayout 
         userName={userName} 
         userInitials={userInitials} 
