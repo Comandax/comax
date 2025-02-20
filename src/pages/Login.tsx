@@ -71,14 +71,12 @@ const Login = () => {
     <div className="min-h-screen bg-background">
       <div className="bg-surfaceContainer shadow-md">
         <div className="container mx-auto">
-          <div className="max-w-md mx-auto px-4">
-            <div className="py-4 flex items-center gap-4">
-              <img 
-                src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
-                alt="COMAX Logo" 
-                className="h-12 w-auto"
-              />
-            </div>
+          <div className="flex justify-center px-4 py-4">
+            <img 
+              src="/lovable-uploads/67b9ca3d-df4a-465c-a730-e739b97b5c88.png" 
+              alt="COMAX Logo" 
+              className="h-12 w-auto"
+            />
           </div>
         </div>
       </div>
