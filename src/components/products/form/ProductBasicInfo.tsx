@@ -13,20 +13,41 @@ interface ProductBasicInfoProps {
 
 export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBasicInfoProps) {
   return (
-    <div className="grid gap-4">
-      <FormField
-        control={form.control}
-        name="reference"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Referência</FormLabel>
-            <FormControl>
-              <Input {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <FormField
+          control={form.control}
+          name="reference"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Referência</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        
+        <FormField
+          control={form.control}
+          name="isNew"
+          render={({ field }) => (
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <FormLabel className="text-base">Lançamento</FormLabel>
+                <FormMessage />
+              </div>
+              <FormControl>
+                <Switch
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+      </div>
       
       <FormField
         control={form.control}
@@ -38,25 +59,6 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
               <Input {...field} />
             </FormControl>
             <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="isNew"
-        render={({ field }) => (
-          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-            <div className="space-y-0.5">
-              <FormLabel className="text-base">Lançamento</FormLabel>
-              <FormMessage />
-            </div>
-            <FormControl>
-              <Switch
-                checked={field.value}
-                onCheckedChange={field.onChange}
-              />
-            </FormControl>
           </FormItem>
         )}
       />
