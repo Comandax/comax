@@ -10,24 +10,21 @@ interface OrderFormProps {
   products: Product[];
   isLoading?: boolean;
   onQuantitySelect: (productId: string, size: string, quantity: number, price: number) => void;
+  onContactSubmit: (data: ContactFormData) => void;
 }
 
 export const OrderForm = ({ 
   companyId, 
   products, 
   isLoading = false,
-  onQuantitySelect 
+  onQuantitySelect,
+  onContactSubmit
 }: OrderFormProps) => {
-  const [contactData, setContactData] = useState<ContactFormData | null>(null);
   const [resetItem, setResetItem] = useState<ResetItem | null>(null);
-
-  const handleContactSubmit = (data: ContactFormData) => {
-    setContactData(data);
-  };
 
   return (
     <>
-      <ContactForm onSubmit={handleContactSubmit} />
+      <ContactForm onSubmit={onContactSubmit} />
       <ProductList 
         products={products} 
         onQuantitySelect={onQuantitySelect}

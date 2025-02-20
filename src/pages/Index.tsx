@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
 import { useOrderCalculations } from "@/components/index/hooks/useOrderCalculations";
 import type { SelectedItem } from "@/components/index/types";
+import type { ContactFormData } from "@/components/ContactForm";
 
 const Index = () => {
   const [company, setCompany] = useState<any>(null);
@@ -19,6 +20,7 @@ const Index = () => {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
+  const [contactData, setContactData] = useState<ContactFormData | null>(null);
   const { toast } = useToast();
   const params = useParams();
   const navigate = useNavigate();
@@ -94,9 +96,71 @@ const Index = () => {
     });
   };
 
+  const handleContactSubmit = (data: ContactFormData) => {
+    console.log("Dados de contato recebidos:", data);
+    setContactData(data);
+  };
+
   const handleSubmitOrder = async (notes: string) => {
-    // Implementar a lógica de submissão do pedido
     console.log("Submetendo pedido com notas:", notes);
+    
+    if (!contactData) {
+      toast({
+        title: "Erro ao enviar pedido",
+        description: "Por favor, preencha seus dados de contato primeiro.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (selectedItems.length === 0) {
+      toast({
+        title: "Erro ao enviar pedido",
+        description: "Selecione pelo menos um produto.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const { error: insertError } = await supabase
+        .from('orders')
+        .insert([{
+          company_id: company.id,
+          customer_name: contactData.name,
+          customer_phone: contactData.whatsapp,
+          customer_city: contactData.city,
+          customer_state: contactData.state,
+          customer_zip_code: contactData.zipCode,
+          items: orderItems,
+          total,
+          notes: notes || null,
+        }]);
+
+      if (insertError) {
+        throw insertError;
+      }
+
+      toast({
+        title: "Pedido enviado com sucesso!",
+        description: "Em breve entraremos em contato.",
+      });
+
+      // Limpa o formulário
+      setSelectedItems([]);
+      setContactData(null);
+      setIsModalOpen(false);
+
+      // Redireciona para a página de sucesso
+      navigate(`/${shortName}/success`);
+    } catch (error) {
+      console.error('Erro ao enviar pedido:', error);
+      toast({
+        title: "Erro ao enviar pedido",
+        description: "Ocorreu um erro ao salvar seu pedido. Por favor, tente novamente.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleRemoveItem = (productId: string, size: string) => {
@@ -133,6 +197,7 @@ const Index = () => {
               products={products} 
               isLoading={isLoadingProducts}
               onQuantitySelect={handleQuantitySelect}
+              onContactSubmit={handleContactSubmit}
             />
           </Card>
         </div>
