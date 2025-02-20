@@ -10,6 +10,7 @@ import { CompanyInfo } from "@/components/index/CompanyInfo";
 import { OrderForm } from "@/components/index/OrderForm";
 import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
+import { FloatingTotal } from "@/components/FloatingTotal";
 
 const Index = () => {
   const [company, setCompany] = useState<any>(null);
@@ -80,25 +81,37 @@ const Index = () => {
   if (error || !company) return <NotFoundState error={error} />;
 
   return (
-    <div className="flex flex-col min-h-screen h-full bg-background">
-      <CompanyInfo company={company} />
-      
-      <div className="container mx-auto px-4 py-2 flex-1">
-        <div className="max-w-6xl mx-auto space-y-6">
-          <h1 className="text-4xl font-bold text-center text-onSurfaceVariant">
-            Simulações e Pedidos
-          </h1>
+    <>
+      <div className="flex flex-col min-h-screen h-full bg-background">
+        <CompanyInfo company={company} />
+        
+        <div className="container mx-auto px-4 py-2 flex-1">
+          <div className="max-w-6xl mx-auto space-y-6">
+            <h1 className="text-4xl font-bold text-center text-onSurfaceVariant">
+              Simulações e Pedidos
+            </h1>
 
-          <Card className="border-border/30 bg-surfaceContainerLowest shadow-lg backdrop-blur-sm p-8">
-            <OrderForm 
-              companyId={company.id} 
-              products={products} 
-              isLoading={isLoadingProducts} 
-            />
-          </Card>
+            <Card className="border-border/30 bg-surfaceContainerLowest shadow-lg backdrop-blur-sm p-8">
+              <OrderForm 
+                companyId={company.id} 
+                products={products} 
+                isLoading={isLoadingProducts} 
+              />
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
+      
+      {/* FloatingTotal renderizado fora do card, no nível raiz */}
+      <FloatingTotal 
+        total={0} // Substitua pelos valores reais
+        items={[]} // Substitua pelos valores reais
+        onSubmitOrder={async () => {}} // Substitua pela função real
+        isOpen={false} // Substitua pelo estado real
+        onOpenChange={() => {}} // Substitua pela função real
+        isCalculating={false} // Substitua pelo estado real
+      />
+    </>
   );
 };
 
