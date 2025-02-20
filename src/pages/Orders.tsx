@@ -16,7 +16,7 @@ import type { Order } from "@/types/order";
 import { useCompany } from "@/hooks/useCompany";
 import { OrdersHeader } from "@/components/orders/OrdersHeader";
 import { OrdersTable } from "@/components/orders/OrdersTable";
-import { OrderDetails } from "@/components/orders/OrderDetails";
+import OrderDetails from "@/components/orders/OrderDetails";
 
 type SortConfig = {
   column: 'customerName' | 'date' | 'total';
