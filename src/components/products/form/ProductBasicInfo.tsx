@@ -13,7 +13,7 @@ interface ProductBasicInfoProps {
 
 export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBasicInfoProps) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 px-4">
       <div className="flex flex-row gap-4">
         <FormField
           control={form.control}
