@@ -13,6 +13,7 @@ import { Card } from "@/components/ui/card";
 import { useOrderCalculations } from "@/components/index/hooks/useOrderCalculations";
 import type { SelectedItem } from "@/components/index/types";
 import type { ContactFormData } from "@/components/ContactForm";
+import type { Json } from "@/integrations/supabase/types";
 
 const Index = () => {
   const [company, setCompany] = useState<any>(null);
@@ -123,19 +124,40 @@ const Index = () => {
     }
 
     try {
+      // Prepara os items como Json compatível com Supabase
+      const jsonItems: Json = orderItems.map(item => ({
+        productId: item.productId,
+        reference: item.reference,
+        name: item.name,
+        sizes: item.sizes.map(size => ({
+          size: size.size,
+          price: size.price,
+          quantity: size.quantity,
+          subtotal: size.subtotal
+        }))
+      }));
+
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('pt-BR', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      });
+
       const { error: insertError } = await supabase
         .from('orders')
-        .insert([{
+        .insert({
           company_id: company.id,
           customer_name: contactData.name,
           customer_phone: contactData.whatsapp,
           customer_city: contactData.city,
           customer_state: contactData.state,
           customer_zip_code: contactData.zipCode,
-          items: orderItems,
-          total,
+          items: jsonItems,
+          total: total,
           notes: notes || null,
-        }]);
+          date: now.toISOString().split('T')[0],
+          time: timeStr
+        });
 
       if (insertError) {
         throw insertError;
