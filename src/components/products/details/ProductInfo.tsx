@@ -2,6 +2,7 @@
 import { Switch } from "@/components/ui/switch";
 import type { Product } from "@/types/product";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/components/ui/use-toast";
 
 interface ProductInfoProps {
   product: Product;
@@ -18,10 +19,21 @@ export function ProductInfo({ product, onToggleStatus }: ProductInfoProps) {
 
       if (error) throw error;
 
-      // Force a re-fetch of the products to update the UI
-      window.location.reload();
+      // Atualiza o estado do produto no componente pai
+      product.isNew = !product.isNew;
+      
+      toast({
+        title: "Produto atualizado",
+        description: `O produto ${product.name} foi ${product.isNew ? 'marcado' : 'desmarcado'} como lançamento.`,
+      });
+
     } catch (error) {
       console.error('Error updating product new status:', error);
+      toast({
+        title: "Erro ao atualizar produto",
+        description: "Não foi possível atualizar o status de lançamento do produto.",
+        variant: "destructive",
+      });
     }
   };
 
