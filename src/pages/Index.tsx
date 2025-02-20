@@ -10,12 +10,15 @@ import { CompanyInfo } from "@/components/index/CompanyInfo";
 import { OrderForm } from "@/components/index/OrderForm";
 import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/components/ui/card";
+import { useOrderCalculations } from "@/components/index/hooks/useOrderCalculations";
+import type { SelectedItem } from "@/components/index/types";
 
 const Index = () => {
   const [company, setCompany] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
   const { toast } = useToast();
   const params = useParams();
   const navigate = useNavigate();
@@ -77,23 +80,44 @@ const Index = () => {
     enabled: !!company?.id,
   });
 
-  if (isLoading) return <LoadingState />;
-  if (error || !company) return <NotFoundState error={error} />;
+  const { total, orderItems } = useOrderCalculations(selectedItems, products);
+
+  const handleQuantitySelect = (productId: string, size: string, quantity: number, price: number) => {
+    setSelectedItems(prev => {
+      const filtered = prev.filter(item => !(item.productId === productId && item.size === size));
+      
+      if (quantity > 0) {
+        return [...filtered, { productId, size, quantity, price }];
+      }
+      
+      return filtered;
+    });
+  };
 
   const handleSubmitOrder = async (notes: string) => {
     // Implementar a lógica de submissão do pedido
     console.log("Submetendo pedido com notas:", notes);
   };
 
+  const handleRemoveItem = (productId: string, size: string) => {
+    setSelectedItems(prev => 
+      prev.filter(item => !(item.productId === productId && item.size === size))
+    );
+  };
+
+  if (isLoading) return <LoadingState />;
+  if (error || !company) return <NotFoundState error={error} />;
+
   return (
     <div className="flex flex-col min-h-screen h-full bg-background">
       <CompanyInfo 
         company={company}
-        total={84.00} // Valor fixo para teste, deve vir do estado real do pedido
-        items={[]} // Deve vir do estado real do pedido
+        total={total}
+        items={orderItems}
         onSubmitOrder={handleSubmitOrder}
         isOpen={isModalOpen}
         onOpenChange={setIsModalOpen}
+        onRemoveItem={handleRemoveItem}
         isCalculating={false}
       />
       
@@ -107,7 +131,8 @@ const Index = () => {
             <OrderForm 
               companyId={company.id} 
               products={products} 
-              isLoading={isLoadingProducts} 
+              isLoading={isLoadingProducts}
+              onQuantitySelect={handleQuantitySelect}
             />
           </Card>
         </div>
