@@ -1,12 +1,11 @@
 
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Check } from "lucide-react";
 
 const OrderSuccess = () => {
   const navigate = useNavigate();
-  const { shortName } = useParams<{ shortName?: string }>();
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8 flex items-center justify-center">
@@ -25,7 +24,7 @@ const OrderSuccess = () => {
         
         <div className="flex justify-center">
           <Button 
-            onClick={() => navigate(`/${shortName}`)}
+            onClick={() => window.location.href = window.location.pathname.split('/order')[0]}
             className="bg-primary text-onPrimary hover:bg-primary/90"
           >
             Fazer Novo Pedido

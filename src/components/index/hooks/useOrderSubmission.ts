@@ -1,109 +1,53 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
 import { supabase } from "@/integrations/supabase/client";
-import type { OrderItem } from "@/types/order";
-import type { Json } from "@/integrations/supabase/types";
 import type { ContactFormData } from "@/components/ContactForm";
+import type { Order, OrderItem } from "@/types/order";
 
-interface OrderSubmissionParams {
+interface OrderSubmissionProps {
   companyId: string;
-  contactData: ContactFormData | null;
-  selectedItems: any[];
-  orderItems: OrderItem[];
+  items: OrderItem[];
   total: number;
   notes: string;
 }
 
 export const useOrderSubmission = () => {
-  const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  const submitOrder = async ({
-    companyId,
-    contactData,
-    selectedItems,
-    orderItems,
-    total,
-    notes
-  }: OrderSubmissionParams) => {
-    if (!companyId) {
-      toast({
-        title: "Erro ao enviar pedido",
-        description: "Empresa não especificada.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!contactData) {
-      toast({
-        title: "Erro ao enviar pedido",
-        description: "Por favor, preencha seus dados de contato.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (selectedItems.length === 0) {
-      toast({
-        title: "Erro ao enviar pedido",
-        description: "Selecione pelo menos um produto.",
-        variant: "destructive",
-      });
-      return;
-    }
-
+  const submitOrder = async (
+    contactData: ContactFormData,
+    orderData: OrderSubmissionProps
+  ) => {
     try {
-      const { data: companyData } = await supabase
-        .from('companies')
-        .select('short_name')
-        .eq('id', companyId)
-        .single();
+      setIsSubmitting(true);
 
-      if (!companyData?.short_name) {
-        throw new Error('Empresa não encontrada');
-      }
-
-      const now = new Date();
-
-      // Garantindo que todos os campos required estejam presentes
-      if (!contactData.state) {
-        throw new Error('Estado não especificado');
-      }
-
-      const orderData = {
-        company_id: companyId,
+      const { error } = await supabase.from("orders").insert({
+        company_id: orderData.companyId,
         customer_name: contactData.name,
         customer_phone: contactData.whatsapp,
         customer_city: contactData.city,
         customer_state: contactData.state,
         customer_zip_code: contactData.zipCode,
-        items: orderItems as unknown as Json,
-        total,
-        notes: notes || null,
-        date: now.toISOString().split('T')[0],
-        time: now.toTimeString().split(' ')[0]
-      };
-
-      const { error: insertError } = await supabase
-        .from('orders')
-        .insert([orderData]);
-
-      if (insertError) {
-        throw insertError;
-      }
-
-      navigate(`/${companyData.short_name}/success`);
-    } catch (error) {
-      toast({
-        title: "Erro ao enviar pedido",
-        description: "Ocorreu um erro ao salvar seu pedido. Por favor, tente novamente.",
-        variant: "destructive",
+        items: orderData.items,
+        total: orderData.total,
+        notes: orderData.notes,
       });
+
+      if (error) throw error;
+
+      navigate("/order/success");
+    } catch (error) {
+      console.error("Error submitting order:", error);
+      throw error;
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  return { submitOrder };
+  return {
+    submitOrder,
+    isSubmitting,
+  };
 };
