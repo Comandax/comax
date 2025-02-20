@@ -1,7 +1,8 @@
-
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import type { Order } from "@/types/order";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 type SortConfig = {
   column: 'customerName' | 'date' | 'total';
@@ -25,6 +26,21 @@ export const OrdersTable = ({ orders, sortConfig, onSort, onOrderClick }: Orders
       );
     }
     return null;
+  };
+
+  const formatDate = (dateStr: string) => {
+    try {
+      // Dividir a data em partes
+      const [year, month, day] = dateStr.split('-').map(Number);
+      
+      // Criar uma data às 12:00 (meio-dia) para evitar problemas de timezone
+      const date = new Date(year, month - 1, day, 12, 0, 0);
+      
+      return format(date, "dd/MM/yyyy", { locale: ptBR });
+    } catch (error) {
+      console.error('Erro ao formatar data:', error, 'Data recebida:', dateStr);
+      return dateStr;
+    }
   };
 
   return (
@@ -72,7 +88,7 @@ export const OrdersTable = ({ orders, sortConfig, onSort, onOrderClick }: Orders
             onClick={() => onOrderClick(order)}
           >
             <TableCell className="font-medium">{order.customerName}</TableCell>
-            <TableCell>{order.date} às {order.time}</TableCell>
+            <TableCell>{formatDate(order.date)} às {order.time}</TableCell>
             <TableCell className="text-right">R$ {order.total.toFixed(2)}</TableCell>
           </TableRow>
         ))}

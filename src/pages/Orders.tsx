@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
@@ -10,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { LoadingState } from "@/components/index/LoadingState";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import type { Order } from "@/types/order";
@@ -90,7 +89,21 @@ const Orders = () => {
     queryFn: async () => {
       let query = supabase
         .from("orders")
-        .select("*", { count: 'exact' })
+        .select(`
+          id,
+          customer_name,
+          customer_phone,
+          customer_city,
+          customer_state,
+          customer_zip_code,
+          date,
+          time,
+          items,
+          total,
+          company_id,
+          notes,
+          created_at
+        `, { count: 'exact' })
         .eq("company_id", company?.id);
       
       const column = sortConfig.column === 'customerName' ? 'customer_name' : 
@@ -104,22 +117,23 @@ const Orders = () => {
         console.error("Error fetching orders:", error);
         throw error;
       }
-      
       return {
-        orders: data.map((order: any) => ({
-          _id: order.id,
-          customerName: order.customer_name,
-          customerPhone: order.customer_phone,
-          customerCity: order.customer_city,
-          customerState: order.customer_state,
-          customerZipCode: order.customer_zip_code,
-          date: new Date(order.date).toLocaleDateString(),
-          time: order.time,
-          items: order.items,
-          total: order.total,
-          companyId: order.company_id,
-          notes: order.notes
-        })),
+        orders: data.map((order: any) => {
+          return {
+            _id: order.id,
+            customerName: order.customer_name,
+            customerPhone: order.customer_phone,
+            customerCity: order.customer_city,
+            customerState: order.customer_state,
+            customerZipCode: order.customer_zip_code,
+            date: order.date,
+            time: order.time,
+            items: order.items,
+            total: order.total,
+            companyId: order.company_id,
+            notes: order.notes
+          };
+        }),
         totalCount: count || 0
       };
     },
@@ -314,6 +328,12 @@ const Orders = () => {
 
         <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
           <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>Detalhes do Pedido</DialogTitle>
+              <DialogDescription>
+                Informações completas sobre o pedido, incluindo dados do cliente e itens solicitados.
+              </DialogDescription>
+            </DialogHeader>
             {selectedOrder && <OrderDetails order={selectedOrder} />}
           </DialogContent>
         </Dialog>
