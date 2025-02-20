@@ -28,6 +28,7 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
       reference: initialData?.reference || "",
       name: initialData?.name || "",
       image: initialData?.image || "",
+      isNew: initialData?.isNew || false,
       sizes: initialData?.sizes || [{ size: "", value: 0 }],
       quantities: initialData?.quantities 
         ? initialData.quantities.map(q => typeof q === 'number' ? { value: q } : q)
