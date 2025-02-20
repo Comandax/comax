@@ -99,41 +99,39 @@ export function ProductList({
   const currentProducts = sortedProducts.slice(startIndex, endIndex);
 
   return (
-    <Card className="bg-white/95">
-      <div className="p-6 space-y-6">
-        <ProductListFilters
-          search={search}
-          onSearchChange={setSearch}
-          showOnlyActive={showOnlyActive}
-          onShowOnlyActiveChange={setShowOnlyActive}
-          itemsPerPage={itemsPerPage}
-          onItemsPerPageChange={(value) => {
-            setItemsPerPage(value);
-            setCurrentPage(1);
-          }}
-          onOpenNewProductModal={onOpenNewProductModal}
-        />
+    <div className="p-6 space-y-6">
+      <ProductListFilters
+        search={search}
+        onSearchChange={setSearch}
+        showOnlyActive={showOnlyActive}
+        onShowOnlyActiveChange={setShowOnlyActive}
+        itemsPerPage={itemsPerPage}
+        onItemsPerPageChange={(value) => {
+          setItemsPerPage(value);
+          setCurrentPage(1);
+        }}
+        onOpenNewProductModal={onOpenNewProductModal}
+      />
 
-        <div className="rounded-lg overflow-hidden border">
-          <ProductTable
-            products={currentProducts}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            onSubmit={onSubmit}
-            onToggleStatus={handleToggleStatus}
-            onProductClick={handleProductClick}
-            sortField={sortField}
-            sortOrder={sortOrder}
-            onSort={handleSort}
-          />
-        </div>
-
-        <ProductListPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
+      <div className="rounded-lg overflow-hidden border">
+        <ProductTable
+          products={currentProducts}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onSubmit={onSubmit}
+          onToggleStatus={handleToggleStatus}
+          onProductClick={handleProductClick}
+          sortField={sortField}
+          sortOrder={sortOrder}
+          onSort={handleSort}
         />
       </div>
+
+      <ProductListPagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
 
       <ProductDetailsModal
         product={selectedProduct}
@@ -144,6 +142,6 @@ export function ProductList({
         onSubmit={onSubmit}
         onToggleStatus={handleToggleStatus}
       />
-    </Card>
+    </div>
   );
 }
