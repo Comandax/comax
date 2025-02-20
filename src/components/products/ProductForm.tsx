@@ -120,9 +120,11 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
           quantityArray={quantityArray} 
         />
 
-        <Button type="submit" disabled={isUploading} className="bg-primary text-onPrimary">
-          {isUploading ? 'Uploading...' : isEditing ? 'Atualizar' : 'Salvar'}
-        </Button>
+        <div className="flex justify-end">
+          <Button type="submit" disabled={isUploading} className="bg-primary text-onPrimary">
+            {isUploading ? 'Uploading...' : isEditing ? 'Atualizar' : 'Salvar'}
+          </Button>
+        </div>
       </form>
     </Form>
   );
