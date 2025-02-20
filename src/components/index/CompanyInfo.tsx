@@ -66,10 +66,10 @@ export const CompanyInfo = ({
                 {total > 0 && (
                   <div className="flex items-center gap-4 bg-tertiary text-white p-4 rounded-lg">
                     <div className="flex items-center gap-2">
-                      <ShoppingBag className="w-5 h-5" />
+                      <ShoppingBag className="w-4 h-4" />
                       <div>
-                        <div className="text-sm font-medium">Total do Pedido</div>
-                        <div className="text-2xl font-bold tracking-tight">
+                        <div className="text-xs font-medium">Total do Pedido</div>
+                        <div className="text-lg font-bold tracking-tight">
                           {isCalculating ? (
                             <div className="flex items-center gap-2">
                               <Loader className="w-4 h-4 animate-spin" />
@@ -83,7 +83,7 @@ export const CompanyInfo = ({
                     </div>
                     <Button 
                       variant="secondary" 
-                      className="bg-white hover:bg-white/90 text-tertiary font-medium h-auto py-2"
+                      className="bg-white hover:bg-white/90 text-tertiary font-medium h-auto py-2 text-sm"
                       onClick={handleOpenModal}
                       disabled={isModalLoading || isCalculating}
                     >
