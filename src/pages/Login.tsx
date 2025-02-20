@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +19,7 @@ const Login = () => {
   // Login form state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,15 +103,26 @@ const Login = () => {
                     className="w-full bg-surfaceContainerHighest border-surfaceVariant focus:border-primary"
                   />
                 </div>
-                <div>
+                <div className="relative">
                   <Input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     required
                     placeholder="Senha"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full bg-surfaceContainerHighest border-surfaceVariant focus:border-primary"
+                    className="w-full bg-surfaceContainerHighest border-surfaceVariant focus:border-primary pr-10"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-onSurfaceVariant hover:text-onSurface"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
                 </div>
               </div>
 
