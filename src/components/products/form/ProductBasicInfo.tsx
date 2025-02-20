@@ -22,7 +22,7 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
             <FormItem className="flex-1">
               <FormLabel className="text-base">Referência</FormLabel>
               <FormControl>
-                <Input {...field} className="rounded-lg" />
+                <Input {...field} className="h-[42px] rounded-lg" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -35,7 +35,7 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
           render={({ field }) => (
             <FormItem className="flex-1">
               <FormLabel className="text-base">Lançamento</FormLabel>
-              <div className="flex flex-row items-center justify-between rounded-lg border p-3">
+              <div className="flex flex-row items-center justify-between rounded-lg border h-[42px] px-3">
                 <FormControl>
                   <Switch
                     checked={field.value}
@@ -56,7 +56,7 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
           <FormItem>
             <FormLabel className="text-base">Nome</FormLabel>
             <FormControl>
-              <Input {...field} className="rounded-lg" />
+              <Input {...field} className="h-[42px] rounded-lg" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -84,7 +84,7 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
                     accept="image/*"
                     onChange={onImageUpload}
                     disabled={isUploading}
-                    className="cursor-pointer rounded-lg"
+                    className="cursor-pointer h-[42px] rounded-lg"
                   />
                 </div>
               </div>
