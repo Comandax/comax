@@ -1,89 +1,95 @@
 
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import type { OrderWithItems } from "@/types/order";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import type { Order } from "@/types/order";
 
-interface OrderDetailsProps {
-  order: OrderWithItems;
-}
-
-const OrderDetails = ({ order }: OrderDetailsProps) => {
-  // Para converter a data UTC do banco para o fuso horário local (Brasília)
-  const formatOrderDateTime = (dateStr: string, timeStr: string) => {
-    // Combina a data e hora em um único string ISO
-    const dateTimeStr = `${dateStr}T${timeStr}:00-03:00`;
-    const orderDate = new Date(dateTimeStr);
-
-    return {
-      formattedDate: format(orderDate, "dd/MM/yyyy", { locale: ptBR }),
-      formattedTime: format(orderDate, "HH:mm:ss", { locale: ptBR })
-    };
-  };
-
-  const { formattedDate, formattedTime } = formatOrderDateTime(order.date, order.time);
-
-  return (
-    <div className="space-y-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>Detalhes do Pedido</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Data</Label>
-                <p className="text-sm">{formattedDate}</p>
-              </div>
-              <div>
-                <Label>Hora</Label>
-                <p className="text-sm">{formattedTime}</p>
-              </div>
-            </div>
-            <div>
-              <Label>Cliente</Label>
-              <p className="text-sm">{order.customer_name}</p>
-            </div>
-            <div>
-              <Label>WhatsApp</Label>
-              <p className="text-sm">{order.customer_phone}</p>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label>Cidade</Label>
-                <p className="text-sm">{order.customer_city}</p>
-              </div>
-              <div>
-                <Label>Estado</Label>
-                <p className="text-sm">{order.customer_state}</p>
-              </div>
-            </div>
-            <div>
-              <Label>CEP</Label>
-              <p className="text-sm">{order.customer_zip_code}</p>
-            </div>
-            {order.notes && (
-              <div>
-                <Label>Observações</Label>
-                <p className="text-sm whitespace-pre-wrap">{order.notes}</p>
-              </div>
-            )}
-            <div>
-              <Label>Total do Pedido</Label>
-              <p className="text-sm">
-                {new Intl.NumberFormat('pt-BR', {
-                  style: 'currency',
-                  currency: 'BRL'
-                }).format(order.total)}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
-  );
+const formatPhoneNumber = (phone: string) => {
+  const cleaned = phone.replace(/\D/g, '');
+  if (cleaned.length === 11) {
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)}-${cleaned.slice(7)}`;
+  } else if (cleaned.length === 10) {
+    return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
+  }
+  return phone;
 };
 
-export default OrderDetails;
+const formatZipCode = (zipCode: string) => {
+  const cleaned = zipCode.replace(/\D/g, '');
+  if (cleaned.length === 8) {
+    return `${cleaned.slice(0, 5)}-${cleaned.slice(5)}`;
+  }
+  return zipCode;
+};
+
+interface OrderDetailsProps {
+  order: Order;
+}
+
+export const OrderDetails = ({ order }: OrderDetailsProps) => {
+  return (
+    <ScrollArea className="h-[80vh]">
+      <div className="space-y-6">
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <h3 className="font-semibold mb-2">Pedido</h3>
+            <p>Código: {order._id}</p>
+            <p>Data: {order.date}</p>
+            <p>Hora: {order.time}</p>
+            {order.notes && (
+              <div className="mt-2">
+                <h4 className="font-semibold mb-1">Observações:</h4>
+                <p className="text-gray-700 text-sm whitespace-pre-wrap">{order.notes}</p>
+              </div>
+            )}
+          </div>
+          <div>
+            <h3 className="font-semibold mb-2">Cliente</h3>
+            <p>Nome: {order.customerName}</p>
+            <p>Telefone: {formatPhoneNumber(order.customerPhone)}</p>
+            <p>Cidade: {order.customerCity} / {order.customerState}</p>
+            <p>CEP: {formatZipCode(order.customerZipCode)}</p>
+          </div>
+        </div>
+
+        <div className="pr-[10px]">
+          <h3 className="font-semibold mb-4">Itens do pedido</h3>
+          <div className="space-y-4">
+            {order.items.map(item => (
+              <div key={`${item.productId}`} className="border rounded-lg overflow-hidden">
+                <div className="bg-gray-100 p-3 font-semibold">
+                  {item.reference} - {item.name}
+                </div>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Tamanho</TableHead>
+                      <TableHead>Quantidade</TableHead>
+                      <TableHead className="text-right">Subtotal</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {item.sizes.map((size, index) => (
+                      <TableRow 
+                        key={`${item.productId}-${size.size}-${index}`}
+                        className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                      >
+                        <TableCell>{size.size}</TableCell>
+                        <TableCell>{size.quantity}</TableCell>
+                        <TableCell className="text-right">
+                          R$ {size.subtotal.toFixed(2)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4 text-right font-semibold pr-[20px]">
+            Total do pedido: R$ {order.total.toFixed(2)}
+          </div>
+        </div>
+      </div>
+    </ScrollArea>
+  );
+};
