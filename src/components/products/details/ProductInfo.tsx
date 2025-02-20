@@ -10,7 +10,7 @@ interface ProductInfoProps {
 export function ProductInfo({ product, onToggleStatus }: ProductInfoProps) {
   return (
     <div className="space-y-4 flex-1">
-      <div className="flex items-center gap-8">
+      <div className="flex items-center justify-between">
         <div>
           <h3 className="font-semibold">Referência</h3>
           <p className="text-sm text-muted-foreground">{product.reference}</p>
