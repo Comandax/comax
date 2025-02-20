@@ -33,7 +33,7 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
           control={form.control}
           name="isNew"
           render={({ field }) => (
-            <FormItem className="flex-1">
+            <FormItem className="w-[30%]">
               <FormLabel className="text-base">Lançamento</FormLabel>
               <div className="flex flex-row items-center h-[42px]">
                 <FormControl>
