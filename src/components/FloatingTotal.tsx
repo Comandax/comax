@@ -54,7 +54,7 @@ export const FloatingTotal = ({
   return (
     <>
       <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-4">
-        {/* Primeira caixa - Roxa */}
+        {/* Caixa do Total - Roxa */}
         <div 
           className={`bg-[#8B5CF6] shadow-lg rounded-lg p-4 text-white transition-all duration-300 transform ${
             showTotal ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
@@ -90,30 +90,6 @@ export const FloatingTotal = ({
             )}
             {isModalLoading ? "Carregando..." : "Ver produtos selecionados"}
           </Button>
-        </div>
-
-        {/* Segunda caixa - Terciária */}
-        <div 
-          className={`bg-[#6E59A5] shadow-lg rounded-lg p-4 text-white transition-all duration-300 transform ${
-            showTotal ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <ShoppingBag className="w-6 h-6" />
-            <div>
-              <div className="text-lg font-semibold">Total Calculado</div>
-              <div className="text-2xl font-bold">
-                {isCalculating ? (
-                  <div className="flex items-center gap-2">
-                    <Loader className="w-4 h-4 animate-spin" />
-                    Calculando...
-                  </div>
-                ) : (
-                  formattedTotal
-                )}
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
