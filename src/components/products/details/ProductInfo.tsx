@@ -8,6 +8,22 @@ interface ProductInfoProps {
 }
 
 export function ProductInfo({ product, onToggleStatus }: ProductInfoProps) {
+  const handleToggleNew = async () => {
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update({ is_new: !product.isNew })
+        .eq('id', product._id);
+
+      if (error) throw error;
+
+      // Force a re-fetch of the products to update the UI
+      window.location.reload();
+    } catch (error) {
+      console.error('Error updating product new status:', error);
+    }
+  };
+
   return (
     <div className="space-y-4 flex-1">
       <div className="flex items-center justify-between">
@@ -26,17 +42,10 @@ export function ProductInfo({ product, onToggleStatus }: ProductInfoProps) {
 
         <div>
           <h3 className="font-semibold">Lançamento</h3>
-          <div className="mt-1">
-            {product.isNew ? (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                Sim
-              </span>
-            ) : (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                Não
-              </span>
-            )}
-          </div>
+          <Switch
+            checked={product.isNew}
+            onCheckedChange={handleToggleNew}
+          />
         </div>
       </div>
 
