@@ -52,11 +52,10 @@ export const FloatingTotal = ({
   }).format(total);
 
   return (
-    <>
-      <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-4">
-        {/* Caixa do Total - Roxa */}
+    <div className="fixed inset-0 pointer-events-none">
+      <div className="fixed top-4 right-4 z-[9999] pointer-events-auto">
         <div 
-          className={`bg-[#8B5CF6] shadow-lg rounded-lg p-4 text-white transition-all duration-300 transform ${
+          className={`bg-primary shadow-lg rounded-lg p-4 text-white transition-all duration-300 transform ${
             showTotal ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
           }`}
         >
@@ -79,7 +78,7 @@ export const FloatingTotal = ({
             
           <Button 
             variant="secondary" 
-            className="w-full flex items-center gap-2 bg-white hover:bg-white/90 text-[#8B5CF6] font-medium mt-4"
+            className="w-full flex items-center gap-2 bg-white hover:bg-white/90 text-primary font-medium mt-4"
             onClick={handleOpenModal}
             disabled={isModalLoading || isCalculating}
           >
@@ -105,6 +104,6 @@ export const FloatingTotal = ({
         }}
         onRemoveItem={onRemoveItem}
       />
-    </>
+    </div>
   );
 };
