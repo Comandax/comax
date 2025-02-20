@@ -12,7 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
-import type { Order } from "@/types/order";
+import type { Order, OrderWithItems } from "@/types/order";
 import { useCompany } from "@/hooks/useCompany";
 import { OrdersHeader } from "@/components/orders/OrdersHeader";
 import { OrdersTable } from "@/components/orders/OrdersTable";
@@ -26,7 +26,7 @@ type SortConfig = {
 const PAGE_SIZES = [10, 20, 50, 100];
 
 const Orders = () => {
-  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<OrderWithItems | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
@@ -112,13 +112,19 @@ const Orders = () => {
           customerCity: order.customer_city,
           customerState: order.customer_state,
           customerZipCode: order.customer_zip_code,
-          date: new Date(order.date).toLocaleDateString(),
+          date: order.date,
           time: order.time,
           items: order.items,
           total: order.total,
           companyId: order.company_id,
-          notes: order.notes
-        })),
+          notes: order.notes,
+          customer_name: order.customer_name,
+          customer_phone: order.customer_phone,
+          customer_city: order.customer_city,
+          customer_state: order.customer_state,
+          customer_zip_code: order.customer_zip_code,
+          company_id: order.company_id
+        })) as OrderWithItems[],
         totalCount: count || 0
       };
     },
