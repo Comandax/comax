@@ -1,10 +1,8 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ArrowLeft, Building2, LogOut, User, Menu } from "lucide-react";
+import { ArrowLeft, Building2 } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import type { Company } from "@/types/company";
 
 interface ProductsLayoutProps {
@@ -60,39 +58,6 @@ export function ProductsLayout({
                   </span>
                 </div>
               </div>
-            </div>
-
-            <div className="flex items-center gap-4">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="relative h-10 w-10 rounded-full bg-[#E5DEFF] hover:bg-[#E5DEFF]/90"
-                  >
-                    <User className="h-5 w-5 text-[#0FA0CE]" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end">
-                  <DropdownMenuItem disabled className="font-semibold">
-                    {userName}
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate('/profile')}>
-                    <User className="mr-2 h-4 w-4" />
-                    Meu Perfil
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => navigate('/companies')}>
-                    <Building2 className="mr-2 h-4 w-4" />
-                    Minha Empresa
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={onLogout} className="text-red-600">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Sair
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
             </div>
           </div>
         </div>
