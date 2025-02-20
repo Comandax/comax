@@ -22,7 +22,7 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
             <FormItem className="flex-1">
               <FormLabel className="text-base">Referência</FormLabel>
               <FormControl>
-                <Input {...field} className="h-[42px]" />
+                <Input {...field} className="rounded-lg" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -34,9 +34,8 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
           name="isNew"
           render={({ field }) => (
             <FormItem className="flex-1">
-              <FormLabel className="text-base mb-2 block">Lançamento</FormLabel>
-              <div className="flex flex-row items-center justify-between rounded-lg border p-2.5">
-                <FormMessage />
+              <FormLabel className="text-base">Lançamento</FormLabel>
+              <div className="flex flex-row items-center justify-between rounded-lg border p-3">
                 <FormControl>
                   <Switch
                     checked={field.value}
@@ -44,6 +43,7 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
                   />
                 </FormControl>
               </div>
+              <FormMessage />
             </FormItem>
           )}
         />
@@ -56,7 +56,7 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
           <FormItem>
             <FormLabel className="text-base">Nome</FormLabel>
             <FormControl>
-              <Input {...field} />
+              <Input {...field} className="rounded-lg" />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -84,7 +84,7 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
                     accept="image/*"
                     onChange={onImageUpload}
                     disabled={isUploading}
-                    className="cursor-pointer"
+                    className="cursor-pointer rounded-lg"
                   />
                 </div>
               </div>
