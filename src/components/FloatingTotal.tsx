@@ -53,7 +53,7 @@ export const FloatingTotal = ({
 
   return (
     <>
-      <div className="fixed top-0 right-0 z-[9999] p-4 flex flex-col gap-4">
+      <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-4">
         {/* Primeira caixa - Roxa */}
         <div 
           className={`bg-[#8B5CF6] shadow-lg rounded-lg p-4 text-white transition-all duration-300 transform ${
