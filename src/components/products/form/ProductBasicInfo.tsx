@@ -20,9 +20,9 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
           name="reference"
           render={({ field }) => (
             <FormItem className="flex-1">
-              <FormLabel>Referência</FormLabel>
+              <FormLabel className="text-base">Referência</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} className="h-[42px]" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -33,17 +33,17 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
           control={form.control}
           name="isNew"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 flex-1">
-              <div className="space-y-0.5">
-                <FormLabel className="text-base">Lançamento</FormLabel>
+            <FormItem className="flex-1">
+              <FormLabel className="text-base mb-2 block">Lançamento</FormLabel>
+              <div className="flex flex-row items-center justify-between rounded-lg border p-2.5">
                 <FormMessage />
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                </FormControl>
               </div>
-              <FormControl>
-                <Switch
-                  checked={field.value}
-                  onCheckedChange={field.onChange}
-                />
-              </FormControl>
             </FormItem>
           )}
         />
@@ -54,7 +54,7 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
         name="name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Nome</FormLabel>
+            <FormLabel className="text-base">Nome</FormLabel>
             <FormControl>
               <Input {...field} />
             </FormControl>
@@ -68,7 +68,7 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
         name="image"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Imagem do Produto</FormLabel>
+            <FormLabel className="text-base">Imagem do Produto</FormLabel>
             <FormControl>
               <div className="flex items-center gap-4">
                 {field.value && (
