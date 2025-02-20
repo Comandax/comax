@@ -1,6 +1,7 @@
 
 import { Switch } from "@/components/ui/switch";
 import type { Product } from "@/types/product";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ProductInfoProps {
   product: Product;
