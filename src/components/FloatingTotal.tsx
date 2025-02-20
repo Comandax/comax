@@ -53,11 +53,11 @@ export const FloatingTotal = ({
 
   return (
     <>
-      <div className="fixed top-0 right-0 z-[9999] p-4 flex flex-col gap-4">
+      <div className="flex flex-col gap-4">
         {/* Primeira caixa - Roxa */}
         <div 
           className={`bg-[#8B5CF6] shadow-lg rounded-lg p-4 text-white transition-all duration-300 transform ${
-            showTotal ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+            showTotal ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
           }`}
         >
           <div className="flex items-center gap-2">
@@ -95,7 +95,7 @@ export const FloatingTotal = ({
         {/* Segunda caixa - Terciária */}
         <div 
           className={`bg-[#6E59A5] shadow-lg rounded-lg p-4 text-white transition-all duration-300 transform ${
-            showTotal ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+            showTotal ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0'
           }`}
         >
           <div className="flex items-center gap-2">
