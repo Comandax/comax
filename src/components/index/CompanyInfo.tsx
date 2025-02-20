@@ -1,7 +1,6 @@
 
 import { Settings2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
 import type { Company } from "@/types/company";
 
 interface CompanyInfoProps {
@@ -10,26 +9,9 @@ interface CompanyInfoProps {
 
 export const CompanyInfo = ({ company }: CompanyInfoProps) => {
   const navigate = useNavigate();
-  const [prevScrollPos, setPrevScrollPos] = useState(0);
-  const [visible, setVisible] = useState(true);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollPos = window.scrollY;
-      setVisible(prevScrollPos > currentScrollPos || currentScrollPos < 10);
-      setPrevScrollPos(currentScrollPos);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [prevScrollPos]);
 
   return (
-    <div 
-      className={`fixed top-0 left-0 right-0 bg-white/95 shadow-md transition-transform duration-300 z-50 ${
-        visible ? 'translate-y-0' : '-translate-y-full'
-      }`}
-    >
+    <div className="fixed top-0 left-0 right-0 bg-white/95 shadow-md z-50">
       <div className="container mx-auto">
         <div className="max-w-6xl mx-auto px-4">
           <div className="flex items-center justify-between py-4">
