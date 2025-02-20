@@ -30,7 +30,7 @@ export function ProductQuantities({ form, quantityArray }: ProductQuantitiesProp
         </Button>
       </div>
 
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
         {fields.map((field, index) => (
           <div key={field.id} className="flex gap-2 items-start">
             <FormField
