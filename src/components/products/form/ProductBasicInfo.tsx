@@ -14,12 +14,12 @@ interface ProductBasicInfoProps {
 export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBasicInfoProps) {
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="flex flex-col sm:flex-row gap-4">
         <FormField
           control={form.control}
           name="reference"
           render={({ field }) => (
-            <FormItem>
+            <FormItem className="flex-1">
               <FormLabel>Referência</FormLabel>
               <FormControl>
                 <Input {...field} />
@@ -33,7 +33,7 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
           control={form.control}
           name="isNew"
           render={({ field }) => (
-            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+            <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 flex-1">
               <div className="space-y-0.5">
                 <FormLabel className="text-base">Lançamento</FormLabel>
                 <FormMessage />
