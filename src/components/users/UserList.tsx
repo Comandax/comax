@@ -10,6 +10,8 @@ import { UserListTable } from "./UserListTable";
 import { UserListPagination } from "./UserListPagination";
 import { UserEditModal } from "./UserEditModal";
 import { SortField, SortOrder } from "./types";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export function UserList() {
   const { user } = useAuth();
@@ -142,16 +144,27 @@ export function UserList() {
           }}
         />
 
-        <UserListTable
-          profiles={currentProfiles}
-          onSort={handleSort}
-        />
+        {search && filteredProfiles.length === 0 ? (
+          <Alert variant="destructive" className="bg-destructive/5 border-destructive/20">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Nenhum usuário encontrado para o termo "{search}".
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <>
+            <UserListTable
+              profiles={currentProfiles}
+              onSort={handleSort}
+            />
 
-        <UserListPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
+            <UserListPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </>
+        )}
 
         <UserEditModal 
           isOpen={showEditModal}
