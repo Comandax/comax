@@ -190,7 +190,7 @@ const Orders = () => {
   const hasNoOrders = ordersData.orders.length === 0;
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-surface-container-lowest">
       <OrdersHeader 
         userProfile={userProfile}
         company={company}
