@@ -35,7 +35,7 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
           render={({ field }) => (
             <FormItem className="flex-1">
               <FormLabel className="text-base">Lançamento</FormLabel>
-              <div className="flex flex-row items-center justify-between rounded-lg border h-[42px] px-3">
+              <div className="flex flex-row items-center h-[42px]">
                 <FormControl>
                   <Switch
                     checked={field.value}
