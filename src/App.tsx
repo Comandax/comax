@@ -33,7 +33,7 @@ function App() {
             {/* Public routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/users/create" element={<UserCreate />} />
-            <Route path="/users/create/:referralCode" element={<UserCreateWithReferral />} />
+            <Route path="/users/create/referral/:identifier" element={<UserCreateWithReferral />} />
             <Route path="/:shortName" element={<Index />} />
             <Route path="/:shortName/success" element={<OrderSuccess />} />
 
