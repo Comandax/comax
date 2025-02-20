@@ -71,8 +71,8 @@ export const OrdersTable = ({ orders, sortConfig, onSort, onOrderClick }: Orders
             `}
             onClick={() => onOrderClick(order)}
           >
-            <TableCell className="font-medium">{order.customer_name}</TableCell>
-            <TableCell>{order.created_at}</TableCell>
+            <TableCell className="font-medium">{order.customerName}</TableCell>
+            <TableCell>{order.date} às {order.time}</TableCell>
             <TableCell className="text-right">R$ {order.total.toFixed(2)}</TableCell>
           </TableRow>
         ))}
