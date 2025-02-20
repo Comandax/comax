@@ -1,27 +1,16 @@
 
 import { UserList } from "@/components/users/UserList";
-import { Button } from "@/components/ui/button";
-import { LogOut, Edit, UserCog, CreditCard, XCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { updateRepresentative } from "@/services/representativeService";
 import { UserEditModal } from "@/components/users/UserEditModal";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
+import { UserHeader } from "@/components/users/header/UserHeader";
+import { RepresentativePanel } from "@/components/users/representative/RepresentativePanel";
 
 export default function Users() {
-  const navigate = useNavigate();
-  const { logout, user } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
   const [referralLink, setReferralLink] = useState<string>("");
   const [representativeData, setRepresentativeData] = useState<{ id: string, identifier: string, pix_key: string | null } | null>(null);
@@ -53,23 +42,6 @@ export default function Users() {
 
     fetchRepresentativeIdentifier();
   }, [user]);
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      toast({
-        title: "Logout realizado com sucesso",
-        description: "Você será redirecionado para a página de login.",
-      });
-      navigate("/login");
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Erro ao fazer logout",
-        description: "Tente novamente em alguns instantes.",
-      });
-    }
-  };
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralLink);
@@ -146,200 +118,26 @@ export default function Users() {
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto py-8">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <img 
-              src="/lovable-uploads/67b9ca3d-df4a-465c-a730-e739b97b5c88.png" 
-              alt="Comax Logo" 
-              className="h-12 w-auto"
-            />
-            <h1 className="text-2xl font-bold text-[#403E43]">Painel de Usuários</h1>
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setShowEditModal(true)}
-              className="text-primary hover:bg-primary/10 border-primary"
-            >
-              <UserCog className="h-5 w-5 mr-2" />
-              Editar Perfil
-            </Button>
-            <Button
-              variant="outline"
-              onClick={handleLogout}
-              className="text-destructive hover:bg-destructive/10 border-destructive"
-            >
-              <LogOut className="h-5 w-5 mr-2" />
-              Sair
-            </Button>
-          </div>
-        </div>
+        <UserHeader onEditProfile={() => setShowEditModal(true)} />
 
         {user?.roles?.includes('representative') && (
-          <div className="grid md:grid-cols-2 gap-6 mb-8">
-            <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
-              <CardContent className="pt-6">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <div className="h-8 w-1 bg-primary rounded-full" />
-                    <h2 className="text-xl font-semibold text-primary">Seu Link de Indicação</h2>
-                  </div>
-                  <p className="text-sm text-muted-foreground">
-                    Compartilhe este link para convidar novos usuários. Você poderá acompanhar todos os usuários que se cadastrarem através dele.
-                  </p>
-                  <div className="flex gap-2">
-                    <Input
-                      value={referralLink}
-                      readOnly
-                      className="flex-1 bg-white/80 border-primary/30 focus:border-primary"
-                    />
-                    <Button 
-                      onClick={copyToClipboard}
-                      className="bg-primary hover:bg-primary/90 text-white"
-                    >
-                      Copiar Link
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={() => setShowIdentifierModal(true)}
-                      className="border-primary text-primary hover:bg-primary/10"
-                    >
-                      <Edit className="h-4 w-4 mr-2" />
-                      Editar ID
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
-              <CardContent className="pt-6">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <div className="h-8 w-1 bg-primary rounded-full" />
-                    <h2 className="text-xl font-semibold text-primary">Chave PIX</h2>
-                  </div>
-                  {representativeData?.pix_key ? (
-                    <>
-                      <p className="text-sm text-muted-foreground">
-                        Sua chave PIX cadastrada para recebimento de comissões:
-                      </p>
-                      <div className="flex gap-2 items-center p-3 bg-white/80 rounded-lg border border-primary/30">
-                        <CreditCard className="text-primary h-5 w-5" />
-                        <span className="flex-1 font-medium text-foreground">{representativeData.pix_key}</span>
-                        <Button
-                          variant="outline"
-                          onClick={() => {
-                            setNewPixKey(representativeData.pix_key || "");
-                            setShowPixModal(true);
-                          }}
-                          className="border-primary text-primary hover:bg-primary/10"
-                        >
-                          <Edit className="h-4 w-4 mr-2" />
-                          Editar
-                        </Button>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="flex items-center gap-2 text-destructive p-3 bg-destructive/5 rounded-lg">
-                        <XCircle className="h-5 w-5" />
-                        <p>Nenhuma chave PIX cadastrada</p>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Cadastre uma chave PIX para receber suas comissões de forma automática.
-                      </p>
-                      <Button
-                        variant="outline"
-                        onClick={() => setShowPixModal(true)}
-                        className="border-primary text-primary hover:bg-primary/10"
-                      >
-                        <CreditCard className="h-4 w-4 mr-2" />
-                        Cadastrar Chave PIX
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <RepresentativePanel
+            referralLink={referralLink}
+            onCopyLink={copyToClipboard}
+            representativeData={representativeData}
+            showIdentifierModal={showIdentifierModal}
+            setShowIdentifierModal={setShowIdentifierModal}
+            showPixModal={showPixModal}
+            setShowPixModal={setShowPixModal}
+            newIdentifier={newIdentifier}
+            setNewIdentifier={setNewIdentifier}
+            newPixKey={newPixKey}
+            setNewPixKey={setNewPixKey}
+            onUpdateIdentifier={updateIdentifier}
+            onUpdatePixKey={updatePixKey}
+            isUpdating={isUpdating}
+          />
         )}
-
-        <Dialog open={showIdentifierModal} onOpenChange={setShowIdentifierModal}>
-          <DialogContent className="bg-card">
-            <DialogHeader>
-              <DialogTitle className="text-primary">
-                Editar Identificador
-              </DialogTitle>
-            </DialogHeader>
-            <div className="py-4">
-              <Input
-                value={newIdentifier}
-                onChange={(e) => setNewIdentifier(e.target.value)}
-                placeholder="Digite seu identificador"
-                className="w-full border-primary/20"
-              />
-              <p className="text-sm text-muted-foreground mt-2">
-                Este identificador será usado no seu link de indicação.
-              </p>
-            </div>
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setShowIdentifierModal(false)}
-                disabled={isUpdating}
-                className="border-primary text-primary hover:bg-primary/10"
-              >
-                Cancelar
-              </Button>
-              <Button
-                onClick={updateIdentifier}
-                disabled={isUpdating}
-                className="bg-primary hover:bg-primary/90 text-onPrimary"
-              >
-                {isUpdating ? "Salvando..." : "Salvar"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        <Dialog open={showPixModal} onOpenChange={setShowPixModal}>
-          <DialogContent className="bg-card">
-            <DialogHeader>
-              <DialogTitle className="text-primary">
-                {representativeData?.pix_key ? "Editar Chave PIX" : "Cadastrar Chave PIX"}
-              </DialogTitle>
-            </DialogHeader>
-            <div className="py-4">
-              <Input
-                value={newPixKey}
-                onChange={(e) => setNewPixKey(e.target.value)}
-                placeholder="Digite sua chave PIX"
-                className="w-full border-primary/20"
-              />
-              <p className="text-sm text-muted-foreground mt-2">
-                Esta chave PIX será usada para receber suas comissões.
-              </p>
-            </div>
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setShowPixModal(false)}
-                disabled={isUpdating}
-                className="border-primary text-primary hover:bg-primary/10"
-              >
-                Cancelar
-              </Button>
-              <Button
-                onClick={updatePixKey}
-                disabled={isUpdating}
-                className="bg-primary hover:bg-primary/90 text-onPrimary"
-              >
-                {isUpdating ? "Salvando..." : "Salvar"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
 
         <UserEditModal 
           isOpen={showEditModal}
