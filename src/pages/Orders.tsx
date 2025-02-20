@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { Search, ShoppingBag, Copy, ExternalLink } from "lucide-react";
+import { Search, ShoppingBag, Copy, ExternalLink, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -208,8 +208,16 @@ const Orders = () => {
                       placeholder="Buscar por cliente..."
                       value={searchTerm}
                       onChange={e => setSearchTerm(e.target.value)}
-                      className="pl-10 w-full md:w-64"
+                      className="pl-10 pr-10 w-full md:w-64"
                     />
+                    {searchTerm && (
+                      <button
+                        onClick={() => setSearchTerm("")}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    )}
                   </div>
                   <Select
                     value={pageSize.toString()}

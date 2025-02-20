@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, X } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -34,13 +34,21 @@ export function ProductListFilters({
   return (
     <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
       <div className="flex-1 max-w-sm relative">
+        <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
         <Input
           placeholder="Buscar por nome ou referência..."
           value={search}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="pl-10"
+          className="pl-10 pr-10"
         />
-        <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+        {search && (
+          <button
+            onClick={() => onSearchChange("")}
+            className="absolute right-3 top-2.5 text-muted-foreground hover:text-foreground"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        )}
       </div>
       
       <div className="flex items-center gap-4">
