@@ -28,3 +28,11 @@ export interface Order {
   notes?: string;
 }
 
+export interface OrderWithItems extends Order {
+  customer_name: string;
+  customer_phone: string;
+  customer_city: string;
+  customer_state: string;
+  customer_zip_code: string;
+  company_id: string;
+}

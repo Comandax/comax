@@ -1,10 +1,15 @@
+
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import type { OrderWithItems } from "@/types/order";
 
-const OrderDetails = ({ order }: { order: OrderWithItems }) => {
+interface OrderDetailsProps {
+  order: OrderWithItems;
+}
+
+const OrderDetails = ({ order }: OrderDetailsProps) => {
   // Para converter a data UTC do banco para o fuso horário local (Brasília)
   const formatOrderDateTime = (dateStr: string, timeStr: string) => {
     // Combina a data e hora em um único string ISO
