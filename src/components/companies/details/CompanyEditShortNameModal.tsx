@@ -115,7 +115,7 @@ export function CompanyEditShortNameModal({
               >
                 Cancelar
               </Button>
-              <Button type="submit" disabled={isLoading}>
+              <Button type="submit" disabled={isLoading} className="bg-primary text-onPrimary">
                 {isLoading ? "Salvando..." : "Salvar"}
               </Button>
             </div>

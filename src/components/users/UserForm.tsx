@@ -64,7 +64,7 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
         <UserNameFields form={form} />
         <UserContactFields form={form} />
         <UserPasswordFields form={form} isEditMode={!!initialData} />
-        <Button type="submit" disabled={isLoading}>
+        <Button type="submit" disabled={isLoading} className="bg-primary text-onPrimary">
           {isLoading ? "Salvando..." : "Salvar"}
         </Button>
       </form>

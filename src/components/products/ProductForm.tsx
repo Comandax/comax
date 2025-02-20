@@ -119,7 +119,7 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
           quantityArray={quantityArray} 
         />
 
-        <Button type="submit" disabled={isUploading} className="bg-primary text-onPrimary hover:bg-primary/90">
+        <Button type="submit" disabled={isUploading} className="bg-primary text-onPrimary">
           {isUploading ? 'Uploading...' : isEditing ? 'Atualizar' : 'Salvar'}
         </Button>
       </form>
