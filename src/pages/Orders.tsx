@@ -179,7 +179,7 @@ const Orders = () => {
 
   if (!company || !ordersData) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-surface">
         <div className="container mx-auto py-10">
           <LoadingState />
         </div>
@@ -190,7 +190,7 @@ const Orders = () => {
   const hasNoOrders = ordersData.orders.length === 0;
 
   return (
-    <div className="min-h-screen bg-[#F1F0FB]">
+    <div className="min-h-screen bg-surface">
       <OrdersHeader 
         userProfile={userProfile}
         company={company}
