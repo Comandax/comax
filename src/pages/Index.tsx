@@ -137,11 +137,19 @@ const Index = () => {
         }))
       }));
 
+      // Configura a data e hora para o fuso horário de Brasília
       const now = new Date();
-      const timeStr = now.toLocaleTimeString('pt-BR', { 
+      const brasiliaDate = new Date(now.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
+      
+      const timeStr = brasiliaDate.toLocaleTimeString('pt-BR', { 
         hour: '2-digit', 
-        minute: '2-digit' 
+        minute: '2-digit',
+        timeZone: "America/Sao_Paulo"
       });
+
+      const dateStr = brasiliaDate.toLocaleDateString('pt-BR', {
+        timeZone: "America/Sao_Paulo"
+      }).split('/').reverse().join('-');
 
       const { error: insertError } = await supabase
         .from('orders')
@@ -155,7 +163,7 @@ const Index = () => {
           items: jsonItems,
           total: total,
           notes: notes || null,
-          date: now.toISOString().split('T')[0],
+          date: dateStr,
           time: timeStr
         });
 
