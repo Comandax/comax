@@ -32,7 +32,7 @@ function App() {
             <Route path="/users/create" element={<UserCreate />} />
             <Route path="/users/create/:referralCode" element={<UserCreateWithReferral />} />
             <Route path="/:shortName" element={<Index />} />
-            <Route path="/order/success" element={<OrderSuccess />} />
+            <Route path="/:shortName/success" element={<OrderSuccess />} />
 
             {/* Protected routes */}
             <Route element={<ProtectedRoute><Outlet /></ProtectedRoute>}>
