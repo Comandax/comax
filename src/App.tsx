@@ -1,5 +1,5 @@
 
-import { BrowserRouter, Routes, Route, Outlet } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AuthProvider } from "@/contexts/AuthContext";
@@ -27,6 +27,9 @@ function App() {
       <BrowserRouter>
         <AuthProvider>
           <Routes>
+            {/* Root redirect */}
+            <Route path="/" element={<Navigate to="/admin" replace />} />
+
             {/* Public routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/users/create" element={<UserCreate />} />
