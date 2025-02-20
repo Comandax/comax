@@ -14,7 +14,7 @@ export const OrderSummaryFooter = ({ onSubmit, isSubmitting }: OrderSummaryFoote
         onClick={onSubmit} 
         size="lg" 
         disabled={isSubmitting}
-        className="flex items-center gap-2 w-full md:w-auto"
+        className="flex items-center gap-2 w-full md:w-auto text-onPrimary"
       >
         {isSubmitting ? (
           <>
