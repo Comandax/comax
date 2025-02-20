@@ -143,10 +143,10 @@ const Index = () => {
       // Ajusta para UTC-3 (Brasília)
       const brazilTime = new Date(now.getTime() - (3 * 60 * 60 * 1000));
       
-      // Formata a data como YYYY-MM-DD
-      const year = brazilTime.getUTCFullYear();
-      const month = String(brazilTime.getUTCMonth() + 1).padStart(2, '0');
-      const day = String(brazilTime.getUTCDate()).padStart(2, '0');
+      // Formata a data como YYYY-MM-DD usando métodos locais
+      const year = brazilTime.getFullYear();
+      const month = String(brazilTime.getMonth() + 1).padStart(2, '0');
+      const day = String(brazilTime.getDate()).padStart(2, '0');
       const dateStr = `${year}-${month}-${day}`;
       
       // Formata a hora como HH:mm
