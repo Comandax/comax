@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
@@ -14,6 +15,7 @@ const Index = () => {
   const [company, setCompany] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const { toast } = useToast();
   const params = useParams();
   const navigate = useNavigate();
@@ -78,15 +80,20 @@ const Index = () => {
   if (isLoading) return <LoadingState />;
   if (error || !company) return <NotFoundState error={error} />;
 
+  const handleSubmitOrder = async (notes: string) => {
+    // Implementar a lógica de submissão do pedido
+    console.log("Submetendo pedido com notas:", notes);
+  };
+
   return (
     <div className="flex flex-col min-h-screen h-full bg-background">
       <CompanyInfo 
         company={company}
-        total={0}
-        items={[]}
-        onSubmitOrder={async () => {}}
-        isOpen={false}
-        onOpenChange={() => {}}
+        total={84.00} // Valor fixo para teste, deve vir do estado real do pedido
+        items={[]} // Deve vir do estado real do pedido
+        onSubmitOrder={handleSubmitOrder}
+        isOpen={isModalOpen}
+        onOpenChange={setIsModalOpen}
         isCalculating={false}
       />
       
