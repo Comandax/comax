@@ -85,7 +85,8 @@ const Index = () => {
       <div className="flex flex-col min-h-screen h-full bg-background">
         <CompanyInfo company={company} />
         
-        <div className="container mx-auto px-4 py-2 flex-1">
+        {/* Adicionado pt-24 para compensar a altura da barra superior fixa */}
+        <div className="container mx-auto px-4 py-2 flex-1 pt-24">
           <div className="max-w-6xl mx-auto space-y-6">
             <h1 className="text-4xl font-bold text-center text-onSurfaceVariant">
               Simulações e Pedidos
@@ -102,14 +103,13 @@ const Index = () => {
         </div>
       </div>
       
-      {/* FloatingTotal renderizado fora do card, no nível raiz */}
       <FloatingTotal 
-        total={0} // Substitua pelos valores reais
-        items={[]} // Substitua pelos valores reais
-        onSubmitOrder={async () => {}} // Substitua pela função real
-        isOpen={false} // Substitua pelo estado real
-        onOpenChange={() => {}} // Substitua pela função real
-        isCalculating={false} // Substitua pelo estado real
+        total={0}
+        items={[]}
+        onSubmitOrder={async () => {}}
+        isOpen={false}
+        onOpenChange={() => {}}
+        isCalculating={false}
       />
     </>
   );
