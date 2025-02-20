@@ -137,19 +137,20 @@ const Index = () => {
         }))
       }));
 
-      // Configura a data e hora para o fuso horário de Brasília
-      const now = new Date();
-      const brasiliaDate = new Date(now.toLocaleString("en-US", { timeZone: "America/Sao_Paulo" }));
+      // Obtém a data atual no fuso horário de Brasília
+      const date = new Date();
+      const offset = -3; // UTC-3 (Brasília)
+      date.setHours(date.getHours() + offset);
       
-      const timeStr = brasiliaDate.toLocaleTimeString('pt-BR', { 
+      const timeStr = date.toLocaleTimeString('pt-BR', { 
         hour: '2-digit', 
         minute: '2-digit',
-        timeZone: "America/Sao_Paulo"
+        timeZone: "UTC"
       });
 
-      const dateStr = brasiliaDate.toLocaleDateString('pt-BR', {
-        timeZone: "America/Sao_Paulo"
-      }).split('/').reverse().join('-');
+      const dateStr = date.toISOString().split('T')[0];
+
+      console.log('Data e hora do pedido:', { dateStr, timeStr });
 
       const { error: insertError } = await supabase
         .from('orders')
