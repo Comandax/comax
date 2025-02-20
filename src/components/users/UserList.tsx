@@ -1,55 +1,47 @@
 
 import { useQuery } from "@tanstack/react-query";
-import { getProfiles } from "@/services/profileService";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { Button } from "../ui/button";
-import { useNavigate } from "react-router-dom";
-import { Plus, Pencil, Trash2, ArrowUpDown } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { Input } from "../ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
 import { useState } from "react";
-
-type SortField = 'name' | 'company' | 'email' | 'phone' | 'created_at';
-type SortOrder = 'asc' | 'desc';
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
+import { Card, CardContent } from "@/components/ui/card";
+import { UserListHeader } from "./UserListHeader";
+import { UserListControls } from "./UserListControls";
+import { UserListTable } from "./UserListTable";
+import { UserListPagination } from "./UserListPagination";
+import { UserEditModal } from "./UserEditModal";
+import { SortField, SortOrder } from "./types";
+import { AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export function UserList() {
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [sortField, setSortField] = useState<SortField>('name');
   const [sortOrder, setSortOrder] = useState<SortOrder>('asc');
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const { data: profilesData, isLoading } = useQuery({
     queryKey: ['profiles'],
     queryFn: async () => {
-      const { data: profiles, error: profilesError } = await supabase
+      let query = supabase
         .from('profiles')
-        .select('*');
+        .select('*, companies(name)');
+
+      if (user?.roles?.includes('representative')) {
+        const { data: representative } = await supabase
+          .from('representatives')
+          .select('id')
+          .eq('profile_id', user.id)
+          .single();
+
+        if (representative) {
+          query = query.eq('representative_id', representative.id);
+        }
+      }
+
+      const { data: profiles, error: profilesError } = await query;
 
       if (profilesError) throw profilesError;
 
@@ -70,18 +62,16 @@ export function UserList() {
     },
   });
 
-  // Filtragem
   const filteredProfiles = profilesData?.filter(profile => {
     const searchTerm = search.toLowerCase();
     return (
       profile.fullName.toLowerCase().includes(searchTerm) ||
       profile.companyName.toLowerCase().includes(searchTerm) ||
-      profile.email.toLowerCase().includes(searchTerm) ||
+      profile.email?.toLowerCase().includes(searchTerm) ||
       (profile.phone && profile.phone.toLowerCase().includes(searchTerm))
     );
   }) || [];
 
-  // Ordenação
   const sortedProfiles = [...filteredProfiles].sort((a, b) => {
     let compareA, compareB;
 
@@ -118,7 +108,6 @@ export function UserList() {
     }
   });
 
-  // Paginação
   const totalPages = Math.ceil(sortedProfiles.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -136,134 +125,52 @@ export function UserList() {
   if (isLoading) return <div>Carregando...</div>;
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Usuários</h2>
-        <Button onClick={() => navigate('/users/create')}>
-          <Plus className="size-4" />
-          Novo Usuário
-        </Button>
-      </div>
-
-      <div className="flex gap-4 items-center">
-        <div className="flex-1">
-          <Input
-            placeholder="Buscar por nome, empresa, email ou telefone..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="max-w-sm"
-          />
+    <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
+      <CardContent className="p-6 space-y-4">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <div className="h-8 w-1 bg-primary rounded-full" />
+            <h2 className="text-2xl font-bold text-primary">Usuários</h2>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-500">Itens por página:</span>
-          <Select
-            value={String(itemsPerPage)}
-            onValueChange={(value) => {
-              setItemsPerPage(Number(value));
-              setCurrentPage(1);
-            }}
-          >
-            <SelectTrigger className="w-20">
-              <SelectValue placeholder="10" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="5">5</SelectItem>
-              <SelectItem value="10">10</SelectItem>
-              <SelectItem value="20">20</SelectItem>
-              <SelectItem value="50">50</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
+        
+        <UserListControls
+          search={search}
+          onSearchChange={setSearch}
+          itemsPerPage={itemsPerPage}
+          onItemsPerPageChange={(value) => {
+            setItemsPerPage(value);
+            setCurrentPage(1);
+          }}
+        />
 
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead onClick={() => handleSort('name')} className="cursor-pointer hover:bg-gray-50">
-              Nome <ArrowUpDown className="inline size-4 ml-1" />
-            </TableHead>
-            <TableHead onClick={() => handleSort('company')} className="cursor-pointer hover:bg-gray-50">
-              Empresa <ArrowUpDown className="inline size-4 ml-1" />
-            </TableHead>
-            <TableHead onClick={() => handleSort('email')} className="cursor-pointer hover:bg-gray-50">
-              Email <ArrowUpDown className="inline size-4 ml-1" />
-            </TableHead>
-            <TableHead onClick={() => handleSort('phone')} className="cursor-pointer hover:bg-gray-50">
-              Celular <ArrowUpDown className="inline size-4 ml-1" />
-            </TableHead>
-            <TableHead onClick={() => handleSort('created_at')} className="cursor-pointer hover:bg-gray-50">
-              Criado em <ArrowUpDown className="inline size-4 ml-1" />
-            </TableHead>
-            <TableHead className="text-right">Ações</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {currentProfiles.map((profile) => (
-            <TableRow key={profile.id}>
-              <TableCell>{profile.fullName}</TableCell>
-              <TableCell>{profile.companyName}</TableCell>
-              <TableCell>{profile.email}</TableCell>
-              <TableCell>{profile.phone}</TableCell>
-              <TableCell>
-                {format(new Date(profile.created_at), "dd/MM/yyyy HH:mm", { locale: ptBR })}
-              </TableCell>
-              <TableCell className="text-right space-x-2">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => navigate(`/users/${profile.id}`)}
-                >
-                  <Pencil className="size-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="text-red-500 hover:text-red-600"
-                >
-                  <Trash2 className="size-4" />
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+        {search && filteredProfiles.length === 0 ? (
+          <Alert variant="destructive" className="bg-destructive/5 border-destructive/20">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>
+              Nenhum usuário encontrado para o termo "{search}".
+            </AlertDescription>
+          </Alert>
+        ) : (
+          <>
+            <UserListTable
+              profiles={currentProfiles}
+              onSort={handleSort}
+            />
 
-      {totalPages > 1 && (
-        <Pagination className="mt-4">
-          <PaginationContent>
-            <PaginationItem>
-              <Button
-                variant="outline"
-                onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                disabled={currentPage === 1}
-              >
-                Anterior
-              </Button>
-            </PaginationItem>
-            
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-              <PaginationItem key={page}>
-                <Button
-                  variant={currentPage === page ? "default" : "outline"}
-                  onClick={() => setCurrentPage(page)}
-                >
-                  {page}
-                </Button>
-              </PaginationItem>
-            ))}
+            <UserListPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </>
+        )}
 
-            <PaginationItem>
-              <Button
-                variant="outline"
-                onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                disabled={currentPage === totalPages}
-              >
-                Próximo
-              </Button>
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
-      )}
-    </div>
+        <UserEditModal 
+          isOpen={showEditModal}
+          onOpenChange={setShowEditModal}
+        />
+      </CardContent>
+    </Card>
   );
 }

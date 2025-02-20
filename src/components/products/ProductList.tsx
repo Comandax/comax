@@ -1,28 +1,13 @@
+
 import type { Product, ProductFormData } from "@/types/product";
 import { ProductTable } from "./table/ProductTable";
 import { useState } from "react";
 import { ProductDetailsModal } from "./details/ProductDetailsModal";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { PackageX, Search } from "lucide-react";
 import { LoadingState } from "@/components/index/LoadingState";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { EmptyProductList } from "./empty/EmptyProductList";
+import { ProductListFilters } from "./filters/ProductListFilters";
+import { ProductListPagination } from "./pagination/ProductListPagination";
 
 interface ProductListProps {
   products: Product[];
@@ -31,12 +16,21 @@ interface ProductListProps {
   onSubmit?: (data: ProductFormData, isEditing: boolean) => Promise<void>;
   onToggleStatus?: (productId: string, disabled: boolean) => Promise<void>;
   isLoading?: boolean;
+  onOpenNewProductModal: () => void;
 }
 
 type SortField = 'reference' | 'name';
 type SortOrder = 'asc' | 'desc';
 
-export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStatus, isLoading = false }: ProductListProps) {
+export function ProductList({ 
+  products, 
+  onEdit, 
+  onDelete, 
+  onSubmit, 
+  onToggleStatus,
+  onOpenNewProductModal,
+  isLoading = false 
+}: ProductListProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [search, setSearch] = useState('');
   const [showOnlyActive, setShowOnlyActive] = useState(false);
@@ -54,15 +48,7 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
   }
 
   if (!products.length) {
-    return (
-      <Card className="p-8 text-center space-y-4 bg-white/95">
-        <PackageX className="w-12 h-12 mx-auto text-primary" />
-        <h2 className="text-2xl font-semibold">Nenhum produto cadastrado</h2>
-        <p className="text-muted-foreground">
-          Clique no botão "Novo Produto" acima para começar a cadastrar seus produtos.
-        </p>
-      </Card>
-    );
+    return <EmptyProductList onNewProduct={onOpenNewProductModal} />;
   }
 
   const handleProductClick = (product: Product) => {
@@ -113,103 +99,39 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
   const currentProducts = sortedProducts.slice(startIndex, endIndex);
 
   return (
-    <Card className="bg-white/95">
-      <div className="p-6 space-y-6">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="flex-1 max-w-sm relative">
-            <Input
-              placeholder="Buscar por nome ou referência..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-10"
-            />
-            <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
-          </div>
-          
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Switch
-                checked={showOnlyActive}
-                onCheckedChange={setShowOnlyActive}
-                id="active-filter"
-              />
-              <Label htmlFor="active-filter">Mostrar apenas ativos</Label>
-            </div>
+    <div className="p-6 space-y-6">
+      <ProductListFilters
+        search={search}
+        onSearchChange={setSearch}
+        showOnlyActive={showOnlyActive}
+        onShowOnlyActiveChange={setShowOnlyActive}
+        itemsPerPage={itemsPerPage}
+        onItemsPerPageChange={(value) => {
+          setItemsPerPage(value);
+          setCurrentPage(1);
+        }}
+        onOpenNewProductModal={onOpenNewProductModal}
+      />
 
-            <Select
-              value={String(itemsPerPage)}
-              onValueChange={(value) => {
-                setItemsPerPage(Number(value));
-                setCurrentPage(1);
-              }}
-            >
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Itens por página" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="5">5 itens</SelectItem>
-                <SelectItem value="10">10 itens</SelectItem>
-                <SelectItem value="20">20 itens</SelectItem>
-                <SelectItem value="50">50 itens</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <div className="rounded-lg overflow-hidden border">
-          <ProductTable
-            products={currentProducts}
-            onEdit={onEdit}
-            onDelete={onDelete}
-            onSubmit={onSubmit}
-            onToggleStatus={handleToggleStatus}
-            onProductClick={handleProductClick}
-            sortField={sortField}
-            sortOrder={sortOrder}
-            onSort={handleSort}
-          />
-        </div>
-
-        {totalPages > 1 && (
-          <div className="flex justify-center mt-4">
-            <Pagination>
-              <PaginationContent>
-                <PaginationItem>
-                  <Button
-                    variant="ghost"
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                    disabled={currentPage === 1}
-                  >
-                    <PaginationPrevious />
-                  </Button>
-                </PaginationItem>
-                
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                  <PaginationItem key={page}>
-                    <Button
-                      variant={currentPage === page ? "default" : "ghost"}
-                      className={currentPage === page ? "pointer-events-none" : ""}
-                      onClick={() => setCurrentPage(page)}
-                    >
-                      {page}
-                    </Button>
-                  </PaginationItem>
-                ))}
-
-                <PaginationItem>
-                  <Button
-                    variant="ghost"
-                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                    disabled={currentPage === totalPages}
-                  >
-                    <PaginationNext />
-                  </Button>
-                </PaginationItem>
-              </PaginationContent>
-            </Pagination>
-          </div>
-        )}
+      <div className="rounded-lg overflow-hidden border">
+        <ProductTable
+          products={currentProducts}
+          onEdit={onEdit}
+          onDelete={onDelete}
+          onSubmit={onSubmit}
+          onToggleStatus={handleToggleStatus}
+          onProductClick={handleProductClick}
+          sortField={sortField}
+          sortOrder={sortOrder}
+          onSort={handleSort}
+        />
       </div>
+
+      <ProductListPagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
 
       <ProductDetailsModal
         product={selectedProduct}
@@ -220,6 +142,6 @@ export function ProductList({ products, onEdit, onDelete, onSubmit, onToggleStat
         onSubmit={onSubmit}
         onToggleStatus={handleToggleStatus}
       />
-    </Card>
+    </div>
   );
 }

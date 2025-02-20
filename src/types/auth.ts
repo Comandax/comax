@@ -1,5 +1,5 @@
 
-export type Role = 'superuser' | 'owner';
+export type Role = 'superuser' | 'owner' | 'representative';
 
 export interface User {
   id: string;
@@ -9,6 +9,7 @@ export interface User {
   name?: string;
   companyId: string;
   roles?: Role[];
+  phone?: string;
 }
 
 export interface AuthProvider {

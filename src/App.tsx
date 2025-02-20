@@ -1,100 +1,60 @@
 
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./contexts/AuthContext";
-import { ProtectedRoute } from "./components/auth/ProtectedRoute";
-import Index from "./pages/Index";
-import Admin from "./pages/Admin";
-import Companies from "./pages/Companies";
-import Products from "./pages/Products";
-import Orders from "./pages/Orders";
-import Users from "./pages/Users";
-import UserEdit from "./pages/UserEdit";
-import UserCreate from "./pages/UserCreate";
-import NotFound from "./pages/NotFound";
-import Login from "./pages/Login";
-import OrderSuccess from "./pages/OrderSuccess";
+import { AuthProvider } from "@/contexts/AuthContext";
+
+// Pages
+import Login from "@/pages/Login";
+import Admin from "@/pages/Admin";
+import Products from "@/pages/Products";
+import Orders from "@/pages/Orders";
+import UserCreate from "@/pages/UserCreate";
+import Users from "@/pages/Users";
+import NotFound from "@/pages/NotFound";
+import Index from "@/pages/Index";
+import OrderSuccess from "@/pages/OrderSuccess";
+import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import UserCreateWithReferral from "@/pages/UserCreateWithReferral";
+import UserEdit from "@/pages/UserEdit";
+import Companies from "@/pages/Companies";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <BrowserRouter>
+        <AuthProvider>
           <Routes>
-            <Route path="/" element={<Index />} />
+            {/* Root redirect */}
+            <Route path="/" element={<Navigate to="/admin" replace />} />
+
+            {/* Public routes */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/users/create" element={<UserCreate />} />
+            <Route path="/r/:identifier" element={<UserCreateWithReferral />} />
             <Route path="/:shortName" element={<Index />} />
             <Route path="/:shortName/success" element={<OrderSuccess />} />
-            <Route path="/login" element={<Login />} />
-            <Route 
-              path="/admin" 
-              element={
-                <ProtectedRoute>
-                  <Admin />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/companies" 
-              element={
-                <ProtectedRoute>
-                  <Companies />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/products" 
-              element={
-                <ProtectedRoute>
-                  <Products />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/orders" 
-              element={
-                <ProtectedRoute>
-                  <Orders />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/users" 
-              element={
-                <ProtectedRoute superUserOnly>
-                  <Users />
-                </ProtectedRoute>
-              } 
-            />
-            <Route path="/users/create" element={<UserCreate />} />
-            <Route 
-              path="/users/:id" 
-              element={
-                <ProtectedRoute>
-                  <UserEdit />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/profile/:id" 
-              element={
-                <ProtectedRoute>
-                  <UserEdit />
-                </ProtectedRoute>
-              } 
-            />
+
+            {/* Protected routes */}
+            <Route element={<ProtectedRoute><Outlet /></ProtectedRoute>}>
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/users" element={<Users />} />
+              <Route path="/users/:id" element={<UserEdit />} />
+              <Route path="/companies" element={<Companies />} />
+            </Route>
+
+            {/* Fallback route */}
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
-);
+          <Toaster />
+        </AuthProvider>
+      </BrowserRouter>
+    </QueryClientProvider>
+  );
+}
 
 export default App;

@@ -9,5 +9,9 @@ export interface Company {
   short_name: string;
 }
 
+export interface CompanyEditFormData {
+  short_name: string;
+}
+
 export type SortField = "name" | "created_at";
 export type SortOrder = "asc" | "desc";

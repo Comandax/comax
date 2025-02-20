@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,7 +47,7 @@ export function CompanyEditForm({
         <Button variant="outline" onClick={onCancel}>
           Cancelar
         </Button>
-        <Button onClick={handleSubmit}>
+        <Button onClick={handleSubmit} className="bg-primary text-onPrimary">
           Salvar
         </Button>
       </div>

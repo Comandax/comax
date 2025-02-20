@@ -1,40 +1,49 @@
 
-import { LayoutDashboard, Package, Building2, LogOut, User } from "lucide-react";
-import { Link, Navigate } from "react-router-dom";
+import { Menu } from "lucide-react";
+import { Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Card } from "@/components/ui/card";
+import { CompanyEditShortNameModal } from "@/components/companies/details/CompanyEditShortNameModal";
+import { useState } from "react";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarHeader,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { CompanyHeader } from "@/components/admin/CompanyHeader";
+import { AdminSidebarMenu } from "@/components/admin/AdminSidebarMenu";
+import { RecentOrdersCard } from "@/components/admin/RecentOrdersCard";
+import { PublicLinkCard } from "@/components/admin/PublicLinkCard";
 
 const Admin = () => {
-  const {
-    user,
-    logout
-  } = useAuth();
-  const {
-    toast
-  } = useToast();
+  const { user, logout } = useAuth();
+  const { toast } = useToast();
   const navigate = useNavigate();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   if (!user) {
     return <Navigate to="/login" replace />;
   }
 
-  const {
-    data: userCompany,
-    isError
-  } = useQuery({
+  if (user.roles?.includes('representative')) {
+    return <Navigate to="/users" replace />;
+  }
+
+  const { data: userCompany, isError, refetch } = useQuery({
     queryKey: ['company', user?.id],
     queryFn: async () => {
-      const {
-        data,
-        error
-      } = await supabase.from('companies').select('*').eq('owner_id', user?.id).maybeSingle();
+      const { data, error } = await supabase
+        .from('companies')
+        .select('*')
+        .eq('owner_id', user?.id)
+        .maybeSingle();
+      
       if (error) {
         console.error('Error fetching company:', error);
         throw error;
@@ -44,34 +53,47 @@ const Admin = () => {
     enabled: !!user
   });
 
-  const {
-    data: userRoles
-  } = useQuery({
-    queryKey: ['user_roles', user?.id],
+  const { data: recentOrders = [], isLoading: isLoadingOrders } = useQuery({
+    queryKey: ['recent-orders', userCompany?.id],
     queryFn: async () => {
-      const {
-        data,
-        error
-      } = await supabase.from('user_roles').select('role').eq('user_id', user?.id);
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!user
-  });
+      const { data, error } = await supabase
+        .from('orders')
+        .select('*')
+        .eq('company_id', userCompany?.id)
+        .order('created_at', { ascending: false })
+        .limit(5);
 
-  const {
-    data: userProfile
-  } = useQuery({
-    queryKey: ['profile', user?.id],
-    queryFn: async () => {
-      const {
-        data,
-        error
-      } = await supabase.from('profiles').select('*').eq('id', user?.id).single();
-      if (error) throw error;
-      return data;
+      if (error) {
+        console.error('Error fetching recent orders:', error);
+        throw error;
+      }
+
+      return (data || []).map(order => ({
+        _id: order.id,
+        customerName: order.customer_name,
+        customerPhone: order.customer_phone,
+        customerCity: order.customer_city,
+        customerState: order.customer_state,
+        customerZipCode: order.customer_zip_code,
+        date: order.date,
+        time: order.time,
+        items: (order.items as any[]).map((item: any) => ({
+          productId: item.productId,
+          reference: item.reference,
+          name: item.name,
+          sizes: item.sizes.map((size: any) => ({
+            size: size.size,
+            price: size.price,
+            quantity: size.quantity,
+            subtotal: size.subtotal
+          }))
+        })),
+        total: order.total,
+        companyId: order.company_id,
+        notes: order.notes || undefined
+      }));
     },
-    enabled: !!user
+    enabled: !!userCompany?.id
   });
 
   const handleLogout = async () => {
@@ -91,97 +113,59 @@ const Admin = () => {
     }
   };
 
-  const userInitials = userProfile ? `${userProfile.first_name[0]}${userProfile.last_name[0]}`.toUpperCase() : 'U';
-  const userName = userProfile ? `${userProfile.first_name} ${userProfile.last_name}` : 'Usuário';
-  const isSuperuser = userRoles?.some(role => role.role === 'superuser');
+  return (
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+        <Sidebar className="border-r border-gray-200 dark:border-gray-700 bg-white lg:bg-white lg:dark:bg-white">
+          <SidebarHeader className="bg-white">
+            <CompanyHeader company={userCompany} />
+          </SidebarHeader>
+          <SidebarContent className="px-4 bg-white">
+            <AdminSidebarMenu userId={user.id} onLogout={handleLogout} />
+          </SidebarContent>
+        </Sidebar>
 
-  return <div className="min-h-screen bg-[#1A1F2C]">
-      <div className="bg-gray-900/50 shadow-md">
-        <div className="container mx-auto">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="flex items-center justify-between py-1.5">
-              <div className="flex items-center gap-8">
-                <img src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" alt="COMAX Logo" className="h-8 w-auto" />
-                <h1 className="text-xl font-semibold text-white">Painel Administrativo</h1>
-              </div>
-              <div className="flex items-center gap-4">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                      <Avatar className="h-10 w-10">
-                        <AvatarFallback className="bg-primary text-primary-foreground">
-                          {userInitials}
-                        </AvatarFallback>
-                      </Avatar>
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end">
-                    <DropdownMenuItem disabled className="font-semibold">
-                      {userName}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => navigate(`/profile/${user.id}`)}>
-                      <User className="mr-2 h-4 w-4" />
-                      Meu Perfil
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => navigate('/companies')}>
-                      <Building2 className="mr-2 h-4 w-4" />
-                      {isSuperuser ? "Gerenciar Empresas" : userCompany ? "Minha Empresa" : "Criar Empresa"}
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleLogout} className="text-red-600">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      Sair
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
+        <main className="flex-1 p-8">
+          <div className="flex items-center justify-between mb-8">
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              Painel Administrativo
+            </h1>
+            <SidebarTrigger>
+              <Button variant="ghost" size="icon" className="hover:bg-primary/10">
+                <Menu className="h-6 w-6 text-primary" />
+              </Button>
+            </SidebarTrigger>
           </div>
-        </div>
-      </div>
 
-      {userCompany && (
-        <div className="bg-white/5 border-b border-white/10">
-          <div className="container mx-auto">
-            <div className="max-w-6xl mx-auto px-4">
-              <div className="flex items-center gap-4 py-2">
-                {userCompany.logo_url && (
-                  <img 
-                    src={userCompany.logo_url} 
-                    alt={`Logo ${userCompany.name}`} 
-                    className="w-8 h-8 object-contain rounded"
-                  />
-                )}
-                <h2 className="text-sm font-medium text-white/90">{userCompany.name}</h2>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <div className="container mx-auto py-10">
-        <div className="max-w-6xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Link to="/products" className="flex items-center p-6 bg-white/95 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <Package className="w-8 h-8 text-blue-500 mr-4" />
-              <div>
-                <h2 className="text-xl font-semibold">Produtos</h2>
-                <p className="text-gray-600">Gerenciar catálogo de produtos</p>
-              </div>
-            </Link>
-
-            <Link to="/orders" className="flex items-center p-6 bg-white/95 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-              <LayoutDashboard className="w-8 h-8 text-blue-500 mr-4" />
-              <div>
-                <h2 className="text-xl font-semibold">Relatório de Pedidos</h2>
-                <p className="text-gray-600">Visualizar e gerenciar pedidos</p>
-              </div>
-            </Link>
+            <RecentOrdersCard
+              orders={recentOrders}
+              isLoading={isLoadingOrders}
+            />
+            
+            {userCompany && (
+              <PublicLinkCard
+                companyShortName={userCompany.short_name}
+                onEdit={() => setIsEditModalOpen(true)}
+              />
+            )}
           </div>
-        </div>
+        </main>
+
+        {userCompany && (
+          <CompanyEditShortNameModal
+            open={isEditModalOpen}
+            onOpenChange={setIsEditModalOpen}
+            companyId={userCompany.id}
+            currentShortName={userCompany.short_name}
+            onSuccess={() => {
+              refetch();
+            }}
+          />
+        )}
       </div>
-    </div>;
+    </SidebarProvider>
+  );
 };
 
 export default Admin;

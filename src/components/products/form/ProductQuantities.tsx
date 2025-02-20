@@ -23,13 +23,14 @@ export function ProductQuantities({ form, quantityArray }: ProductQuantitiesProp
           variant="default"
           size="sm"
           onClick={() => append({ value: 0 })}
+          className="bg-primary text-onPrimary hover:bg-primary/90"
         >
           <Plus className="mr-2 h-4 w-4" />
           Adicionar Quantidade
         </Button>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
         {fields.map((field, index) => (
           <div key={field.id} className="flex gap-2 items-start">
             <FormField
@@ -43,7 +44,7 @@ export function ProductQuantities({ form, quantityArray }: ProductQuantitiesProp
                       type="number"
                       min="0"
                       placeholder="Quantidade"
-                      className="w-full"
+                      className="w-full min-w-[80px]"
                       onChange={(e) => field.onChange(parseInt(e.target.value, 10))}
                     />
                   </FormControl>

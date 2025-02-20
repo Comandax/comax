@@ -2,7 +2,7 @@
 import { ShoppingBag, ListCheck, Loader } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OrderSummaryModal } from "@/components/order/OrderSummaryModal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { OrderItem } from "@/types/order";
 
 interface FloatingTotalProps {
@@ -26,6 +26,15 @@ export const FloatingTotal = ({
 }: FloatingTotalProps) => {
   const [isModalLoading, setIsModalLoading] = useState(false);
   const [notes, setNotes] = useState("");
+  const [showTotal, setShowTotal] = useState(false);
+
+  useEffect(() => {
+    if (total > 0) {
+      setShowTotal(true);
+    } else {
+      setShowTotal(false);
+    }
+  }, [total]);
 
   const handleOpenModal = () => {
     setIsModalLoading(true);
@@ -43,9 +52,13 @@ export const FloatingTotal = ({
   }).format(total);
 
   return (
-    <>
-      <div className="fixed top-4 right-4 bg-[#8B5CF6] shadow-lg rounded-lg p-4 animate-float-in text-white">
-        <div className="flex flex-col gap-4">
+    <div className="fixed inset-0 pointer-events-none">
+      <div className="fixed top-4 right-4 z-[9999] pointer-events-auto">
+        <div 
+          className={`bg-tertiary shadow-lg rounded-lg p-4 text-white transition-all duration-300 transform ${
+            showTotal ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
+          }`}
+        >
           <div className="flex items-center gap-2">
             <ShoppingBag className="w-6 h-6" />
             <div>
@@ -62,10 +75,10 @@ export const FloatingTotal = ({
               </div>
             </div>
           </div>
-          
+            
           <Button 
             variant="secondary" 
-            className="w-full flex items-center gap-2 bg-white hover:bg-white/90 text-[#8B5CF6] font-medium"
+            className="w-full flex items-center gap-2 bg-white hover:bg-white/90 text-tertiary font-medium mt-4"
             onClick={handleOpenModal}
             disabled={isModalLoading || isCalculating}
           >
@@ -91,6 +104,6 @@ export const FloatingTotal = ({
         }}
         onRemoveItem={onRemoveItem}
       />
-    </>
+    </div>
   );
 };

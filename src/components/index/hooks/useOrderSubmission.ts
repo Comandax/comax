@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import type { OrderItem } from "@/types/order";
 import type { Json } from "@/integrations/supabase/types";
@@ -67,29 +67,23 @@ export const useOrderSubmission = () => {
       }
 
       const now = new Date();
-
-      // Garantindo que todos os campos required estejam presentes
-      if (!contactData.state) {
-        throw new Error('Estado não especificado');
-      }
-
-      const orderData = {
-        company_id: companyId,
-        customer_name: contactData.name,
-        customer_phone: contactData.whatsapp,
-        customer_city: contactData.city,
-        customer_state: contactData.state,
-        customer_zip_code: contactData.zipCode,
-        items: orderItems as unknown as Json,
-        total,
-        notes: notes || null,
-        date: now.toISOString().split('T')[0],
-        time: now.toTimeString().split(' ')[0]
-      };
+      const jsonItems = orderItems as unknown as Json;
 
       const { error: insertError } = await supabase
         .from('orders')
-        .insert([orderData]);
+        .insert({
+          company_id: companyId,
+          customer_name: contactData.name,
+          customer_phone: contactData.whatsapp,
+          customer_city: contactData.city,
+          customer_state: contactData.state,
+          customer_zip_code: contactData.zipCode,
+          items: jsonItems,
+          total: total,
+          notes: notes || null,
+          date: now.toISOString().split('T')[0],
+          time: now.toTimeString().split(' ')[0]
+        });
 
       if (insertError) {
         throw insertError;
@@ -97,6 +91,7 @@ export const useOrderSubmission = () => {
 
       navigate(`/${companyData.short_name}/success`);
     } catch (error) {
+      console.error('Erro ao enviar pedido:', error);
       toast({
         title: "Erro ao enviar pedido",
         description: "Ocorreu um erro ao salvar seu pedido. Por favor, tente novamente.",

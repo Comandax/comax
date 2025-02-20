@@ -1,7 +1,8 @@
-
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { Order } from "@/types/order";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 const formatPhoneNumber = (phone: string) => {
   const cleaned = phone.replace(/\D/g, '');
@@ -21,6 +22,21 @@ const formatZipCode = (zipCode: string) => {
   return zipCode;
 };
 
+const formatDate = (dateStr: string) => {
+  try {
+    // Dividir a data em partes
+    const [year, month, day] = dateStr.split('-').map(Number);
+    
+    // Criar uma data às 12:00 (meio-dia) para evitar problemas de timezone
+    const date = new Date(year, month - 1, day, 12, 0, 0);
+    
+    return format(date, "dd/MM/yyyy", { locale: ptBR });
+  } catch (error) {
+    console.error('Erro ao formatar data:', error, 'Data recebida:', dateStr);
+    return dateStr;
+  }
+};
+
 interface OrderDetailsProps {
   order: Order;
 }
@@ -33,7 +49,7 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
           <div>
             <h3 className="font-semibold mb-2">Pedido</h3>
             <p>Código: {order._id}</p>
-            <p>Data: {order.date}</p>
+            <p>Data: {formatDate(order.date)}</p>
             <p>Hora: {order.time}</p>
             {order.notes && (
               <div className="mt-2">
@@ -69,7 +85,10 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
                   </TableHeader>
                   <TableBody>
                     {item.sizes.map((size, index) => (
-                      <TableRow key={`${item.productId}-${size.size}-${index}`}>
+                      <TableRow 
+                        key={`${item.productId}-${size.size}-${index}`}
+                        className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                      >
                         <TableCell>{size.size}</TableCell>
                         <TableCell>{size.quantity}</TableCell>
                         <TableCell className="text-right">

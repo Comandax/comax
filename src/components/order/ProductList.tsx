@@ -3,7 +3,7 @@ import type { Product } from "@/types/product";
 import { ProductSelectionCard } from "@/components/order/ProductSelectionCard";
 import { supabase } from "@/integrations/supabase/client";
 import { LoadingState } from "@/components/index/LoadingState";
-import { PackageX } from "lucide-react";
+import { PackageX, Sparkles } from "lucide-react";
 
 interface ProductListProps {
   products: Product[];
@@ -23,7 +23,7 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
   if (isLoading) {
     return (
       <div className="space-y-6">
-        <h2 className="text-2xl font-semibold text-white">Itens para pedido</h2>
+        <h2 className="text-2xl font-semibold text-onSurfaceVariant mt-8">Itens para pedido</h2>
         <div className="bg-white/90 rounded-lg p-8">
           <LoadingState />
         </div>
@@ -35,10 +35,12 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
     .filter(product => !product.disabled)
     .sort((a, b) => a.reference.localeCompare(b.reference));
 
+  const newProducts = activeProducts.filter(product => product.isNew);
+
   if (!products.length) {
     return (
       <div className="space-y-6">
-        <h2 className="text-2xl font-semibold text-white">Itens para pedido</h2>
+        <h2 className="text-2xl font-semibold text-onSurfaceVariant mt-8">Itens para pedido</h2>
         <div className="bg-white/90 rounded-lg p-8 text-center">
           <PackageX className="w-16 h-16 mx-auto text-gray-400 mb-4" />
           <h3 className="text-xl font-medium text-gray-900 mb-2">
@@ -55,7 +57,7 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
   if (!activeProducts.length) {
     return (
       <div className="space-y-6">
-        <h2 className="text-2xl font-semibold text-white">Itens para pedido</h2>
+        <h2 className="text-2xl font-semibold text-onSurfaceVariant mt-8">Itens para pedido</h2>
         <div className="bg-white/90 rounded-lg p-8 text-center">
           <PackageX className="w-16 h-16 mx-auto text-gray-400 mb-4" />
           <h3 className="text-xl font-medium text-gray-900 mb-2">
@@ -71,28 +73,63 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-semibold text-white">Itens para pedido</h2>
-      {activeProducts.map((product) => (
-        <ProductSelectionCard
-          key={product._id}
-          product={{
-            id: product._id,
-            name: product.name,
-            image: product.image || '',
-            ref: product.reference,
-            sizes: product.sizes.map(size => ({
-              label: size.size,
-              price: size.value,
-              quantities: [0, ...product.quantities.map(q => q.value)]
-            }))
-          }}
-          onQuantitySelect={(size, quantity, price) => 
-            onQuantitySelect(product._id, size, quantity, price)
-          }
-          resetItem={resetItem && resetItem.productId === product._id ? resetItem : undefined}
-        />
-      ))}
+      <h2 className="text-2xl font-semibold text-onSurfaceVariant mt-8">Itens para pedido</h2>
+
+      {newProducts.length > 0 && (
+        <div className="space-y-4 rounded-lg p-6 border bg-primaryContainer border-primaryContainer">
+          <div className="flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-onPrimaryContainer" />
+            <h3 className="text-lg font-medium text-onPrimaryContainer">Lançamento</h3>
+          </div>
+          <div className="space-y-4">
+            {newProducts.map((product) => (
+              <ProductSelectionCard
+                key={`new-${product._id}`}
+                product={{
+                  id: product._id,
+                  name: product.name,
+                  image: product.image || '',
+                  ref: product.reference,
+                  sizes: product.sizes.map(size => ({
+                    label: size.size,
+                    price: size.value,
+                    quantities: [0, ...product.quantities.map(q => q.value)]
+                  }))
+                }}
+                onQuantitySelect={(size, quantity, price) => 
+                  onQuantitySelect(product._id, size, quantity, price)
+                }
+                resetItem={resetItem && resetItem.productId === product._id ? resetItem : undefined}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="space-y-4">
+        {activeProducts
+          .filter(product => !product.isNew)
+          .map((product) => (
+            <ProductSelectionCard
+              key={product._id}
+              product={{
+                id: product._id,
+                name: product.name,
+                image: product.image || '',
+                ref: product.reference,
+                sizes: product.sizes.map(size => ({
+                  label: size.size,
+                  price: size.value,
+                  quantities: [0, ...product.quantities.map(q => q.value)]
+                }))
+              }}
+              onQuantitySelect={(size, quantity, price) => 
+                onQuantitySelect(product._id, size, quantity, price)
+              }
+              resetItem={resetItem && resetItem.productId === product._id ? resetItem : undefined}
+            />
+          ))}
+      </div>
     </div>
   );
 };
-

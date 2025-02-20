@@ -76,7 +76,7 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
         </div>
         
         <div className="md:w-1/2">
-          <div className="grid grid-cols-[80px_1fr_60px] gap-4 text-sm font-medium text-gray-700 mb-2 bg-gray-400 p-2 rounded-md">
+          <div className="grid grid-cols-[80px_1fr_60px] gap-4 text-sm font-medium bg-primary text-onPrimary p-2 rounded-md">
             <div>Tamanho</div>
             <div>Quantidades</div>
             <div>Subtotal</div>

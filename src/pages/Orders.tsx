@@ -1,16 +1,15 @@
-
 import { useState, useMemo } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { Search, ShoppingBag, Copy, ExternalLink } from "lucide-react";
+import { Search, ShoppingBag, Copy, ExternalLink, X } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LoadingState } from "@/components/index/LoadingState";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "@/components/ui/pagination";
 import type { Order } from "@/types/order";
@@ -90,7 +89,21 @@ const Orders = () => {
     queryFn: async () => {
       let query = supabase
         .from("orders")
-        .select("*", { count: 'exact' })
+        .select(`
+          id,
+          customer_name,
+          customer_phone,
+          customer_city,
+          customer_state,
+          customer_zip_code,
+          date,
+          time,
+          items,
+          total,
+          company_id,
+          notes,
+          created_at
+        `, { count: 'exact' })
         .eq("company_id", company?.id);
       
       const column = sortConfig.column === 'customerName' ? 'customer_name' : 
@@ -104,22 +117,23 @@ const Orders = () => {
         console.error("Error fetching orders:", error);
         throw error;
       }
-      
       return {
-        orders: data.map((order: any) => ({
-          _id: order.id,
-          customerName: order.customer_name,
-          customerPhone: order.customer_phone,
-          customerCity: order.customer_city,
-          customerState: order.customer_state,
-          customerZipCode: order.customer_zip_code,
-          date: new Date(order.date).toLocaleDateString(),
-          time: order.time,
-          items: order.items,
-          total: order.total,
-          companyId: order.company_id,
-          notes: order.notes
-        })),
+        orders: data.map((order: any) => {
+          return {
+            _id: order.id,
+            customerName: order.customer_name,
+            customerPhone: order.customer_phone,
+            customerCity: order.customer_city,
+            customerState: order.customer_state,
+            customerZipCode: order.customer_zip_code,
+            date: order.date,
+            time: order.time,
+            items: order.items,
+            total: order.total,
+            companyId: order.company_id,
+            notes: order.notes
+          };
+        }),
         totalCount: count || 0
       };
     },
@@ -179,7 +193,7 @@ const Orders = () => {
 
   if (!company || !ordersData) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-surface">
         <div className="container mx-auto py-10">
           <LoadingState />
         </div>
@@ -190,87 +204,57 @@ const Orders = () => {
   const hasNoOrders = ordersData.orders.length === 0;
 
   return (
-    <div className="min-h-screen bg-[#1A1F2C]">
+    <div className="min-h-screen bg-surface-container-lowest">
       <OrdersHeader 
         userProfile={userProfile}
         company={company}
         onLogout={handleLogout}
       />
 
-      <div className="container mx-auto py-10">
-        <div className="max-w-6xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="rounded-lg overflow-hidden border">
           {!hasNoOrders && (
-            <div className="space-y-4 mb-6">
-              <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
-                  <Input
-                    placeholder="Buscar por cliente..."
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                    className="pl-10 w-full md:w-64"
-                  />
+            <div className="p-6">
+              <div className="space-y-4 mb-6">
+                <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+                    <Input
+                      placeholder="Buscar por cliente..."
+                      value={searchTerm}
+                      onChange={e => setSearchTerm(e.target.value)}
+                      className="pl-10 pr-10 w-full md:w-64"
+                    />
+                    {searchTerm && (
+                      <button
+                        onClick={() => setSearchTerm("")}
+                        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    )}
+                  </div>
+                  <Select
+                    value={pageSize.toString()}
+                    onValueChange={value => {
+                      setPageSize(Number(value));
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <SelectTrigger className="w-full md:w-32">
+                      <SelectValue placeholder="Itens por página" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PAGE_SIZES.map(size => (
+                        <SelectItem key={size} value={size.toString()}>
+                          {size} itens
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-                <Select
-                  value={pageSize.toString()}
-                  onValueChange={value => {
-                    setPageSize(Number(value));
-                    setCurrentPage(1);
-                  }}
-                >
-                  <SelectTrigger className="w-full md:w-32">
-                    <SelectValue placeholder="Itens por página" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PAGE_SIZES.map(size => (
-                      <SelectItem key={size} value={size.toString()}>
-                        {size} itens
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
               </div>
-            </div>
-          )}
 
-          {hasNoOrders ? (
-            <Card className="p-8 text-center space-y-4">
-              <ShoppingBag className="w-12 h-12 mx-auto text-primary" />
-              <h2 className="text-2xl font-semibold">Nenhum pedido realizado</h2>
-              <p className="text-muted-foreground">
-                Compartilhe o link da sua página para começar a receber pedidos.
-              </p>
-              <div className="mt-4 p-4 bg-muted rounded-lg">
-                <p className="text-sm text-muted-foreground mb-2">Página de pedidos:</p>
-                <code className="text-sm">
-                  {window.location.origin}/{company?.short_name}
-                </code>
-                <div className="flex justify-center gap-4 mt-4">
-                  <div className="flex flex-col items-center gap-2">
-                    <Button variant="outline" size="icon" onClick={handleCopyLink}>
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                    <span className="text-xs text-muted-foreground">Copiar</span>
-                  </div>
-                  <div className="flex flex-col items-center gap-2">
-                    <Button variant="outline" size="icon" onClick={handleOpenLink}>
-                      <ExternalLink className="h-4 w-4" />
-                    </Button>
-                    <span className="text-xs text-muted-foreground">Abrir</span>
-                  </div>
-                </div>
-              </div>
-            </Card>
-          ) : filteredOrders.length === 0 ? (
-            <Card className="p-8 text-center space-y-4">
-              <Search className="w-12 h-12 mx-auto text-primary" />
-              <h2 className="text-2xl font-semibold">Nenhum resultado encontrado</h2>
-              <p className="text-muted-foreground">
-                Sua busca não retornou resultados. Tente outros termos.
-              </p>
-            </Card>
-          ) : (
-            <div className="bg-gray-50/95 rounded-lg p-6 shadow-lg">
               <OrdersTable
                 orders={paginatedOrders}
                 sortConfig={sortConfig}
@@ -285,7 +269,7 @@ const Orders = () => {
                       <PaginationItem>
                         <PaginationPrevious
                           onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                          className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
+                          className={`${currentPage === 1 ? "pointer-events-none opacity-50" : ""}`}
                         />
                       </PaginationItem>
                       {Array.from({ length: totalPages }).map((_, i) => (
@@ -301,7 +285,7 @@ const Orders = () => {
                       <PaginationItem>
                         <PaginationNext
                           onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                          className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}
+                          className={`${currentPage === totalPages ? "pointer-events-none opacity-50" : ""}`}
                         />
                       </PaginationItem>
                     </PaginationContent>
@@ -311,12 +295,48 @@ const Orders = () => {
             </div>
           )}
 
-          <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
-            <DialogContent className="max-w-4xl">
-              {selectedOrder && <OrderDetails order={selectedOrder} />}
-            </DialogContent>
-          </Dialog>
+          {hasNoOrders && (
+            <Card className="p-8 text-center space-y-4 bg-white border-blue-100">
+              <ShoppingBag className="w-12 h-12 mx-auto text-blue-500" />
+              <h2 className="text-2xl font-semibold text-blue-900">Nenhum pedido realizado</h2>
+              <p className="text-blue-600">
+                Compartilhe o link da sua página para começar a receber pedidos.
+              </p>
+              <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                <p className="text-sm text-blue-600 mb-2">Página de pedidos:</p>
+                <code className="text-sm text-blue-700">
+                  {window.location.origin}/{company?.short_name}
+                </code>
+                <div className="flex justify-center gap-4 mt-4">
+                  <div className="flex flex-col items-center gap-2">
+                    <Button variant="outline" size="icon" onClick={handleCopyLink} className="border-blue-200 hover:bg-blue-50">
+                      <Copy className="h-4 w-4 text-blue-500" />
+                    </Button>
+                    <span className="text-xs text-blue-600">Copiar</span>
+                  </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <Button variant="outline" size="icon" onClick={handleOpenLink} className="border-blue-200 hover:bg-blue-50">
+                      <ExternalLink className="h-4 w-4 text-blue-500" />
+                    </Button>
+                    <span className="text-xs text-blue-600">Abrir</span>
+                  </div>
+                </div>
+              </div>
+            </Card>
+          )}
         </div>
+
+        <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
+          <DialogContent className="max-w-4xl">
+            <DialogHeader>
+              <DialogTitle>Detalhes do Pedido</DialogTitle>
+              <DialogDescription>
+                Informações completas sobre o pedido, incluindo dados do cliente e itens solicitados.
+              </DialogDescription>
+            </DialogHeader>
+            {selectedOrder && <OrderDetails order={selectedOrder} />}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

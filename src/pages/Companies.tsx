@@ -114,8 +114,8 @@ export default function Companies() {
   }
 
   return (
-    <div className="min-h-screen bg-[#1A1F2C]">
-      <div className="bg-gray-900/50 shadow-md">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+      <div className="bg-white border-b border-gray-200 shadow-sm">
         <div className="container mx-auto">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-between py-1.5">
@@ -125,7 +125,7 @@ export default function Companies() {
                     variant="ghost" 
                     size="icon"
                     onClick={() => navigate('/admin')}
-                    className="text-white hover:text-white/80"
+                    className="text-gray-700 hover:text-gray-900"
                   >
                     <ArrowLeft className="h-5 w-5" />
                   </Button>
@@ -136,7 +136,7 @@ export default function Companies() {
                     onClick={() => navigate('/admin')}
                   />
                 </div>
-                <h1 className="text-xl font-semibold text-white">
+                <h1 className="text-xl font-semibold text-gray-900">
                   {isSuperuser ? "Administração de Empresas" : "Minha Empresa"}
                 </h1>
               </div>
@@ -145,8 +145,8 @@ export default function Companies() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                     <Avatar className="h-10 w-10">
-                      <AvatarFallback className="bg-primary text-primary-foreground">
-                        {userInitials}
+                      <AvatarFallback className="bg-primary/10 text-primary">
+                        <User className="h-5 w-5" />
                       </AvatarFallback>
                     </Avatar>
                   </Button>
@@ -184,19 +184,20 @@ export default function Companies() {
 
           {!isSuperuser && companies.length === 1 ? (
             <>
-              <Card className="p-6 bg-white/95">
+              <Card className="p-6 bg-white border border-gray-200">
                 <CompanyDetails 
                   company={companies[0]}
                   onUpdateSuccess={fetchCompanies}
                 />
               </Card>
-              <Card className="p-6 bg-white/95">
+              <Card className="p-6 bg-white border border-gray-200">
                 <h2 className="text-xl font-semibold mb-4">Link para Pedidos</h2>
                 <div className="flex gap-4">
                   <div className="flex-1">
                     <Input
                       readOnly
                       value={`${window.location.origin}/${companies[0].short_name}`}
+                      className="bg-gray-50 border-gray-200"
                     />
                   </div>
                   <div className="flex gap-4">
@@ -205,24 +206,26 @@ export default function Companies() {
                         onClick={() => copyToClipboard(companies[0].short_name)}
                         variant="outline"
                         size="icon"
+                        className="border-gray-200 hover:bg-gray-50"
                       >
                         <Copy className="h-4 w-4" />
                       </Button>
-                      <span className="text-xs mt-1">Copiar</span>
+                      <span className="text-xs mt-1 text-gray-600">Copiar</span>
                     </div>
                     <div className="flex flex-col items-center">
                       <Button
                         onClick={() => openInNewTab(companies[0].short_name)}
                         variant="outline"
                         size="icon"
+                        className="border-gray-200 hover:bg-gray-50"
                       >
                         <ExternalLink className="h-4 w-4" />
                       </Button>
-                      <span className="text-xs mt-1">Abrir</span>
+                      <span className="text-xs mt-1 text-gray-600">Abrir</span>
                     </div>
                   </div>
                 </div>
-                <p className="text-sm text-muted-foreground mt-2">
+                <p className="text-sm text-gray-600 mt-2">
                   Compartilhe este link com seus clientes para que eles possam fazer pedidos.
                 </p>
               </Card>

@@ -9,6 +9,7 @@ export interface Profile {
   updated_at: string;
   email_confirmed: boolean | null;
   confirmation_token?: string;
+  representative_id?: string | null;
 }
 
 export interface ProfileFormData {
@@ -18,4 +19,5 @@ export interface ProfileFormData {
   phone: string;
   password: string;
   confirmPassword: string;
+  representative_id?: string;
 }

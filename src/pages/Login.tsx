@@ -7,6 +7,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Eye, EyeOff } from "lucide-react";
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -18,6 +19,7 @@ const Login = () => {
   // Login form state
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,10 +32,11 @@ const Login = () => {
         description: "Você será redirecionado para o painel.",
       });
       
-      // Se for superusuário, redireciona para a página de usuários
-      if (user?.roles?.includes('superuser')) {
+      // Se for representante ou superusuário, redireciona para a página de usuários
+      if (user?.roles?.includes('representative') || user?.roles?.includes('superuser')) {
         navigate("/users");
       } else {
+        // Usuários comuns vão para a página admin
         navigate("/admin");
       }
     } catch (error: any) {
@@ -67,56 +70,73 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-start bg-[#1A1F2C] p-4">
-      <div className={`${isMobile ? 'mt-8' : 'mt-16'} mb-8`}>
-        <img 
-          src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
-          alt="COMAX Logo" 
-          className="h-20 w-auto"
-        />
+    <div className="min-h-screen bg-background">
+      <div className="bg-surfaceContainer shadow-md">
+        <div className="container mx-auto">
+          <div className="flex justify-center px-4 py-4">
+            <img 
+              src="/lovable-uploads/67b9ca3d-df4a-465c-a730-e739b97b5c88.png" 
+              alt="COMAX Logo" 
+              className="h-12 w-auto"
+            />
+          </div>
+        </div>
       </div>
-      
-      <Card className="w-full max-w-md mx-auto shadow-lg animate-fade-in bg-white/95">
-        <CardHeader>
-          <h2 className="text-2xl font-bold text-center text-gray-900">
-            Acesse sua conta
-          </h2>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin} className="space-y-6">
-            <div className="space-y-4">
-              <div>
-                <Input
-                  type="email"
-                  required
-                  placeholder="E-mail"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full"
-                />
-              </div>
-              <div>
-                <Input
-                  type="password"
-                  required
-                  placeholder="Senha"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full"
-                />
-              </div>
-            </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
-              {isLoading ? "Entrando..." : "Entrar"}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+      <div className="container mx-auto py-8">
+        <Card className="w-full max-w-md mx-auto bg-surface shadow-lg border-2 border-surfaceVariant">
+          <CardHeader>
+            <h2 className="text-2xl font-bold text-center text-onSurface">
+              Acesse sua conta
+            </h2>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-6">
+              <div className="space-y-4">
+                <div>
+                  <Input
+                    type="email"
+                    required
+                    placeholder="E-mail"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full bg-surfaceContainerHighest border-surfaceVariant focus:border-primary"
+                  />
+                </div>
+                <div className="relative">
+                  <Input
+                    type={showPassword ? "text" : "password"}
+                    required
+                    placeholder="Senha"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full bg-surfaceContainerHighest border-surfaceVariant focus:border-primary pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-onSurfaceVariant hover:text-onSurface"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5" />
+                    ) : (
+                      <Eye className="h-5 w-5" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full bg-primary text-onPrimary hover:bg-primary/90"
+                disabled={isLoading}
+              >
+                {isLoading ? "Entrando..." : "Entrar"}
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 };

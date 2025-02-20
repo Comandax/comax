@@ -1,3 +1,4 @@
+
 import { useForm, useFieldArray } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -27,6 +28,7 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
       reference: initialData?.reference || "",
       name: initialData?.name || "",
       image: initialData?.image || "",
+      isNew: initialData?.isNew || false,
       sizes: initialData?.sizes || [{ size: "", value: 0 }],
       quantities: initialData?.quantities 
         ? initialData.quantities.map(q => typeof q === 'number' ? { value: q } : q)
@@ -93,7 +95,6 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
   };
 
   const handleFormSubmit = async (data: ProductFormData) => {
-    // Passa o flag isEditing para o onSubmit saber se deve atualizar ou criar
     await onSubmit(data, isEditing);
     if (onComplete) {
       onComplete();
@@ -119,9 +120,11 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
           quantityArray={quantityArray} 
         />
 
-        <Button type="submit" disabled={isUploading}>
-          {isUploading ? 'Uploading...' : isEditing ? 'Atualizar' : 'Salvar'}
-        </Button>
+        <div className="flex justify-end">
+          <Button type="submit" disabled={isUploading} className="bg-primary text-onPrimary">
+            {isUploading ? 'Uploading...' : isEditing ? 'Atualizar' : 'Salvar'}
+          </Button>
+        </div>
       </form>
     </Form>
   );

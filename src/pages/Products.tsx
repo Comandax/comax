@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCompany } from "@/hooks/useCompany";
@@ -117,9 +118,14 @@ const Products = () => {
     }
   };
 
+  const handleOpenNewProductModal = () => {
+    setSelectedProduct(null);
+    setDialogOpen(true);
+  };
+
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-[#1A1F2C]">
+      <div className="min-h-screen bg-surface-container-lowest">
         <div className="container mx-auto py-10">
           <LoadingState />
         </div>
@@ -132,40 +138,55 @@ const Products = () => {
   }
 
   if (!effectiveCompany) {
-    return <div>Empresa não encontrada</div>;
+    return (
+      <div className="min-h-screen bg-surface-container-lowest flex items-center justify-center p-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 text-center">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            Empresa não encontrada
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400">
+            Não foi possível encontrar os dados da empresa solicitada.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <ProductsLayout userName={userName} userInitials={userInitials} onLogout={handleLogout}>
-      <CompanyHeader 
-        logo_url={effectiveCompany?.logo_url}
-        name={effectiveCompany?.name || ''}
-        isPublicView={isPublicView}
-        onNewProduct={() => {
-          setSelectedProduct(null);
-          setDialogOpen(true);
-        }}
-      />
+    <div className="min-h-screen bg-surface-container-lowest">
+      <ProductsLayout 
+        userName={userName} 
+        userInitials={userInitials} 
+        onLogout={handleLogout}
+        company={effectiveCompany}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+          <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+            <ProductsHeader
+              isPublicView={isPublicView}
+              dialogOpen={dialogOpen}
+              setDialogOpen={setDialogOpen}
+              selectedProduct={selectedProduct}
+              setSelectedProduct={setSelectedProduct}
+              onSubmit={onSubmit}
+            />
 
-      <ProductsHeader
-        isPublicView={isPublicView}
-        dialogOpen={dialogOpen}
-        setDialogOpen={setDialogOpen}
-        selectedProduct={selectedProduct}
-        setSelectedProduct={setSelectedProduct}
-        onSubmit={onSubmit}
-      />
-
-      <ProductList
-        products={products}
-        isLoading={isLoadingProducts}
-        onEdit={isPublicView ? undefined : handleEdit}
-        onDelete={isPublicView ? undefined : handleDelete}
-        onSubmit={isPublicView ? undefined : (data, isEditing) => onSubmit(data, isEditing)}
-        onToggleStatus={isPublicView ? undefined : handleToggleStatus}
-      />
-    </ProductsLayout>
+            <div className="p-6">
+              <ProductList
+                products={products}
+                isLoading={isLoadingProducts}
+                onEdit={isPublicView ? undefined : handleEdit}
+                onDelete={isPublicView ? undefined : handleDelete}
+                onSubmit={isPublicView ? undefined : (data, isEditing) => onSubmit(data, isEditing)}
+                onToggleStatus={isPublicView ? undefined : handleToggleStatus}
+                onOpenNewProductModal={handleOpenNewProductModal}
+              />
+            </div>
+          </div>
+        </div>
+      </ProductsLayout>
+    </div>
   );
-};
+}
 
 export default Products;

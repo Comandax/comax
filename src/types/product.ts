@@ -1,3 +1,4 @@
+
 export interface Product {
   _id: string;
   reference: string;
@@ -12,6 +13,7 @@ export interface Product {
   }>;
   disabled: boolean;
   companyId: string;
+  isNew: boolean;
 }
 
 export type ProductFormData = {
@@ -26,4 +28,5 @@ export type ProductFormData = {
   quantities: Array<{
     value: number;
   }>;
+  isNew?: boolean;
 }

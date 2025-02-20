@@ -113,6 +113,7 @@ export type Database = {
           disabled: boolean
           id: string
           image_url: string | null
+          is_new: boolean
           name: string
           quantities: number[]
           reference: string
@@ -125,6 +126,7 @@ export type Database = {
           disabled?: boolean
           id?: string
           image_url?: string | null
+          is_new?: boolean
           name: string
           quantities?: number[]
           reference: string
@@ -137,6 +139,7 @@ export type Database = {
           disabled?: boolean
           id?: string
           image_url?: string | null
+          is_new?: boolean
           name?: string
           quantities?: number[]
           reference?: string
@@ -163,6 +166,7 @@ export type Database = {
           id: string
           last_name: string
           phone: string | null
+          representative_id: string | null
           updated_at: string
         }
         Insert: {
@@ -174,6 +178,7 @@ export type Database = {
           id: string
           last_name: string
           phone?: string | null
+          representative_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -185,9 +190,53 @@ export type Database = {
           id?: string
           last_name?: string
           phone?: string | null
+          representative_id?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_representative_id_fkey"
+            columns: ["representative_id"]
+            isOneToOne: false
+            referencedRelation: "representatives"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      representatives: {
+        Row: {
+          created_at: string
+          id: string
+          identifier: string
+          pix_key: string | null
+          profile_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          identifier: string
+          pix_key?: string | null
+          profile_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          identifier?: string
+          pix_key?: string | null
+          profile_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "representatives_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {

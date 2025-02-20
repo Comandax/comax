@@ -72,7 +72,20 @@
     @apply border-border;
   }
 
+  html, body {
+    @apply min-h-screen h-full;
+    margin: 0;
+    padding: 0;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-onSurface;
+  }
+
+  #root {
+    @apply min-h-screen h-full flex flex-col;
+    margin: 0;
+    padding: 0;
+    max-width: none;
   }
 }
