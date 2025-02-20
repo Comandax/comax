@@ -73,25 +73,27 @@ const Index = () => {
   if (error || !company) return <NotFoundState error={error} />;
 
   return (
-    <div className="flex flex-col min-h-screen h-full bg-background">
-      <CompanyInfo company={company} />
-      
-      <div className="container mx-auto px-4 py-2 flex-1">
-        <div className="max-w-6xl mx-auto space-y-6">
-          <h1 className="text-4xl font-bold text-center text-onSurfaceVariant">
-            Simulações e Pedidos
-          </h1>
+    <>
+      <div className="flex flex-col min-h-screen h-full bg-background">
+        <CompanyInfo company={company} />
+        
+        <div className="container mx-auto px-4 py-2 flex-1">
+          <div className="max-w-6xl mx-auto space-y-6">
+            <h1 className="text-4xl font-bold text-center text-onSurfaceVariant">
+              Simulações e Pedidos
+            </h1>
 
-          <Card className="border-border/30 bg-surfaceContainerLowest shadow-lg backdrop-blur-sm p-8">
-            <OrderForm 
-              companyId={company.id} 
-              products={products} 
-              isLoading={isLoadingProducts} 
-            />
-          </Card>
+            <Card className="border-border/30 bg-surfaceContainerLowest shadow-lg backdrop-blur-sm p-8">
+              <OrderForm 
+                companyId={company.id} 
+                products={products} 
+                isLoading={isLoadingProducts} 
+              />
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
