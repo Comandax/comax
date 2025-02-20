@@ -47,7 +47,7 @@ export const CompanyInfo = ({
 
   return (
     <>
-      <div className="fixed top-0 left-0 right-0 bg-white/95 shadow-md z-50">
+      <div className="fixed top-0 left-0 right-0 bg-white/95 shadow-md z-40">
         <div className="container mx-auto">
           <div className="max-w-6xl mx-auto px-4">
             <div className="flex items-center justify-between py-4">
@@ -64,7 +64,7 @@ export const CompanyInfo = ({
 
               <div className="flex items-center gap-4">
                 {total > 0 && (
-                  <div className="flex items-center gap-4 bg-tertiary text-white p-4 rounded-lg">
+                  <div className="absolute right-20 -bottom-16 flex items-center gap-4 bg-tertiary text-white p-4 rounded-lg shadow-lg animate-float-in">
                     <div className="flex items-center gap-2">
                       <ShoppingBag className="w-4 h-4" />
                       <div>
