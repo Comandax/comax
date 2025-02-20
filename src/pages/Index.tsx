@@ -137,20 +137,24 @@ const Index = () => {
         }))
       }));
 
-      // Obtém a data atual no fuso horário de Brasília
-      const date = new Date();
-      const offset = -3; // UTC-3 (Brasília)
-      date.setHours(date.getHours() + offset);
+      // Obtém a data e hora no fuso horário de Brasília
+      const now = new Date();
       
-      const timeStr = date.toLocaleTimeString('pt-BR', { 
-        hour: '2-digit', 
-        minute: '2-digit',
-        timeZone: "UTC"
-      });
+      // Ajusta para UTC-3 (Brasília)
+      const brazilTime = new Date(now.getTime() - (3 * 60 * 60 * 1000));
+      
+      // Formata a data como YYYY-MM-DD
+      const year = brazilTime.getUTCFullYear();
+      const month = String(brazilTime.getUTCMonth() + 1).padStart(2, '0');
+      const day = String(brazilTime.getUTCDate()).padStart(2, '0');
+      const dateStr = `${year}-${month}-${day}`;
+      
+      // Formata a hora como HH:mm
+      const hours = String(brazilTime.getUTCHours()).padStart(2, '0');
+      const minutes = String(brazilTime.getUTCMinutes()).padStart(2, '0');
+      const timeStr = `${hours}:${minutes}`;
 
-      const dateStr = date.toISOString().split('T')[0];
-
-      console.log('Data e hora do pedido:', { dateStr, timeStr });
+      console.log('Data e hora do pedido (Brasília):', { dateStr, timeStr });
 
       const { error: insertError } = await supabase
         .from('orders')
