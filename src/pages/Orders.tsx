@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
@@ -179,7 +178,7 @@ const Orders = () => {
 
   if (!company || !ordersData) {
     return (
-      <div className="min-h-screen bg-surface">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
         <div className="container mx-auto py-10">
           <LoadingState />
         </div>
@@ -190,50 +189,90 @@ const Orders = () => {
   const hasNoOrders = ordersData.orders.length === 0;
 
   return (
-    <div className="min-h-screen bg-surface">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <OrdersHeader 
         userProfile={userProfile}
         company={company}
         onLogout={handleLogout}
       />
 
-      <div className="container mx-auto py-10">
-        <div className="max-w-6xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
           {!hasNoOrders && (
-            <div className="space-y-4 mb-6">
-              <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-blue-500" />
-                  <Input
-                    placeholder="Buscar por cliente..."
-                    value={searchTerm}
-                    onChange={e => setSearchTerm(e.target.value)}
-                    className="pl-10 w-full md:w-64 bg-white border-blue-100 focus:border-blue-200 focus:ring-blue-200"
-                  />
+            <div className="p-6">
+              <div className="space-y-4 mb-6">
+                <div className="flex flex-col md:flex-row gap-4 md:items-center md:justify-between">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-500" />
+                    <Input
+                      placeholder="Buscar por cliente..."
+                      value={searchTerm}
+                      onChange={e => setSearchTerm(e.target.value)}
+                      className="pl-10 w-full md:w-64"
+                    />
+                  </div>
+                  <Select
+                    value={pageSize.toString()}
+                    onValueChange={value => {
+                      setPageSize(Number(value));
+                      setCurrentPage(1);
+                    }}
+                  >
+                    <SelectTrigger className="w-full md:w-32">
+                      <SelectValue placeholder="Itens por página" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PAGE_SIZES.map(size => (
+                        <SelectItem key={size} value={size.toString()}>
+                          {size} itens
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
-                <Select
-                  value={pageSize.toString()}
-                  onValueChange={value => {
-                    setPageSize(Number(value));
-                    setCurrentPage(1);
-                  }}
-                >
-                  <SelectTrigger className="w-full md:w-32 bg-white border-blue-100">
-                    <SelectValue placeholder="Itens por página" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PAGE_SIZES.map(size => (
-                      <SelectItem key={size} value={size.toString()}>
-                        {size} itens
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
               </div>
+
+              <OrdersTable
+                orders={paginatedOrders}
+                sortConfig={sortConfig}
+                onSort={handleSort}
+                onOrderClick={setSelectedOrder}
+              />
+
+              {totalPages > 1 && (
+                <div className="mt-4">
+                  <Pagination>
+                    <PaginationContent>
+                      <PaginationItem>
+                        <PaginationPrevious
+                          onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                          className={`${currentPage === 1 ? "pointer-events-none opacity-50" : ""}`}
+                        />
+                      </PaginationItem>
+                      {Array.from({ length: totalPages }).map((_, i) => (
+                        <PaginationItem key={i}>
+                          <PaginationLink
+                            onClick={() => setCurrentPage(i + 1)}
+                            isActive={currentPage === i + 1}
+                          >
+                            {i + 1}
+                          </PaginationLink>
+                        </PaginationItem>
+                      ))}
+                      <PaginationItem>
+                        <PaginationNext
+                          onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                          className={`${currentPage === totalPages ? "pointer-events-none opacity-50" : ""}`}
+                        />
+                      </PaginationItem>
+                    </PaginationContent>
+                  </Pagination>
+                </div>
+              )}
             </div>
           )}
 
-          {hasNoOrders ? (
+          {hasNoOrders && (
             <Card className="p-8 text-center space-y-4 bg-white border-blue-100">
               <ShoppingBag className="w-12 h-12 mx-auto text-blue-500" />
               <h2 className="text-2xl font-semibold text-blue-900">Nenhum pedido realizado</h2>
@@ -261,63 +300,14 @@ const Orders = () => {
                 </div>
               </div>
             </Card>
-          ) : filteredOrders.length === 0 ? (
-            <Card className="p-8 text-center space-y-4 bg-white border-blue-100">
-              <Search className="w-12 h-12 mx-auto text-blue-500" />
-              <h2 className="text-2xl font-semibold text-blue-900">Nenhum resultado encontrado</h2>
-              <p className="text-blue-600">
-                Sua busca não retornou resultados. Tente outros termos.
-              </p>
-            </Card>
-          ) : (
-            <div className="bg-white rounded-lg p-6 shadow-sm border border-blue-100">
-              <OrdersTable
-                orders={paginatedOrders}
-                sortConfig={sortConfig}
-                onSort={handleSort}
-                onOrderClick={setSelectedOrder}
-              />
-
-              {totalPages > 1 && (
-                <div className="mt-4">
-                  <Pagination>
-                    <PaginationContent>
-                      <PaginationItem>
-                        <PaginationPrevious
-                          onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                          className={`${currentPage === 1 ? "pointer-events-none opacity-50" : ""} text-blue-600 hover:text-blue-700`}
-                        />
-                      </PaginationItem>
-                      {Array.from({ length: totalPages }).map((_, i) => (
-                        <PaginationItem key={i}>
-                          <PaginationLink
-                            onClick={() => setCurrentPage(i + 1)}
-                            isActive={currentPage === i + 1}
-                            className={currentPage === i + 1 ? "bg-blue-500 text-white" : "text-blue-600 hover:bg-blue-50"}
-                          >
-                            {i + 1}
-                          </PaginationLink>
-                        </PaginationItem>
-                      ))}
-                      <PaginationItem>
-                        <PaginationNext
-                          onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                          className={`${currentPage === totalPages ? "pointer-events-none opacity-50" : ""} text-blue-600 hover:text-blue-700`}
-                        />
-                      </PaginationItem>
-                    </PaginationContent>
-                  </Pagination>
-                </div>
-              )}
-            </div>
           )}
-
-          <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
-            <DialogContent className="max-w-4xl">
-              {selectedOrder && <OrderDetails order={selectedOrder} />}
-            </DialogContent>
-          </Dialog>
         </div>
+
+        <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
+          <DialogContent className="max-w-4xl">
+            {selectedOrder && <OrderDetails order={selectedOrder} />}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
