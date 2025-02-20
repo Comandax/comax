@@ -28,6 +28,7 @@ export default function Users() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showPixModal, setShowPixModal] = useState(false);
+  const [showIdentifierModal, setShowIdentifierModal] = useState(false);
   const [newIdentifier, setNewIdentifier] = useState("");
   const [newPixKey, setNewPixKey] = useState("");
 
@@ -95,9 +96,8 @@ export default function Users() {
         title: "Identificador atualizado!",
         description: "Seu link de indicação foi atualizado com sucesso.",
       });
-      setShowEditModal(false);
+      setShowIdentifierModal(false);
     } catch (error: any) {
-      // Verifica se o erro é devido a um identificador duplicado
       if (error.message && error.message.includes('duplicate key value violates unique constraint')) {
         toast({
           variant: "destructive",
@@ -201,7 +201,7 @@ export default function Users() {
                     </Button>
                     <Button
                       variant="outline"
-                      onClick={() => setShowEditModal(true)}
+                      onClick={() => setShowIdentifierModal(true)}
                       className="border-primary text-primary hover:bg-primary/10"
                     >
                       <Edit className="h-4 w-4 mr-2" />
@@ -265,6 +265,44 @@ export default function Users() {
           </div>
         )}
 
+        <Dialog open={showIdentifierModal} onOpenChange={setShowIdentifierModal}>
+          <DialogContent className="bg-card">
+            <DialogHeader>
+              <DialogTitle className="text-primary">
+                Editar Identificador
+              </DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <Input
+                value={newIdentifier}
+                onChange={(e) => setNewIdentifier(e.target.value)}
+                placeholder="Digite seu identificador"
+                className="w-full border-primary/20"
+              />
+              <p className="text-sm text-muted-foreground mt-2">
+                Este identificador será usado no seu link de indicação.
+              </p>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setShowIdentifierModal(false)}
+                disabled={isUpdating}
+                className="border-primary text-primary hover:bg-primary/10"
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={updateIdentifier}
+                disabled={isUpdating}
+                className="bg-primary hover:bg-primary/90 text-onPrimary"
+              >
+                {isUpdating ? "Salvando..." : "Salvar"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         <Dialog open={showPixModal} onOpenChange={setShowPixModal}>
           <DialogContent className="bg-card">
             <DialogHeader>
@@ -295,7 +333,7 @@ export default function Users() {
               <Button
                 onClick={updatePixKey}
                 disabled={isUpdating}
-                className="bg-primary hover:bg-primary/90 text-white"
+                className="bg-primary hover:bg-primary/90 text-onPrimary"
               >
                 {isUpdating ? "Salvando..." : "Salvar"}
               </Button>
