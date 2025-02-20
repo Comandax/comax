@@ -44,38 +44,42 @@ export const FloatingTotal = ({
 
   return (
     <>
-      <div className="fixed right-4 top-4 z-[9999] bg-[#8B5CF6] shadow-lg rounded-lg p-4 animate-float-in text-white">
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-2">
-            <ShoppingBag className="w-6 h-6" />
-            <div>
-              <div className="text-lg font-semibold">Total do Pedido</div>
-              <div className="text-2xl font-bold">
-                {isCalculating ? (
-                  <div className="flex items-center gap-2">
-                    <Loader className="w-4 h-4 animate-spin" />
-                    Calculando...
+      <div className="fixed inset-0 pointer-events-none z-[9999]">
+        <div className="container mx-auto px-4 h-full">
+          <div className="pointer-events-auto absolute right-4 top-4 bg-[#8B5CF6] shadow-lg rounded-lg p-4 animate-float-in text-white">
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-2">
+                <ShoppingBag className="w-6 h-6" />
+                <div>
+                  <div className="text-lg font-semibold">Total do Pedido</div>
+                  <div className="text-2xl font-bold">
+                    {isCalculating ? (
+                      <div className="flex items-center gap-2">
+                        <Loader className="w-4 h-4 animate-spin" />
+                        Calculando...
+                      </div>
+                    ) : (
+                      formattedTotal
+                    )}
                   </div>
-                ) : (
-                  formattedTotal
-                )}
+                </div>
               </div>
+              
+              <Button 
+                variant="secondary" 
+                className="w-full flex items-center gap-2 bg-white hover:bg-white/90 text-[#8B5CF6] font-medium"
+                onClick={handleOpenModal}
+                disabled={isModalLoading || isCalculating}
+              >
+                {isModalLoading ? (
+                  <Loader className="w-4 h-4 animate-spin" />
+                ) : (
+                  <ListCheck className="w-4 h-4" />
+                )}
+                {isModalLoading ? "Carregando..." : "Ver produtos selecionados"}
+              </Button>
             </div>
           </div>
-          
-          <Button 
-            variant="secondary" 
-            className="w-full flex items-center gap-2 bg-white hover:bg-white/90 text-[#8B5CF6] font-medium"
-            onClick={handleOpenModal}
-            disabled={isModalLoading || isCalculating}
-          >
-            {isModalLoading ? (
-              <Loader className="w-4 h-4 animate-spin" />
-            ) : (
-              <ListCheck className="w-4 h-4" />
-            )}
-            {isModalLoading ? "Carregando..." : "Ver produtos selecionados"}
-          </Button>
         </div>
       </div>
 
