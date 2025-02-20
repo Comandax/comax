@@ -196,8 +196,8 @@ const Orders = () => {
         onLogout={handleLogout}
       />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-        <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="rounded-lg overflow-hidden border">
           {!hasNoOrders && (
             <div className="p-6">
               <div className="space-y-4 mb-6">
