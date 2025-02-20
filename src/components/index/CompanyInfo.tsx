@@ -92,7 +92,7 @@ export const CompanyInfo = ({
                       ) : (
                         <ListCheck className="w-4 h-4 mr-2" />
                       )}
-                      <span>{isModalLoading ? "Carregando..." : "Ver produtos selecionados"}</span>
+                      <span>{isModalLoading ? "Carregando..." : "Ver pedido"}</span>
                     </Button>
                   </div>
                 )}
