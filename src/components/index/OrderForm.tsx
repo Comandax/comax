@@ -28,20 +28,22 @@ export const OrderForm = ({
   return (
     <>
       <ContactForm onSubmit={onContactSubmit} />
-      {displayMode === 'compact' ? (
-        <CompactProductList 
-          products={products} 
-          onQuantitySelect={onQuantitySelect}
-          resetItem={resetItem}
-        />
-      ) : (
-        <ProductList 
-          products={products} 
-          onQuantitySelect={onQuantitySelect}
-          resetItem={resetItem}
-          isLoading={isLoading}
-        />
-      )}
+      <div className="mt-8"> {/* Adicionado espaçamento aqui */}
+        {displayMode === 'compact' ? (
+          <CompactProductList 
+            products={products} 
+            onQuantitySelect={onQuantitySelect}
+            resetItem={resetItem}
+          />
+        ) : (
+          <ProductList 
+            products={products} 
+            onQuantitySelect={onQuantitySelect}
+            resetItem={resetItem}
+            isLoading={isLoading}
+          />
+        )}
+      </div>
     </>
   );
 };
