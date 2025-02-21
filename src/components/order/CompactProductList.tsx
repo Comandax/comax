@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Package, Rocket, Loader } from "lucide-react";
+import { Package, Rocket, Loader, ShoppingBag } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -18,12 +18,10 @@ interface CompactProductListProps {
 
 export function CompactProductList({ products, onQuantitySelect, resetItem, isLoading = false }: CompactProductListProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [selectedQuantities, setSelectedQuantities] = useState<Record<string, number>>({});
+  const [selectedQuantities, setSelectedQuantities] = useState<Record<string, Record<string, number>>>({});
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
-    // Reset quantities when opening modal
-    setSelectedQuantities({});
   };
 
   const handleQuantityChange = (size: string, quantity: number, price: number) => {
@@ -31,10 +29,19 @@ export function CompactProductList({ products, onQuantitySelect, resetItem, isLo
 
     setSelectedQuantities(prev => ({
       ...prev,
-      [size]: quantity
+      [selectedProduct._id]: {
+        ...(prev[selectedProduct._id] || {}),
+        [size]: quantity
+      }
     }));
 
     onQuantitySelect(selectedProduct._id, size, quantity, price);
+  };
+
+  const hasProductInCart = (productId: string) => {
+    const productQuantities = selectedQuantities[productId];
+    if (!productQuantities) return false;
+    return Object.values(productQuantities).some(quantity => quantity > 0);
   };
 
   const handleAddToCart = () => {
@@ -44,7 +51,6 @@ export function CompactProductList({ products, onQuantitySelect, resetItem, isLo
   const activeProducts = products
     .filter(product => !product.disabled)
     .sort((a, b) => {
-      // Sort by isNew first, then by reference
       if (a.isNew && !b.isNew) return -1;
       if (!a.isNew && b.isNew) return 1;
       return a.reference.localeCompare(b.reference);
@@ -74,9 +80,16 @@ export function CompactProductList({ products, onQuantitySelect, resetItem, isLo
         {activeProducts.map((product) => (
           <Card 
             key={product._id}
-            className="cursor-pointer hover:shadow-md transition-shadow"
+            className="cursor-pointer hover:shadow-md transition-shadow relative"
             onClick={() => handleProductClick(product)}
           >
+            {hasProductInCart(product._id) && (
+              <div className="absolute top-2 right-2 z-10">
+                <div className="bg-primary rounded-full p-1.5">
+                  <ShoppingBag className="h-4 w-4 text-onPrimary" />
+                </div>
+              </div>
+            )}
             <div className="p-4">
               {product.isNew && (
                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-onPrimary mb-2">
@@ -102,9 +115,9 @@ export function CompactProductList({ products, onQuantitySelect, resetItem, isLo
               <div className="space-y-2">
                 {product.sizes.map((size, index) => (
                   <div key={index}>
-                    <div className="flex justify-between text-sm">
-                      <span>{size.size}</span>
-                      <span className="font-medium">
+                    <div className="grid grid-cols-[30%_1fr] gap-2 text-sm">
+                      <span className="text-gray-600">{size.size}</span>
+                      <span className="font-medium text-left">
                         {new Intl.NumberFormat('pt-BR', {
                           style: 'currency',
                           currency: 'BRL'
@@ -161,7 +174,7 @@ export function CompactProductList({ products, onQuantitySelect, resetItem, isLo
                       </div>
                       
                       <RadioGroup
-                        value={selectedQuantities[size.size]?.toString() || "0"}
+                        value={selectedQuantities[selectedProduct._id]?.[size.size]?.toString() || "0"}
                         onValueChange={(value) => {
                           handleQuantityChange(size.size, Number(value), size.value);
                         }}
