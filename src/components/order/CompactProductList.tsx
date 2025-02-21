@@ -183,6 +183,10 @@ export function CompactProductList({ products, onQuantitySelect, resetItem, isLo
                           </div>
                         ))}
                       </RadioGroup>
+
+                      {index < selectedProduct.sizes.length - 1 && (
+                        <Separator className="my-4" />
+                      )}
                     </div>
                   ))}
                 </div>
