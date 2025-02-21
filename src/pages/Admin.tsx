@@ -20,6 +20,7 @@ import { CompanyHeader } from "@/components/admin/CompanyHeader";
 import { AdminSidebarMenu } from "@/components/admin/AdminSidebarMenu";
 import { RecentOrdersCard } from "@/components/admin/RecentOrdersCard";
 import { PublicLinkCard } from "@/components/admin/PublicLinkCard";
+import { DisplayModeCard } from "@/components/admin/DisplayModeCard";
 
 const Admin = () => {
   const { user, logout } = useAuth();
@@ -144,10 +145,19 @@ const Admin = () => {
             />
             
             {userCompany && (
-              <PublicLinkCard
-                companyShortName={userCompany.short_name}
-                onEdit={() => setIsEditModalOpen(true)}
-              />
+              <>
+                <PublicLinkCard
+                  companyShortName={userCompany.short_name}
+                  onEdit={() => setIsEditModalOpen(true)}
+                />
+                <DisplayModeCard
+                  companyId={userCompany.id}
+                  currentMode={userCompany.display_mode}
+                  onSuccess={() => {
+                    refetch();
+                  }}
+                />
+              </>
             )}
           </div>
         </main>
