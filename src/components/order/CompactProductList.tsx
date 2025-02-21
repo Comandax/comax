@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Package } from "lucide-react";
+import { Package, Rocket } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -68,8 +68,9 @@ export function CompactProductList({ products, onQuantitySelect, resetItem }: Co
           >
             <div className="p-4">
               {product.isNew && (
-                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-onPrimary mb-2">
-                  Novo
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-onPrimary mb-2">
+                  <Rocket className="h-3 w-3" />
+                  Lançamento
                 </span>
               )}
               <div className="aspect-square mb-4 bg-gray-100 rounded-lg overflow-hidden">
