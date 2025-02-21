@@ -46,7 +46,7 @@ export function DisplayModeCard({ companyId, currentMode, onSuccess }: DisplayMo
   };
 
   return (
-    <Card>
+    <Card className="bg-surface border-2 border-surfaceVariant shadow-lg">
       <CardHeader>
         <CardTitle className="text-lg font-semibold flex items-center gap-2">
           <LayoutGrid className="h-5 w-5" />
