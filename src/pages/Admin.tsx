@@ -139,7 +139,7 @@ const Admin = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="md:row-span-2">
+            <div className="h-full">
               <RecentOrdersCard
                 orders={recentOrders}
                 isLoading={isLoadingOrders}
@@ -147,7 +147,7 @@ const Admin = () => {
             </div>
             
             {userCompany && (
-              <div className="space-y-6">
+              <div className="grid grid-rows-2 gap-6 h-full">
                 <PublicLinkCard
                   companyShortName={userCompany.short_name}
                   onEdit={() => setIsEditModalOpen(true)}
