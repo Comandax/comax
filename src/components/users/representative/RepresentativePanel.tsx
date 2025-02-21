@@ -45,7 +45,7 @@ export function RepresentativePanel({
 }: RepresentativePanelProps) {
   return (
     <div className="grid md:grid-cols-2 gap-6 mb-8">
-      <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
+      <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
         <CardContent className="pt-6">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -80,7 +80,7 @@ export function RepresentativePanel({
         </CardContent>
       </Card>
 
-      <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
+      <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
         <CardContent className="pt-6">
           <div className="space-y-4">
             <div className="flex items-center gap-2">

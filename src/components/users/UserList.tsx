@@ -125,7 +125,7 @@ export function UserList() {
   if (isLoading) return <div>Carregando...</div>;
 
   return (
-    <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
+    <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
       <CardContent className="p-6 space-y-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
