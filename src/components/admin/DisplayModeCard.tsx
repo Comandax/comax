@@ -57,7 +57,7 @@ export function DisplayModeCard({ companyId, currentMode, onSuccess }: DisplayMo
         <p className="text-sm text-muted-foreground mb-4">
           Escolha como seus produtos serão exibidos na página de pedidos.
         </p>
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
           <Button
             variant="outline"
             onClick={() => handleModeChange('full')}
