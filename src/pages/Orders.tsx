@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
@@ -193,7 +194,7 @@ const Orders = () => {
 
   if (!company || !ordersData) {
     return (
-      <div className="min-h-screen bg-surface">
+      <div className="min-h-screen bg-background">
         <div className="container mx-auto py-10">
           <LoadingState />
         </div>
@@ -204,7 +205,7 @@ const Orders = () => {
   const hasNoOrders = ordersData.orders.length === 0;
 
   return (
-    <div className="min-h-screen bg-surface-container-lowest">
+    <div className="min-h-screen bg-background">
       <OrdersHeader 
         userProfile={userProfile}
         company={company}
@@ -212,7 +213,7 @@ const Orders = () => {
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="rounded-lg overflow-hidden border">
+        <div className="bg-surface shadow-lg border-2 border-surfaceVariant rounded-lg overflow-hidden">
           {!hasNoOrders && (
             <div className="p-6">
               <div className="space-y-4 mb-6">
