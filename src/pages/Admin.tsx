@@ -115,7 +115,7 @@ const Admin = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-surfaceContainerLowest">
         <Sidebar className="border-r border-gray-200 dark:border-gray-700 bg-surfaceContainer shadow-md">
           <SidebarHeader className="bg-surfaceContainer">
             <CompanyHeader company={userCompany} />
