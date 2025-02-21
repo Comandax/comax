@@ -68,6 +68,11 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
 
   return (
     <SidebarMenu>
+      {company && (
+        <div className="px-3 py-2 mb-4">
+          <span className="text-lg font-medium text-onSurfaceVariant">{company.name}</span>
+        </div>
+      )}
       <SidebarMenuItem>
         <SidebarMenuButton asChild>
           <Link 
