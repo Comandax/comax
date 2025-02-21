@@ -1,50 +1,56 @@
+
 import pytest
-from playwright.sync_api import Page, expect
+from playwright.sync_api import expect
 from pages.login_page import LoginPage
 
-@pytest.fixture
-def login_page(page: Page):
-    return LoginPage(page)
-
-def test_navigate_to_login_page(login_page: LoginPage):
-    """Test if login page loads correctly"""
+def test_successful_login(page):
+    """Test successful login flow"""
+    login_page = LoginPage(page)
     login_page.navigate_to_login()
-    expect(login_page.page).to_have_url(login_page.url)
     
-def test_login_with_valid_credentials(login_page: LoginPage):
-    """Test successful login with valid credentials"""
-    login_page.navigate_to_login()
-    login_page.login("user@example.com", "password123")
-    login_page.expect_login_success()
-    
-def test_login_with_invalid_credentials(login_page: LoginPage):
-    """Test login failure with invalid credentials"""
-    login_page.navigate_to_login()
-    login_page.login("invalid@example.com", "wrongpassword")
-    login_page.expect_login_error("Invalid email or password")
-    
-def test_login_with_empty_fields(login_page: LoginPage):
-    """Test login with empty fields"""
-    login_page.navigate_to_login()
+    # Realizar login
+    login_page.fill_email("user@example.com")
+    login_page.fill_password("password123")
     login_page.click_login_button()
-    # Verify that both fields show validation errors
-    login_page.expect_visible('[data-testid="email-error"]')
-    login_page.expect_visible('[data-testid="password-error"]')
     
-def test_password_visibility_toggle(login_page: LoginPage):
-    """Test password visibility toggle"""
+    # Verificar redirecionamento
+    expect(page).to_have_url("/admin")
+    expect(page.get_by_text("Login realizado com sucesso")).to_be_visible()
+
+def test_invalid_credentials(page):
+    """Test login with invalid credentials"""
+    login_page = LoginPage(page)
     login_page.navigate_to_login()
-    # Find password input and toggle button
-    password_input = login_page.page.locator('[data-testid="password-input"]')
-    toggle_button = login_page.page.locator('[data-testid="password-toggle"]')
     
-    # Initial state should be password
-    expect(password_input).to_have_attribute("type", "password")
+    # Tentar login com credenciais inválidas
+    login_page.fill_email("invalid@example.com")
+    login_page.fill_password("wrongpassword")
+    login_page.click_login_button()
     
-    # Click toggle and check if password is visible
-    toggle_button.click()
-    expect(password_input).to_have_attribute("type", "text")
+    # Verificar mensagem de erro
+    expect(page.get_by_text("Credenciais inválidas")).to_be_visible()
+
+def test_representative_login_redirect(page):
+    """Test representative login redirect"""
+    login_page = LoginPage(page)
+    login_page.navigate_to_login()
     
-    # Click toggle again and check if password is hidden
-    toggle_button.click()
-    expect(password_input).to_have_attribute("type", "password")
+    # Login como representante
+    login_page.fill_email("representative@example.com")
+    login_page.fill_password("password123")
+    login_page.click_login_button()
+    
+    # Verificar redirecionamento para listagem de usuários
+    expect(page).to_have_url("/users")
+
+def test_empty_fields_validation(page):
+    """Test form validation for empty fields"""
+    login_page = LoginPage(page)
+    login_page.navigate_to_login()
+    
+    # Tentar login com campos vazios
+    login_page.click_login_button()
+    
+    # Verificar mensagens de validação
+    expect(page.locator("[type='email']:invalid")).to_be_visible()
+    expect(page.locator("[type='password']:invalid")).to_be_visible()
