@@ -34,59 +34,61 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
 
   return (
     <>
-      <Card className="bg-surface border-2 border-surfaceVariant shadow-lg">
-        <CardContent className="p-6 space-y-6 relative">
-          <div className="flex items-center gap-2">
+      <Card className="bg-surface border-2 border-surfaceVariant shadow-lg h-full">
+        <CardContent className="p-6 flex flex-col h-full">
+          <div className="flex items-center gap-2 mb-6">
             <ListStart className="h-5 w-5" />
             <h2 className="text-lg font-semibold">
               Pedidos Recentes
             </h2>
           </div>
 
-          <div className="space-y-4">
+          <div className="flex-1 flex flex-col">
             {isLoading ? (
               <div className="text-center py-8 text-gray-500">
                 Carregando pedidos...
               </div>
             ) : orders.length > 0 ? (
-              <div className="space-y-4">
-                {orders.map((order) => (
-                  <div 
-                    key={order._id} 
-                    className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white hover:border-primary/30 transition-colors cursor-pointer"
-                    onClick={() => setSelectedOrder(order)}
-                  >
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-grow max-w-[60%]">
-                        <div className="min-w-[120px] shrink-0">
-                          <p className="text-sm font-medium text-gray-500">
-                            {formatDate(order.date)}
+              <div className="space-y-4 flex-1 flex flex-col">
+                <div className="flex-1 space-y-4">
+                  {orders.map((order) => (
+                    <div 
+                      key={order._id} 
+                      className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white hover:border-primary/30 transition-colors cursor-pointer"
+                      onClick={() => setSelectedOrder(order)}
+                    >
+                      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-grow max-w-[60%]">
+                          <div className="min-w-[120px] shrink-0">
+                            <p className="text-sm font-medium text-gray-500">
+                              {formatDate(order.date)}
+                            </p>
+                          </div>
+                          <div className="min-w-0">
+                            <h3 className="font-semibold text-gray-900 dark:text-white truncate">
+                              {order.customerName}
+                            </h3>
+                            <p className="text-sm text-gray-500 mt-1 truncate">
+                              {order.customerCity} / {order.customerState}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 sm:gap-1 ml-auto">
+                          <p className="font-medium text-primary order-2 sm:order-1">
+                            {formatCurrency(order.total)}
+                          </p>
+                          <p className="text-sm text-gray-500 order-1 sm:order-2">
+                            {order.items.length} {order.items.length === 1 ? 'item' : 'itens'}
                           </p>
                         </div>
-                        <div className="min-w-0">
-                          <h3 className="font-semibold text-gray-900 dark:text-white truncate">
-                            {order.customerName}
-                          </h3>
-                          <p className="text-sm text-gray-500 mt-1 truncate">
-                            {order.customerCity} / {order.customerState}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 sm:gap-1 ml-auto">
-                        <p className="font-medium text-primary order-2 sm:order-1">
-                          {formatCurrency(order.total)}
-                        </p>
-                        <p className="text-sm text-gray-500 order-1 sm:order-2">
-                          {order.items.length} {order.items.length === 1 ? 'item' : 'itens'}
-                        </p>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
 
                 <Button
                   asChild
-                  className="w-full"
+                  className="w-full mt-auto"
                   variant="outline"
                 >
                   <Link to="/orders" className="flex items-center justify-center gap-2">
