@@ -1,5 +1,5 @@
 
-import { Menu } from "lucide-react";
+import { Menu, Loader } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
@@ -36,7 +36,7 @@ const Admin = () => {
     return <Navigate to="/users" replace />;
   }
 
-  const { data: userCompany, isError, refetch } = useQuery({
+  const { data: userCompany, isError, isLoading: isLoadingCompany, refetch } = useQuery({
     queryKey: ['company', user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -113,6 +113,15 @@ const Admin = () => {
       });
     }
   };
+
+  if (isLoadingCompany || isLoadingOrders) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-surfaceContainerLowest">
+        <Loader className="w-8 h-8 animate-spin text-primary mb-4" />
+        <p className="text-lg text-gray-600">Carregando dados...</p>
+      </div>
+    );
+  }
 
   return (
     <SidebarProvider>
