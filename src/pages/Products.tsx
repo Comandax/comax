@@ -125,7 +125,7 @@ const Products = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-surface-container-lowest">
+      <div className="min-h-screen bg-background">
         <div className="container mx-auto py-10">
           <LoadingState />
         </div>
@@ -139,7 +139,7 @@ const Products = () => {
 
   if (!effectiveCompany) {
     return (
-      <div className="min-h-screen bg-surface-container-lowest flex items-center justify-center p-4">
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 text-center">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
             Empresa não encontrada
@@ -153,7 +153,7 @@ const Products = () => {
   }
 
   return (
-    <div className="min-h-screen bg-surface-container-lowest">
+    <div className="min-h-screen bg-background">
       <ProductsLayout 
         userName={userName} 
         userInitials={userInitials} 
@@ -161,7 +161,7 @@ const Products = () => {
         company={effectiveCompany}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-          <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+          <div className="bg-surface shadow-lg border-2 border-surfaceVariant rounded-lg overflow-hidden">
             <ProductsHeader
               isPublicView={isPublicView}
               dialogOpen={dialogOpen}
