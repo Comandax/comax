@@ -18,8 +18,8 @@ export function ProductCard({ product, onSelect, hasInCart }: ProductCardProps) 
     >
       {hasInCart && (
         <div className="absolute top-2 right-2 z-10">
-          <div className="bg-primary rounded-full p-1.5">
-            <ShoppingBag className="h-4 w-4 text-onPrimary" />
+          <div className="bg-primary rounded-full p-2">
+            <ShoppingBag className="h-6 w-6 text-onPrimary" />
           </div>
         </div>
       )}
