@@ -51,7 +51,8 @@ const Admin = () => {
       }
       return data;
     },
-    enabled: !!user
+    enabled: !!user,
+    staleTime: 1000 * 60 * 5, // 5 minutos
   });
 
   const { data: recentOrders = [], isLoading: isLoadingOrders } = useQuery({
@@ -94,7 +95,8 @@ const Admin = () => {
         notes: order.notes || undefined
       }));
     },
-    enabled: !!userCompany?.id
+    enabled: !!userCompany?.id,
+    staleTime: 1000 * 60 * 5, // 5 minutos
   });
 
   const handleLogout = async () => {
@@ -114,7 +116,9 @@ const Admin = () => {
     }
   };
 
-  if (isLoadingCompany || isLoadingOrders) {
+  // Movido para o início do componente para evitar flash de loading
+  const isLoading = isLoadingCompany || isLoadingOrders;
+  if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-surfaceContainerLowest">
         <Loader className="w-8 h-8 animate-spin text-primary mb-4" />
