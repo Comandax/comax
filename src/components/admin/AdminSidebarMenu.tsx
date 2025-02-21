@@ -14,6 +14,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Company } from "@/types/company";
+import { UserProfileModal } from "@/components/users/UserProfileModal";
+import { Profile } from "@/types/profile";
 
 interface AdminSidebarMenuProps {
   userId: string;
@@ -21,7 +23,8 @@ interface AdminSidebarMenuProps {
 }
 
 export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) => {
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isProfileViewModalOpen, setIsProfileViewModalOpen] = useState(false);
+  const [isProfileEditModalOpen, setIsProfileEditModalOpen] = useState(false);
   const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
   const isMobile = useIsMobile();
 
@@ -39,6 +42,25 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
         throw error;
       }
       return data as Company;
+    },
+    enabled: !!userId,
+    staleTime: 1000 * 60 * 5, // 5 minutos
+  });
+
+  const { data: profile } = useQuery({
+    queryKey: ['profile', userId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+      
+      if (error) {
+        console.error('Error fetching profile:', error);
+        throw error;
+      }
+      return data as Profile;
     },
     enabled: !!userId,
     staleTime: 1000 * 60 * 5, // 5 minutos
@@ -79,7 +101,7 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
       </SidebarMenuItem>
       <SidebarMenuItem>
         <SidebarMenuButton 
-          onClick={() => setIsProfileModalOpen(true)}
+          onClick={() => setIsProfileViewModalOpen(true)}
           className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
         >
           <User className="w-5 h-5 text-primary" />
@@ -96,9 +118,16 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
         </SidebarMenuButton>
       </SidebarMenuItem>
 
+      <UserProfileModal 
+        isOpen={isProfileViewModalOpen}
+        onOpenChange={setIsProfileViewModalOpen}
+        profile={profile || null}
+        onEditClick={() => setIsProfileEditModalOpen(true)}
+      />
+
       <UserEditModal 
-        isOpen={isProfileModalOpen}
-        onOpenChange={setIsProfileModalOpen}
+        isOpen={isProfileEditModalOpen}
+        onOpenChange={setIsProfileEditModalOpen}
       />
 
       <Dialog open={isCompanyModalOpen} onOpenChange={setIsCompanyModalOpen}>
