@@ -126,7 +126,7 @@ const Admin = () => {
         </Sidebar>
 
         <main className="flex-1 p-8">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-8 p-4 bg-surfaceContainer shadow-md rounded-lg">
             <h1 className="text-2xl font-bold text-onSurface">
               Painel Administrativo
             </h1>
