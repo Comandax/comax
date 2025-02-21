@@ -32,7 +32,7 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
       <CardContent className="p-6 space-y-6 relative">
         <div className="flex items-center gap-3">
           <div className="h-8 w-1 bg-gradient-to-b from-primary to-secondary rounded-full" />
-          <h2 className="text-2xl font-bold text-onSurface">
+          <h2 className="text-2xl font-bold text-onSecondaryContainer">
             Pedidos Recentes
           </h2>
         </div>
