@@ -115,12 +115,12 @@ const Admin = () => {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-surface">
-        <Sidebar className="border-r border-gray-200 dark:border-gray-700 bg-white lg:bg-white lg:dark:bg-white">
-          <SidebarHeader className="bg-white">
+      <div className="min-h-screen flex w-full bg-background">
+        <Sidebar className="border-r border-gray-200 dark:border-gray-700 bg-surfaceContainer shadow-md">
+          <SidebarHeader className="bg-surfaceContainer">
             <CompanyHeader company={userCompany} />
           </SidebarHeader>
-          <SidebarContent className="px-4 bg-white">
+          <SidebarContent className="px-4 bg-surfaceContainer">
             <AdminSidebarMenu userId={user.id} onLogout={handleLogout} />
           </SidebarContent>
         </Sidebar>
