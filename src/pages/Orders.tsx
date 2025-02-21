@@ -196,7 +196,9 @@ const Orders = () => {
     return (
       <div className="min-h-screen bg-background">
         <div className="container mx-auto py-10">
-          <LoadingState />
+          <div className="text-center py-8 text-onSurfaceVariant/60">
+            Carregando pedidos...
+          </div>
         </div>
       </div>
     );
