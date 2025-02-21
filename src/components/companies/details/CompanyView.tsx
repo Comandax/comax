@@ -11,14 +11,11 @@ interface CompanyViewProps {
 export function CompanyView({ company, onEditClick }: CompanyViewProps) {
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center">
         <div className="flex items-center gap-2">
           <Building2 className="w-6 h-6 text-primary" />
           <h2 className="text-2xl font-semibold text-foreground">Dados da Empresa</h2>
         </div>
-        <Button onClick={onEditClick} variant="outline" className="gap-2">
-          Editar
-        </Button>
       </div>
 
       <div className="flex flex-col sm:flex-row gap-8 items-start">
@@ -45,6 +42,12 @@ export function CompanyView({ company, onEditClick }: CompanyViewProps) {
             <p className="text-2xl font-semibold text-foreground">{company.name}</p>
           </div>
         </div>
+      </div>
+
+      <div className="flex justify-end mt-6">
+        <Button onClick={onEditClick} variant="outline" className="gap-2">
+          Editar
+        </Button>
       </div>
     </div>
   );
