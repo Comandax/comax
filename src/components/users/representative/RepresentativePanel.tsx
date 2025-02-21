@@ -1,7 +1,8 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Edit, CreditCard, XCircle, Link2, CreditCard as PixIcon } from "lucide-react";
+import { Edit, CreditCard, XCircle, Link2, Key } from "lucide-react";
 import { RepresentativePixModal } from "./RepresentativePixModal";
 import { RepresentativeIdentifierModal } from "./RepresentativeIdentifierModal";
 
@@ -83,7 +84,7 @@ export function RepresentativePanel({
         <CardContent className="pt-6">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <PixIcon className="h-5 w-5 text-onSurfaceVariant" />
+              <Key className="h-5 w-5 text-onSurfaceVariant" />
               <h2 className="text-xl font-semibold text-onSurfaceVariant">Chave PIX</h2>
             </div>
             {representativeData?.pix_key ? (
