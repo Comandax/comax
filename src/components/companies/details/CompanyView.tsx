@@ -1,9 +1,7 @@
 
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Company } from "@/types/company";
-import { Profile } from "@/types/profile";
-import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Building2 } from "lucide-react";
 
 interface CompanyViewProps {
   company: Company;
@@ -11,52 +9,34 @@ interface CompanyViewProps {
 }
 
 export function CompanyView({ company, onEditClick }: CompanyViewProps) {
-  const [ownerProfile, setOwnerProfile] = useState<Profile | null>(null);
-
-  useEffect(() => {
-    const fetchOwnerProfile = async () => {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', company.owner_id)
-        .single();
-
-      if (!error && data) {
-        setOwnerProfile(data);
-      }
-    };
-
-    fetchOwnerProfile();
-  }, [company.owner_id]);
-
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold mb-4">{company.name}</h2>
-      <div className="flex flex-col md:flex-row gap-4">
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <Building2 className="w-6 h-6 text-primary" />
+          <h2 className="text-2xl font-semibold text-foreground">Dados da Empresa</h2>
+        </div>
+        <Button onClick={onEditClick} variant="outline" className="gap-2">
+          Editar
+        </Button>
+      </div>
+
+      <div className="grid gap-4">
+        <div>
+          <h3 className="text-sm font-medium text-muted-foreground mb-1">Nome da Empresa</h3>
+          <p className="text-foreground">{company.name}</p>
+        </div>
+
         {company.logo_url && (
-          <div className="flex justify-center md:justify-start">
-            <img
-              src={company.logo_url}
-              alt={`Logo ${company.name}`}
-              className="w-24 h-24 object-cover rounded"
+          <div>
+            <h3 className="text-sm font-medium text-muted-foreground mb-1">Logo</h3>
+            <img 
+              src={company.logo_url} 
+              alt="Logo da empresa" 
+              className="w-32 h-32 object-contain border rounded-lg bg-background"
             />
           </div>
         )}
-        <div className="flex-1 space-y-2">
-          {ownerProfile && (
-            <>
-              <p><strong>Responsável:</strong> {ownerProfile.first_name} {ownerProfile.last_name}</p>
-              <p><strong>E-mail:</strong> {ownerProfile.email}</p>
-              {ownerProfile.phone && <p><strong>Telefone:</strong> {ownerProfile.phone}</p>}
-            </>
-          )}
-          <p><strong>Status:</strong> {company.active ? "Ativo" : "Inativo"}</p>
-        </div>
-      </div>
-      <div className="flex justify-end">
-        <Button onClick={onEditClick}>
-          Editar
-        </Button>
       </div>
     </div>
   );

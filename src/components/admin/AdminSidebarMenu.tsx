@@ -1,5 +1,5 @@
 
-import { Package, LogOut, User, ClipboardList } from "lucide-react";
+import { Package, LogOut, User, ClipboardList, Building2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   SidebarMenu,
@@ -8,7 +8,12 @@ import {
 } from "@/components/ui/sidebar";
 import { useState } from "react";
 import { UserEditModal } from "@/components/users/UserEditModal";
+import { CompanyDetails } from "@/components/companies/CompanyDetails";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
+import { Company } from "@/types/company";
 
 interface AdminSidebarMenuProps {
   userId: string;
@@ -17,7 +22,27 @@ interface AdminSidebarMenuProps {
 
 export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) => {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isCompanyModalOpen, setIsCompanyModalOpen] = useState(false);
   const isMobile = useIsMobile();
+
+  const { data: company, refetch } = useQuery({
+    queryKey: ['company', userId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('companies')
+        .select('*')
+        .eq('owner_id', userId)
+        .maybeSingle();
+      
+      if (error) {
+        console.error('Error fetching company:', error);
+        throw error;
+      }
+      return data as Company;
+    },
+    enabled: !!userId,
+    staleTime: 1000 * 60 * 5, // 5 minutos
+  });
 
   return (
     <SidebarMenu>
@@ -45,6 +70,15 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
       </SidebarMenuItem>
       <SidebarMenuItem>
         <SidebarMenuButton 
+          onClick={() => setIsCompanyModalOpen(true)}
+          className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
+        >
+          <Building2 className="w-5 h-5 text-primary" />
+          <span className="font-medium">Minha Empresa</span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+      <SidebarMenuItem>
+        <SidebarMenuButton 
           onClick={() => setIsProfileModalOpen(true)}
           className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
         >
@@ -66,6 +100,20 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
         isOpen={isProfileModalOpen}
         onOpenChange={setIsProfileModalOpen}
       />
+
+      <Dialog open={isCompanyModalOpen} onOpenChange={setIsCompanyModalOpen}>
+        <DialogContent className="max-w-3xl">
+          {company && (
+            <CompanyDetails 
+              company={company}
+              onUpdateSuccess={() => {
+                refetch();
+                setIsCompanyModalOpen(false);
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
     </SidebarMenu>
   );
 };
