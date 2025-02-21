@@ -39,7 +39,7 @@ export function ProductListPagination({
             <PaginationItem key={page}>
               <Button
                 variant={currentPage === page ? "default" : "ghost"}
-                className={currentPage === page ? "pointer-events-none" : ""}
+                className={`${currentPage === page ? "text-onPrimary pointer-events-none" : ""}`}
                 onClick={() => onPageChange(page)}
               >
                 {page}
