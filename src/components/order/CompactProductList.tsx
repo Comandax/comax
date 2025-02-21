@@ -88,8 +88,7 @@ export function CompactProductList({ products, onQuantitySelect, resetItem }: Co
                 )}
               </div>
               <h3 className="text-sm font-medium">Ref: {product.reference}</h3>
-              <p className="text-sm text-gray-500">{product.name}</p>
-              <Separator className="my-3" />
+              <p className="text-sm text-gray-500 mb-3">{product.name}</p>
               <div className="space-y-2">
                 {product.sizes.map((size, index) => (
                   <div key={index}>
