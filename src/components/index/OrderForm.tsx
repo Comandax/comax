@@ -28,12 +28,13 @@ export const OrderForm = ({
   return (
     <>
       <ContactForm onSubmit={onContactSubmit} />
-      <div className="mt-8"> {/* Adicionado espaçamento aqui */}
+      <div className="mt-8">
         {displayMode === 'compact' ? (
           <CompactProductList 
             products={products} 
             onQuantitySelect={onQuantitySelect}
             resetItem={resetItem}
+            isLoading={isLoading}
           />
         ) : (
           <ProductList 

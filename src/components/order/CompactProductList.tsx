@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
-import { Package, Rocket } from "lucide-react";
+import { Package, Rocket, Loader } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -13,9 +13,10 @@ interface CompactProductListProps {
   products: Product[];
   onQuantitySelect: (productId: string, size: string, quantity: number, price: number) => void;
   resetItem?: { size: string; productId: string; };
+  isLoading?: boolean;
 }
 
-export function CompactProductList({ products, onQuantitySelect, resetItem }: CompactProductListProps) {
+export function CompactProductList({ products, onQuantitySelect, resetItem, isLoading = false }: CompactProductListProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedQuantities, setSelectedQuantities] = useState<Record<string, number>>({});
 
@@ -48,6 +49,15 @@ export function CompactProductList({ products, onQuantitySelect, resetItem }: Co
       if (!a.isNew && b.isNew) return 1;
       return a.reference.localeCompare(b.reference);
     });
+
+  if (isLoading) {
+    return (
+      <div className="text-center p-8">
+        <Loader className="mx-auto h-12 w-12 text-gray-400 animate-spin" />
+        <h3 className="mt-4 text-sm font-semibold text-gray-900">Carregando produtos...</h3>
+      </div>
+    );
+  }
 
   if (!activeProducts.length) {
     return (
