@@ -34,7 +34,7 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
 
   return (
     <>
-      <Card className="bg-surface border-2 border-surfaceVariant shadow-lg h-full">
+      <Card className="bg-surface border-2 border-surfaceVariant h-full">
         <CardContent className="p-6 flex flex-col h-full">
           <div className="flex items-center gap-2 mb-6">
             <ListStart className="h-5 w-5" />
