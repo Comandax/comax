@@ -1,13 +1,9 @@
 
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
-import { Package, Rocket, Loader, ShoppingBag } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
+import { Loader, Package } from "lucide-react";
 import type { Product } from "@/types/product";
+import { ProductCard } from "./ProductCard";
+import { ProductDetailsDialog } from "./ProductDetailsDialog";
 
 interface CompactProductListProps {
   products: Product[];
@@ -16,7 +12,12 @@ interface CompactProductListProps {
   isLoading?: boolean;
 }
 
-export function CompactProductList({ products, onQuantitySelect, resetItem, isLoading = false }: CompactProductListProps) {
+export function CompactProductList({ 
+  products, 
+  onQuantitySelect, 
+  resetItem, 
+  isLoading = false 
+}: CompactProductListProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedQuantities, setSelectedQuantities] = useState<Record<string, Record<string, number>>>({});
 
@@ -44,7 +45,7 @@ export function CompactProductList({ products, onQuantitySelect, resetItem, isLo
     return Object.values(productQuantities).some(quantity => quantity > 0);
   };
 
-  const handleAddToCart = () => {
+  const handleCloseDialog = () => {
     setSelectedProduct(null);
   };
 
@@ -78,143 +79,21 @@ export function CompactProductList({ products, onQuantitySelect, resetItem, isLo
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {activeProducts.map((product) => (
-          <Card 
+          <ProductCard
             key={product._id}
-            className="cursor-pointer hover:shadow-md transition-shadow relative"
-            onClick={() => handleProductClick(product)}
-          >
-            {hasProductInCart(product._id) && (
-              <div className="absolute top-2 right-2 z-10">
-                <div className="bg-primary rounded-full p-1.5">
-                  <ShoppingBag className="h-4 w-4 text-onPrimary" />
-                </div>
-              </div>
-            )}
-            <div className="p-4">
-              {product.isNew && (
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-onPrimary mb-2">
-                  <Rocket className="h-3 w-3" />
-                  Lançamento
-                </span>
-              )}
-              <div className="aspect-square mb-4 bg-gray-100 rounded-lg overflow-hidden">
-                {product.image ? (
-                  <img 
-                    src={product.image} 
-                    alt={product.name}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Package className="h-12 w-12 text-gray-400" />
-                  </div>
-                )}
-              </div>
-              <h3 className="text-sm font-medium">Ref: {product.reference}</h3>
-              <p className="text-sm text-gray-500 mb-3">{product.name}</p>
-              <div className="space-y-2">
-                {product.sizes.map((size, index) => (
-                  <div key={index}>
-                    <div className="grid grid-cols-[30%_1fr] gap-2 text-sm">
-                      <span className="text-gray-600">{size.size}</span>
-                      <span className="font-medium text-left">
-                        {new Intl.NumberFormat('pt-BR', {
-                          style: 'currency',
-                          currency: 'BRL'
-                        }).format(size.value)}
-                      </span>
-                    </div>
-                    {index < product.sizes.length - 1 && (
-                      <Separator className="my-2" />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Card>
+            product={product}
+            onSelect={handleProductClick}
+            hasInCart={hasProductInCart(product._id)}
+          />
         ))}
       </div>
 
-      <Dialog open={!!selectedProduct} onOpenChange={(open) => !open && setSelectedProduct(null)}>
-        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          {selectedProduct && (
-            <>
-              <DialogHeader>
-                <DialogTitle>
-                  {selectedProduct.reference} - {selectedProduct.name}
-                </DialogTitle>
-              </DialogHeader>
-              
-              <div className="grid gap-6 py-4">
-                <div className="aspect-square w-full max-w-sm mx-auto bg-gray-100 rounded-lg overflow-hidden">
-                  {selectedProduct.image ? (
-                    <img 
-                      src={selectedProduct.image} 
-                      alt={selectedProduct.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex items-center justify-center">
-                      <Package className="h-16 w-16 text-gray-400" />
-                    </div>
-                  )}
-                </div>
-
-                <div className="space-y-4">
-                  {selectedProduct.sizes.map((size, index) => (
-                    <div key={index}>
-                      <div className="flex justify-between mb-2">
-                        <span className="font-medium">{size.size}</span>
-                        <span className="font-medium text-primary">
-                          {new Intl.NumberFormat('pt-BR', {
-                            style: 'currency',
-                            currency: 'BRL'
-                          }).format(size.value)}
-                        </span>
-                      </div>
-                      
-                      <RadioGroup
-                        value={selectedQuantities[selectedProduct._id]?.[size.size]?.toString() || "0"}
-                        onValueChange={(value) => {
-                          handleQuantityChange(size.size, Number(value), size.value);
-                        }}
-                        className="grid grid-cols-6 gap-3"
-                      >
-                        {[0, ...selectedProduct.quantities.map(q => q.value)].map((qty) => (
-                          <div key={qty} className="flex flex-col items-center gap-1">
-                            <RadioGroupItem 
-                              value={qty.toString()} 
-                              id={`${selectedProduct._id}-${size.size}-${qty}`}
-                              className="md:scale-75 scale-125"
-                            />
-                            <Label 
-                              htmlFor={`${selectedProduct._id}-${size.size}-${qty}`} 
-                              className="text-xs cursor-pointer"
-                            >
-                              {qty}
-                            </Label>
-                          </div>
-                        ))}
-                      </RadioGroup>
-
-                      {index < selectedProduct.sizes.length - 1 && (
-                        <Separator className="my-4" />
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                <Button 
-                  onClick={handleAddToCart}
-                  className="mt-4 text-onPrimary"
-                >
-                  Colocar na sacola
-                </Button>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+      <ProductDetailsDialog
+        product={selectedProduct}
+        onClose={handleCloseDialog}
+        onQuantitySelect={handleQuantityChange}
+        selectedQuantities={selectedProduct ? selectedQuantities[selectedProduct._id] || {} : {}}
+      />
     </>
   );
 }
