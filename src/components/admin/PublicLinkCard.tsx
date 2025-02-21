@@ -27,7 +27,7 @@ export function PublicLinkCard({ companyShortName, onEdit }: PublicLinkCardProps
   return (
     <Card className="bg-surface border-2 border-surfaceVariant">
       <CardHeader>
-        <CardTitle className="text-lg font-semibold flex items-center gap-2">
+        <CardTitle className="text-lg font-semibold flex items-center gap-2 text-onSurfaceVariant">
           <Link2 className="h-5 w-5" />
           Link para Pedidos
         </CardTitle>

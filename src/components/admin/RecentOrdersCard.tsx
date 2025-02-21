@@ -38,7 +38,7 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
         <CardContent className="p-6 flex flex-col h-full">
           <div className="flex items-center gap-2 mb-6">
             <ListStart className="h-5 w-5" />
-            <h2 className="text-lg font-semibold">
+            <h2 className="text-lg font-semibold text-onSurfaceVariant">
               Pedidos Recentes
             </h2>
           </div>
