@@ -62,7 +62,7 @@ export function DisplayModeCard({ companyId, currentMode, onSuccess }: DisplayMo
             variant="outline"
             onClick={() => handleModeChange('full')}
             disabled={isLoading || currentMode === 'full'}
-            className={`flex-1 gap-2 ${currentMode === 'full' ? 'bg-primary text-onPrimary hover:bg-primary/90' : 'text-primary'}`}
+            className={`flex-1 gap-2 bg-background ${currentMode === 'full' ? 'bg-primary text-onPrimary hover:bg-primary/90' : 'text-primary'}`}
           >
             <ListStart className="h-4 w-4" />
             Completo
@@ -72,7 +72,7 @@ export function DisplayModeCard({ companyId, currentMode, onSuccess }: DisplayMo
             variant="outline"
             onClick={() => handleModeChange('compact')}
             disabled={isLoading || currentMode === 'compact'}
-            className={`flex-1 gap-2 ${currentMode === 'compact' ? 'bg-primary text-onPrimary hover:bg-primary/90' : 'text-primary'}`}
+            className={`flex-1 gap-2 bg-background ${currentMode === 'compact' ? 'bg-primary text-onPrimary hover:bg-primary/90' : 'text-primary'}`}
           >
             <LayoutGrid className="h-4 w-4" />
             Compacto
