@@ -45,7 +45,7 @@ export function CompanyView({ company, onEditClick }: CompanyViewProps) {
       </div>
 
       <div className="flex justify-end mt-6">
-        <Button onClick={onEditClick} variant="outline" className="gap-2">
+        <Button onClick={onEditClick} className="bg-primary text-onPrimary hover:bg-primary/90">
           Editar
         </Button>
       </div>
