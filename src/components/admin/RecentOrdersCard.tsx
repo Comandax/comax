@@ -45,7 +45,7 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
 
           <div className="flex-1 flex flex-col">
             {isLoading ? (
-              <div className="text-center py-8 text-gray-500">
+              <div className="text-center py-8 text-onSurfaceVariant/60">
                 Carregando pedidos...
               </div>
             ) : orders.length > 0 ? (
@@ -54,21 +54,21 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
                   {orders.map((order) => (
                     <div 
                       key={order._id} 
-                      className="p-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white hover:border-primary/30 transition-colors cursor-pointer"
+                      className="p-4 rounded-lg border border-surfaceVariant bg-surface hover:border-primary/30 transition-colors cursor-pointer"
                       onClick={() => setSelectedOrder(order)}
                     >
                       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 flex-grow max-w-[60%]">
                           <div className="min-w-[120px] shrink-0">
-                            <p className="text-sm font-medium text-gray-500">
+                            <p className="text-sm font-medium text-onSurfaceVariant/60">
                               {formatDate(order.date)}
                             </p>
                           </div>
                           <div className="min-w-0">
-                            <h3 className="font-semibold text-gray-900 dark:text-white truncate">
+                            <h3 className="font-semibold text-onSurface truncate">
                               {order.customerName}
                             </h3>
-                            <p className="text-sm text-gray-500 mt-1 truncate">
+                            <p className="text-sm text-onSurfaceVariant/60 mt-1 truncate">
                               {order.customerCity} / {order.customerState}
                             </p>
                           </div>
@@ -77,7 +77,7 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
                           <p className="font-medium text-primary order-2 sm:order-1">
                             {formatCurrency(order.total)}
                           </p>
-                          <p className="text-sm text-gray-500 order-1 sm:order-2">
+                          <p className="text-sm text-onSurfaceVariant/60 order-1 sm:order-2">
                             {order.items.length} {order.items.length === 1 ? 'item' : 'itens'}
                           </p>
                         </div>
@@ -98,8 +98,13 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
                 </Button>
               </div>
             ) : (
-              <div className="text-center py-8 text-gray-500">
-                Nenhum pedido encontrado
+              <div className="flex-1 flex flex-col items-center justify-center p-8 text-center bg-surfaceContainer rounded-lg">
+                <div className="text-onSurfaceVariant/60 mb-2">
+                  Nenhum pedido realizado
+                </div>
+                <p className="text-sm text-onSurfaceVariant/60 max-w-[300px]">
+                  Os pedidos realizados através do link público aparecerão aqui.
+                </p>
               </div>
             )}
           </div>
