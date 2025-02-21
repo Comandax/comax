@@ -139,13 +139,15 @@ const Admin = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <RecentOrdersCard
-              orders={recentOrders}
-              isLoading={isLoadingOrders}
-            />
+            <div className="md:row-span-2">
+              <RecentOrdersCard
+                orders={recentOrders}
+                isLoading={isLoadingOrders}
+              />
+            </div>
             
             {userCompany && (
-              <>
+              <div className="space-y-6">
                 <PublicLinkCard
                   companyShortName={userCompany.short_name}
                   onEdit={() => setIsEditModalOpen(true)}
@@ -157,7 +159,7 @@ const Admin = () => {
                     refetch();
                   }}
                 />
-              </>
+              </div>
             )}
           </div>
         </main>
