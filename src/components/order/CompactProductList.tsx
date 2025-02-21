@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Separator } from "@/components/ui/separator";
 import type { Product } from "@/types/product";
 
 interface CompactProductListProps {
@@ -88,7 +89,8 @@ export function CompactProductList({ products, onQuantitySelect, resetItem }: Co
               </div>
               <h3 className="text-sm font-medium">Ref: {product.reference}</h3>
               <p className="text-sm text-gray-500">{product.name}</p>
-              <div className="mt-2 space-y-1">
+              <Separator className="my-3" /> {/* Adicionado separador aqui */}
+              <div className="space-y-1">
                 {product.sizes.map((size, index) => (
                   <div key={index} className="flex justify-between text-sm">
                     <span>{size.size}</span>
