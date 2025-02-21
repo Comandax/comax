@@ -1,7 +1,7 @@
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { User, UserCircle2 } from "lucide-react";
+import { User } from "lucide-react";
 import { Profile } from "@/types/profile";
 
 interface UserProfileModalProps {
@@ -25,12 +25,6 @@ export function UserProfileModal({ isOpen, onOpenChange, profile, onEditClick }:
         </DialogHeader>
 
         <div className="space-y-6 p-6">
-          <div className="flex justify-center">
-            <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center">
-              <UserCircle2 className="w-16 h-16 text-primary/50" />
-            </div>
-          </div>
-
           <div className="grid gap-4">
             <div>
               <h3 className="text-sm font-medium text-muted-foreground mb-1">Nome Completo</h3>
@@ -56,7 +50,7 @@ export function UserProfileModal({ isOpen, onOpenChange, profile, onEditClick }:
                 onOpenChange(false);
                 onEditClick();
               }}
-              className="gap-2"
+              className="gap-2 text-onPrimary"
             >
               <User className="w-4 h-4" />
               Editar Perfil
