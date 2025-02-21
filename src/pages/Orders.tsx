@@ -1,9 +1,8 @@
-
 import { useState, useMemo } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
-import { Search, ShoppingBag, Copy, ExternalLink, X } from "lucide-react";
+import { Search, ShoppingBag, Copy, ExternalLink, X, Loader } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -196,8 +195,11 @@ const Orders = () => {
     return (
       <div className="min-h-screen bg-background">
         <div className="container mx-auto py-10">
-          <div className="text-center py-8 text-onSurfaceVariant/60">
-            Carregando pedidos...
+          <div className="flex flex-col items-center justify-center gap-4 py-8">
+            <Loader className="w-8 h-8 animate-spin text-primary" />
+            <div className="text-onSurfaceVariant/60">
+              Carregando pedidos...
+            </div>
           </div>
         </div>
       </div>
