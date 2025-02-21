@@ -74,8 +74,8 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
             to="/products" 
             className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
           >
-            <Package className="w-5 h-5 text-primary" />
-            <span className="font-medium">Produtos</span>
+            <Package className="w-5 h-5 text-onSurfaceVariant" />
+            <span className="font-medium text-onSurfaceVariant">Produtos</span>
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -85,8 +85,8 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
             to="/orders" 
             className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
           >
-            <ClipboardList className="w-5 h-5 text-primary" />
-            <span className="font-medium">Pedidos</span>
+            <ClipboardList className="w-5 h-5 text-onSurfaceVariant" />
+            <span className="font-medium text-onSurfaceVariant">Pedidos</span>
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -95,8 +95,8 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
           onClick={() => setIsCompanyModalOpen(true)}
           className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
         >
-          <Building2 className="w-5 h-5 text-primary" />
-          <span className="font-medium">Minha Empresa</span>
+          <Building2 className="w-5 h-5 text-onSurfaceVariant" />
+          <span className="font-medium text-onSurfaceVariant">Minha Empresa</span>
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
@@ -104,8 +104,8 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
           onClick={() => setIsProfileViewModalOpen(true)}
           className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
         >
-          <User className="w-5 h-5 text-primary" />
-          <span className="font-medium">Meu Perfil</span>
+          <User className="w-5 h-5 text-onSurfaceVariant" />
+          <span className="font-medium text-onSurfaceVariant">Meu Perfil</span>
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
@@ -139,6 +139,7 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
                 refetch();
                 setIsCompanyModalOpen(false);
               }}
+              onClose={() => setIsCompanyModalOpen(false)}
             />
           )}
         </DialogContent>
