@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { LayoutGrid, ListStart } from "lucide-react";
+import { LayoutGrid, ListStart, CheckCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import type { Company } from "@/types/company";
 
@@ -59,22 +59,24 @@ export function DisplayModeCard({ companyId, currentMode, onSuccess }: DisplayMo
         </p>
         <div className="flex gap-4">
           <Button
-            variant={currentMode === 'full' ? 'default' : 'outline'}
+            variant="outline"
             onClick={() => handleModeChange('full')}
             disabled={isLoading || currentMode === 'full'}
-            className={`flex-1 ${currentMode !== 'full' ? 'text-primary' : ''}`}
+            className={`flex-1 gap-2 ${currentMode === 'full' ? 'bg-primary text-onPrimary hover:bg-primary/90' : 'text-primary'}`}
           >
-            <ListStart className="mr-2 h-4 w-4" />
+            <ListStart className="h-4 w-4" />
             Completo
+            {currentMode === 'full' && <CheckCircle className="h-4 w-4" />}
           </Button>
           <Button
-            variant={currentMode === 'compact' ? 'default' : 'outline'}
+            variant="outline"
             onClick={() => handleModeChange('compact')}
             disabled={isLoading || currentMode === 'compact'}
-            className={`flex-1 ${currentMode !== 'compact' ? 'text-primary' : ''}`}
+            className={`flex-1 gap-2 ${currentMode === 'compact' ? 'bg-primary text-onPrimary hover:bg-primary/90' : 'text-primary'}`}
           >
-            <LayoutGrid className="mr-2 h-4 w-4" />
+            <LayoutGrid className="h-4 w-4" />
             Compacto
+            {currentMode === 'compact' && <CheckCircle className="h-4 w-4" />}
           </Button>
         </div>
       </CardContent>
