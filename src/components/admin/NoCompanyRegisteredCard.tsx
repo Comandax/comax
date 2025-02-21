@@ -22,7 +22,7 @@ export function NoCompanyRegisteredCard({ onRegisterClick }: NoCompanyRegistered
         </div>
         <Button
           onClick={onRegisterClick}
-          className="mt-4"
+          className="mt-4 text-onPrimary"
         >
           <Plus className="w-4 h-4 mr-2" />
           Cadastrar Empresa
