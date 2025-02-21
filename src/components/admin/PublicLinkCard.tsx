@@ -31,7 +31,7 @@ export const PublicLinkCard = ({ companyShortName, onEdit }: PublicLinkCardProps
       <CardContent className="p-6 space-y-6 relative">
         <div className="flex items-center gap-3">
           <div className="h-8 w-1 bg-gradient-to-b from-secondary to-primary rounded-full" />
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
+          <h2 className="text-2xl font-bold text-onSurface">
             Link para Pedidos
           </h2>
         </div>
