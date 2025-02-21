@@ -48,7 +48,6 @@ export function RepresentativePanel({
         <CardContent className="pt-6">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <div className="h-8 w-1 bg-primary rounded-full" />
               <Link2 className="h-5 w-5 text-onSurfaceVariant" />
               <h2 className="text-xl font-semibold text-onSurfaceVariant">Seu Link de Indicação</h2>
             </div>
@@ -84,7 +83,6 @@ export function RepresentativePanel({
         <CardContent className="pt-6">
           <div className="space-y-4">
             <div className="flex items-center gap-2">
-              <div className="h-8 w-1 bg-primary rounded-full" />
               <PixIcon className="h-5 w-5 text-onSurfaceVariant" />
               <h2 className="text-xl font-semibold text-onSurfaceVariant">Chave PIX</h2>
             </div>

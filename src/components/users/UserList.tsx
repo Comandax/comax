@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -129,7 +128,6 @@ export function UserList() {
       <CardContent className="p-6 space-y-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-1 bg-primary rounded-full" />
             <Users className="h-5 w-5 text-onSurfaceVariant" />
             <h2 className="text-2xl font-bold text-onSurfaceVariant">Usuários</h2>
           </div>
