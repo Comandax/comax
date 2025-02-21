@@ -90,20 +90,12 @@ export function ProductDetailsDialog({
             ))}
           </div>
 
-          <div className="flex gap-3">
-            <Button 
-              className="flex-1 text-onPrimary"
-            >
-              Colocar na sacola
-            </Button>
-            <Button 
-              variant="outline"
-              onClick={onClose}
-              className="flex-1"
-            >
-              Cancelar
-            </Button>
-          </div>
+          <Button 
+            onClick={onClose}
+            className="mt-4 text-onPrimary"
+          >
+            Colocar na sacola
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
