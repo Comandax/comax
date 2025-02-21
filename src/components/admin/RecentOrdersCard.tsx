@@ -28,7 +28,7 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
   };
 
   return (
-    <Card className="bg-primaryContainer border-2 border-primary shadow-lg hover:shadow-xl transition-shadow duration-300">
+    <Card className="bg-secondaryContainer border-2 border-primary shadow-lg hover:shadow-xl transition-shadow duration-300">
       <CardContent className="p-6 space-y-6 relative">
         <div className="flex items-center gap-3">
           <div className="h-8 w-1 bg-gradient-to-b from-primary to-secondary rounded-full" />
