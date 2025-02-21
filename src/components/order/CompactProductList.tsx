@@ -102,9 +102,9 @@ export function CompactProductList({ products, onQuantitySelect, resetItem, isLo
               <div className="space-y-2">
                 {product.sizes.map((size, index) => (
                   <div key={index}>
-                    <div className="grid grid-cols-[30%_1fr] gap-2 text-sm">
-                      <span className="text-gray-600">{size.size}</span>
-                      <span className="font-medium text-left">
+                    <div className="flex justify-between text-sm">
+                      <span>{size.size}</span>
+                      <span className="font-medium">
                         {new Intl.NumberFormat('pt-BR', {
                           style: 'currency',
                           currency: 'BRL'
