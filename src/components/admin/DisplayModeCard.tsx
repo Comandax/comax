@@ -62,7 +62,7 @@ export function DisplayModeCard({ companyId, currentMode, onSuccess }: DisplayMo
             variant={currentMode === 'full' ? 'default' : 'outline'}
             onClick={() => handleModeChange('full')}
             disabled={isLoading || currentMode === 'full'}
-            className="flex-1"
+            className={`flex-1 ${currentMode !== 'full' ? 'text-primary' : ''}`}
           >
             <ListStart className="mr-2 h-4 w-4" />
             Completo
@@ -71,7 +71,7 @@ export function DisplayModeCard({ companyId, currentMode, onSuccess }: DisplayMo
             variant={currentMode === 'compact' ? 'default' : 'outline'}
             onClick={() => handleModeChange('compact')}
             disabled={isLoading || currentMode === 'compact'}
-            className="flex-1"
+            className={`flex-1 ${currentMode !== 'compact' ? 'text-primary' : ''}`}
           >
             <LayoutGrid className="mr-2 h-4 w-4" />
             Compacto
