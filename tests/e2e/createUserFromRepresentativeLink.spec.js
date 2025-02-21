@@ -1,33 +1,32 @@
 import { test, expect } from '@playwright/test';
+import { faker } from '@faker-js/faker/locale/pt_BR';
 
-test('test', async ({ page }) => {
-  await page.goto('http://localhost:8080/login');
-  await page.getByRole('textbox', { name: 'E-mail' }).click();
-  await page.getByRole('textbox', { name: 'E-mail' }).fill('r8@gmail.com');
-  await page.getByRole('textbox', { name: 'Senha' }).click();
-  await page.getByRole('textbox', { name: 'Senha' }).fill('123123');
-  await page.getByRole('button', { name: 'Entrar' }).click();
-  await page.getByRole('button', { name: 'Copiar Link' }).click();
+test('should create a new user from representative link', async ({ page }) => {
+  // Generate random user data
+  const firstName = faker.person.firstName();
+  const lastName = faker.person.lastName();
+  const email = faker.internet.email({ firstName, lastName }).toLowerCase();
+  const phone = faker.phone.number('(##) # ####-####');
+  
+  // Go to registration page via representative link
   await page.goto('http://localhost:8080/r/r3ee');
-  await page.getByRole('textbox', { name: 'Nome', exact: true }).click();
-  await page.getByRole('textbox', { name: 'Nome', exact: true }).fill('Usuario 6');
-  await page.getByRole('textbox', { name: 'Sobrenome' }).click();
-  await page.getByRole('textbox', { name: 'Sobrenome' }).fill('do r 8');
-  await page.getByRole('textbox', { name: 'Email' }).click();
-  await page.getByRole('textbox', { name: 'Email' }).fill('u6r8@gmail.com');
-  await page.getByRole('textbox', { name: 'Email' }).press('Tab');
-  await page.getByRole('textbox', { name: 'Celular' }).fill('(68) 6 8686-86866');
-  await page.getByRole('textbox', { name: 'Senha', exact: true }).click();
+  
+  // Fill in the registration form with random data
+  await page.getByRole('textbox', { name: 'Nome', exact: true }).fill(firstName);
+  await page.getByRole('textbox', { name: 'Sobrenome' }).fill(lastName);
+  await page.getByRole('textbox', { name: 'Email' }).fill(email);
+  await page.getByRole('textbox', { name: 'Celular' }).fill(phone);
   await page.getByRole('textbox', { name: 'Senha', exact: true }).fill('123123');
-  await page.getByRole('textbox', { name: 'Confirmar senha' }).click();
   await page.getByRole('textbox', { name: 'Confirmar senha' }).fill('123123');
+  
+  // Submit the registration form
   await page.getByRole('button', { name: 'Salvar' }).click();
-  await page.getByRole('textbox', { name: 'E-mail' }).click();
+  
+  // Login with the representative account
   await page.getByRole('textbox', { name: 'E-mail' }).fill('r8@gmail.com');
-  await page.getByRole('textbox', { name: 'E-mail' }).press('Tab');
   await page.getByRole('textbox', { name: 'Senha' }).fill('123123');
   await page.getByRole('button', { name: 'Entrar' }).click();
-  await expect(page.getByText('Usuario 6 do r')).toBeVisible();
-  await page.getByRole('button', { name: 'Sair' }).click();
-  await expect(page.getByRole('heading', { name: 'Acesse sua conta' })).toBeVisible();
+  
+  // Verify the representative can see the new user
+  await expect(page.getByText(`${firstName} ${lastName}`)).toBeVisible();
 });

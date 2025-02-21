@@ -11,6 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
+.last-run
+.last-run.json
 
 # Editor directories and files
 .vscode/*
@@ -37,3 +39,5 @@ __pycache__/
 
 # Test reports
 reports/
+test-results/
+playwright-report/
