@@ -89,17 +89,22 @@ export function CompactProductList({ products, onQuantitySelect, resetItem }: Co
               </div>
               <h3 className="text-sm font-medium">Ref: {product.reference}</h3>
               <p className="text-sm text-gray-500">{product.name}</p>
-              <Separator className="my-3" /> {/* Adicionado separador aqui */}
-              <div className="space-y-1">
+              <Separator className="my-3" />
+              <div className="space-y-2">
                 {product.sizes.map((size, index) => (
-                  <div key={index} className="flex justify-between text-sm">
-                    <span>{size.size}</span>
-                    <span className="font-medium">
-                      {new Intl.NumberFormat('pt-BR', {
-                        style: 'currency',
-                        currency: 'BRL'
-                      }).format(size.value)}
-                    </span>
+                  <div key={index}>
+                    <div className="flex justify-between text-sm">
+                      <span>{size.size}</span>
+                      <span className="font-medium">
+                        {new Intl.NumberFormat('pt-BR', {
+                          style: 'currency',
+                          currency: 'BRL'
+                        }).format(size.value)}
+                      </span>
+                    </div>
+                    {index < product.sizes.length - 1 && (
+                      <Separator className="my-2" />
+                    )}
                   </div>
                 ))}
               </div>
