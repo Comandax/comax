@@ -193,7 +193,7 @@ export function CompactProductList({ products, onQuantitySelect, resetItem, isLo
 
                 <Button 
                   onClick={handleAddToCart}
-                  className="mt-4"
+                  className="mt-4 text-onPrimary"
                 >
                   Colocar na sacola
                 </Button>
