@@ -1,5 +1,5 @@
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ListStart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -36,9 +36,9 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
     <>
       <Card className="bg-surface border-2 border-surfaceVariant shadow-lg">
         <CardContent className="p-6 space-y-6 relative">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-1 bg-gradient-to-b from-primary to-secondary rounded-full" />
-            <h2 className="text-2xl font-bold text-onSecondaryContainer">
+          <div className="flex items-center gap-2">
+            <ListStart className="h-5 w-5" />
+            <h2 className="text-lg font-semibold">
               Pedidos Recentes
             </h2>
           </div>
