@@ -21,12 +21,16 @@ import { AdminSidebarMenu } from "@/components/admin/AdminSidebarMenu";
 import { RecentOrdersCard } from "@/components/admin/RecentOrdersCard";
 import { PublicLinkCard } from "@/components/admin/PublicLinkCard";
 import { DisplayModeCard } from "@/components/admin/DisplayModeCard";
+import { NoCompanyRegisteredCard } from "@/components/admin/NoCompanyRegisteredCard";
+import { CompanyForm } from "@/components/companies/CompanyForm";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const Admin = () => {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isCompanyRegisterOpen, setIsCompanyRegisterOpen] = useState(false);
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -116,6 +120,15 @@ const Admin = () => {
     }
   };
 
+  const handleCompanyRegisterSuccess = () => {
+    setIsCompanyRegisterOpen(false);
+    refetch();
+    toast({
+      title: "Empresa cadastrada com sucesso",
+      description: "Agora você pode começar a cadastrar seus produtos."
+    });
+  };
+
   // Movido para o início do componente para evitar flash de loading
   const isLoading = isLoadingCompany || isLoadingOrders;
   if (isLoading) {
@@ -159,7 +172,7 @@ const Admin = () => {
               />
             </div>
             
-            {userCompany && (
+            {userCompany ? (
               <div className="grid grid-rows-2 gap-6 h-full">
                 <PublicLinkCard
                   companyShortName={userCompany.short_name}
@@ -172,6 +185,10 @@ const Admin = () => {
                     refetch();
                   }}
                 />
+              </div>
+            ) : (
+              <div className="h-full">
+                <NoCompanyRegisteredCard onRegisterClick={() => setIsCompanyRegisterOpen(true)} />
               </div>
             )}
           </div>
@@ -188,6 +205,15 @@ const Admin = () => {
             }}
           />
         )}
+
+        <Dialog open={isCompanyRegisterOpen} onOpenChange={setIsCompanyRegisterOpen}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Cadastrar Empresa</DialogTitle>
+            </DialogHeader>
+            <CompanyForm onSubmitSuccess={handleCompanyRegisterSuccess} />
+          </DialogContent>
+        </Dialog>
       </div>
     </SidebarProvider>
   );
