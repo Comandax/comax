@@ -10,7 +10,7 @@ import { UserListTable } from "./UserListTable";
 import { UserListPagination } from "./UserListPagination";
 import { UserEditModal } from "./UserEditModal";
 import { SortField, SortOrder } from "./types";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Users } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export function UserList() {
@@ -130,7 +130,8 @@ export function UserList() {
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
             <div className="h-8 w-1 bg-primary rounded-full" />
-            <h2 className="text-2xl font-bold text-primary">Usuários</h2>
+            <Users className="h-5 w-5 text-onSurfaceVariant" />
+            <h2 className="text-2xl font-bold text-onSurfaceVariant">Usuários</h2>
           </div>
         </div>
         
