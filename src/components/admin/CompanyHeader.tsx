@@ -12,7 +12,6 @@ export const CompanyHeader = ({ company }: CompanyHeaderProps) => {
       <div className="flex flex-col items-center space-y-4">
         {company?.logo_url ? (
           <div className="relative group">
-            <div className="absolute -inset-2 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-xl blur opacity-50 group-hover:opacity-75 transition duration-300"></div>
             <img
               src={company.logo_url}
               alt={`Logo ${company.name}`}
@@ -32,4 +31,4 @@ export const CompanyHeader = ({ company }: CompanyHeaderProps) => {
       </div>
     </div>
   );
-};
+}

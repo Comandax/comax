@@ -140,7 +140,7 @@ export function CompanyForm({ onSubmitSuccess }: CompanyFormProps) {
           </div>
         </div>
         <div className="pt-4">
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full text-onPrimary">
             <Plus className="mr-2 h-4 w-4" /> Adicionar Empresa
           </Button>
         </div>

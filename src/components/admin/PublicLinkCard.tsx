@@ -1,86 +1,79 @@
 
-import { Share2, ExternalLink, Copy, Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Link2, Copy, ExternalLink, Edit } from "lucide-react";
+import { useState } from "react";
 
 interface PublicLinkCardProps {
   companyShortName: string;
   onEdit: () => void;
 }
 
-export const PublicLinkCard = ({ companyShortName, onEdit }: PublicLinkCardProps) => {
-  const { toast } = useToast();
+export function PublicLinkCard({ companyShortName, onEdit }: PublicLinkCardProps) {
+  const [copied, setCopied] = useState(false);
+  const publicLink = `${window.location.origin}/${companyShortName}`;
 
-  const handleCopyLink = () => {
-    const link = `${window.location.origin}/${companyShortName}`;
-    navigator.clipboard.writeText(link);
-    toast({
-      title: "Link copiado!",
-      description: "O link foi copiado para sua área de transferência."
-    });
+  const handleCopy = () => {
+    navigator.clipboard.writeText(publicLink);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
-  const handleOpenLink = () => {
-    const link = `${window.location.origin}/${companyShortName}`;
-    window.open(link, '_blank');
+  const handleOpen = () => {
+    window.open(publicLink, '_blank');
   };
 
   return (
-    <Card className="bg-surfaceContainerLowest dark:bg-surfaceContainerLowest shadow-lg hover:shadow-xl transition-shadow duration-300 border-0 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 to-primary/5 pointer-events-none" />
-      <CardContent className="p-6 space-y-6 relative">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-1 bg-gradient-to-b from-secondary to-primary rounded-full" />
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-secondary to-primary bg-clip-text text-transparent">
-            Link para Pedidos
-          </h2>
-        </div>
-
-        <div className="p-6 rounded-xl bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700">
-          <div className="flex flex-col space-y-4">
-            <div className="flex items-center space-x-2">
-              <Share2 className="w-5 h-5 text-secondary" />
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                Link público para seus clientes fazerem pedidos
-              </p>
-            </div>
-            
-            <div className="p-3 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700">
-              <p className="text-sm text-gray-600 dark:text-gray-400 truncate">
-                {`${window.location.origin}/${companyShortName}`}
-              </p>
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-              <Button
-                variant="outline"
-                className="flex-1 min-w-[120px] bg-white dark:bg-gray-900"
-                onClick={handleCopyLink}
-              >
-                <Copy className="w-4 h-4 mr-2" />
-                Copiar
-              </Button>
-              <Button
-                variant="outline"
-                className="flex-1 min-w-[120px] bg-white dark:bg-gray-900"
-                onClick={handleOpenLink}
-              >
-                <ExternalLink className="w-4 h-4 mr-2" />
-                Abrir
-              </Button>
-              <Button
-                variant="outline"
-                className="flex-1 min-w-[120px] bg-white dark:bg-gray-900"
-                onClick={onEdit}
-              >
-                <Edit className="w-4 h-4 mr-2" />
-                Editar
-              </Button>
-            </div>
+    <Card className="bg-surface border-2 border-surfaceVariant">
+      <CardHeader>
+        <CardTitle className="text-lg font-semibold flex items-center gap-2 text-onSurfaceVariant">
+          <Link2 className="h-5 w-5" />
+          Link para Pedidos
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <Input
+              id="link"
+              value={publicLink}
+              readOnly
+              className="bg-background"
+            />
+          </div>
+          <div className="flex gap-4">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={handleCopy}
+              disabled={copied}
+              className="flex flex-col items-center gap-1 h-auto py-1"
+            >
+              <Copy className="h-5 w-5" />
+              <span className="text-xs">{copied ? "Copiado!" : "Copiar"}</span>
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={handleOpen}
+              className="flex flex-col items-center gap-1 h-auto py-1"
+            >
+              <ExternalLink className="h-5 w-5" />
+              <span className="text-xs">Abrir</span>
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={onEdit}
+              className="flex flex-col items-center gap-1 h-auto py-1"
+            >
+              <Edit className="h-5 w-5" />
+              <span className="text-xs">Editar</span>
+            </Button>
           </div>
         </div>
       </CardContent>
     </Card>
   );
-};
+}

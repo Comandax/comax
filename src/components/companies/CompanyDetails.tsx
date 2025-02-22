@@ -11,9 +11,10 @@ import { uploadCompanyLogo } from "@/services/companyLogoService";
 interface CompanyDetailsProps {
   company: Company;
   onUpdateSuccess: () => void;
+  onClose?: () => void;
 }
 
-export function CompanyDetails({ company, onUpdateSuccess }: CompanyDetailsProps) {
+export function CompanyDetails({ company, onUpdateSuccess, onClose }: CompanyDetailsProps) {
   const [editMode, setEditMode] = useState(false);
   const { toast } = useToast();
   const { user } = useAuth();
@@ -90,7 +91,10 @@ export function CompanyDetails({ company, onUpdateSuccess }: CompanyDetailsProps
   return (
     <CompanyView
       company={company}
-      onEditClick={() => setEditMode(true)}
+      onEditClick={() => {
+        if (onClose) onClose();
+        setEditMode(true);
+      }}
     />
   );
 }

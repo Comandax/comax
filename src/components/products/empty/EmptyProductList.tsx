@@ -15,7 +15,7 @@ export function EmptyProductList({ onNewProduct }: EmptyProductListProps) {
       <p className="text-muted-foreground">
         Clique no botão "Novo Produto" abaixo para começar a cadastrar seus produtos.
       </p>
-      <Button onClick={onNewProduct} className="bg-primary hover:bg-primary/90">
+      <Button onClick={onNewProduct} className="bg-primary hover:bg-primary/90 text-onPrimary">
         <Plus className="w-4 h-4 mr-2" />
         Novo Produto
       </Button>

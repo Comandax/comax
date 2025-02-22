@@ -228,8 +228,9 @@ const Index = () => {
 
           <Card className="border-border/30 bg-surfaceContainerLowest shadow-lg backdrop-blur-sm p-8">
             <OrderForm 
-              companyId={company.id} 
-              products={products} 
+              companyId={company.id}
+              displayMode={company.display_mode}
+              products={products}
               isLoading={isLoadingProducts}
               onQuantitySelect={handleQuantitySelect}
               onContactSubmit={handleContactSubmit}

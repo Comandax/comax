@@ -1,5 +1,5 @@
 
-import { Menu } from "lucide-react";
+import { Menu, Loader } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
@@ -20,12 +20,17 @@ import { CompanyHeader } from "@/components/admin/CompanyHeader";
 import { AdminSidebarMenu } from "@/components/admin/AdminSidebarMenu";
 import { RecentOrdersCard } from "@/components/admin/RecentOrdersCard";
 import { PublicLinkCard } from "@/components/admin/PublicLinkCard";
+import { DisplayModeCard } from "@/components/admin/DisplayModeCard";
+import { NoCompanyRegisteredCard } from "@/components/admin/NoCompanyRegisteredCard";
+import { CompanyForm } from "@/components/companies/CompanyForm";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const Admin = () => {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isCompanyRegisterOpen, setIsCompanyRegisterOpen] = useState(false);
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -35,7 +40,7 @@ const Admin = () => {
     return <Navigate to="/users" replace />;
   }
 
-  const { data: userCompany, isError, refetch } = useQuery({
+  const { data: userCompany, isError, isLoading: isLoadingCompany, refetch } = useQuery({
     queryKey: ['company', user?.id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -50,7 +55,8 @@ const Admin = () => {
       }
       return data;
     },
-    enabled: !!user
+    enabled: !!user,
+    staleTime: 1000 * 60 * 5, // 5 minutos
   });
 
   const { data: recentOrders = [], isLoading: isLoadingOrders } = useQuery({
@@ -93,7 +99,8 @@ const Admin = () => {
         notes: order.notes || undefined
       }));
     },
-    enabled: !!userCompany?.id
+    enabled: !!userCompany?.id,
+    staleTime: 1000 * 60 * 5, // 5 minutos
   });
 
   const handleLogout = async () => {
@@ -113,21 +120,41 @@ const Admin = () => {
     }
   };
 
+  const handleCompanyRegisterSuccess = () => {
+    setIsCompanyRegisterOpen(false);
+    refetch();
+    toast({
+      title: "Empresa cadastrada com sucesso",
+      description: "Agora você pode começar a cadastrar seus produtos."
+    });
+  };
+
+  // Movido para o início do componente para evitar flash de loading
+  const isLoading = isLoadingCompany || isLoadingOrders;
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-surfaceContainerLowest">
+        <Loader className="w-8 h-8 animate-spin text-primary mb-4" />
+        <p className="text-lg text-gray-600">Carregando dados...</p>
+      </div>
+    );
+  }
+
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-        <Sidebar className="border-r border-gray-200 dark:border-gray-700 bg-white lg:bg-white lg:dark:bg-white">
-          <SidebarHeader className="bg-white">
+      <div className="min-h-screen flex w-full bg-surfaceContainerLowest">
+        <Sidebar className="border-r border-gray-200 dark:border-gray-700 bg-surfaceContainer shadow-md">
+          <SidebarHeader className="bg-surfaceContainer">
             <CompanyHeader company={userCompany} />
           </SidebarHeader>
-          <SidebarContent className="px-4 bg-white">
+          <SidebarContent className="px-4 bg-surfaceContainer">
             <AdminSidebarMenu userId={user.id} onLogout={handleLogout} />
           </SidebarContent>
         </Sidebar>
 
         <main className="flex-1 p-8">
           <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            <h1 className="text-2xl font-bold text-onSurfaceVariant">
               Painel Administrativo
             </h1>
             <SidebarTrigger>
@@ -138,16 +165,31 @@ const Admin = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <RecentOrdersCard
-              orders={recentOrders}
-              isLoading={isLoadingOrders}
-            />
-            
-            {userCompany && (
-              <PublicLinkCard
-                companyShortName={userCompany.short_name}
-                onEdit={() => setIsEditModalOpen(true)}
+            <div className="h-full">
+              <RecentOrdersCard
+                orders={recentOrders}
+                isLoading={isLoadingOrders}
               />
+            </div>
+            
+            {userCompany ? (
+              <div className="grid grid-rows-2 gap-6 h-full">
+                <PublicLinkCard
+                  companyShortName={userCompany.short_name}
+                  onEdit={() => setIsEditModalOpen(true)}
+                />
+                <DisplayModeCard
+                  companyId={userCompany.id}
+                  currentMode={userCompany.display_mode}
+                  onSuccess={() => {
+                    refetch();
+                  }}
+                />
+              </div>
+            ) : (
+              <div className="h-full">
+                <NoCompanyRegisteredCard onRegisterClick={() => setIsCompanyRegisterOpen(true)} />
+              </div>
             )}
           </div>
         </main>
@@ -163,6 +205,15 @@ const Admin = () => {
             }}
           />
         )}
+
+        <Dialog open={isCompanyRegisterOpen} onOpenChange={setIsCompanyRegisterOpen}>
+          <DialogContent className="sm:max-w-[600px]">
+            <DialogHeader>
+              <DialogTitle>Cadastrar Empresa</DialogTitle>
+            </DialogHeader>
+            <CompanyForm onSubmitSuccess={handleCompanyRegisterSuccess} />
+          </DialogContent>
+        </Dialog>
       </div>
     </SidebarProvider>
   );

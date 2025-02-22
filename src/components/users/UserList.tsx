@@ -1,4 +1,3 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,7 +9,7 @@ import { UserListTable } from "./UserListTable";
 import { UserListPagination } from "./UserListPagination";
 import { UserEditModal } from "./UserEditModal";
 import { SortField, SortOrder } from "./types";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, Users } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export function UserList() {
@@ -125,12 +124,12 @@ export function UserList() {
   if (isLoading) return <div>Carregando...</div>;
 
   return (
-    <Card className="bg-gradient-to-br from-primary/5 to-primary/10 shadow-lg border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
+    <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-2 border-primary/20 hover:border-primary/30 transition-all duration-300">
       <CardContent className="p-6 space-y-4">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-2">
-            <div className="h-8 w-1 bg-primary rounded-full" />
-            <h2 className="text-2xl font-bold text-primary">Usuários</h2>
+            <Users className="h-5 w-5 text-onSurfaceVariant" />
+            <h2 className="text-2xl font-bold text-onSurfaceVariant">Usuários</h2>
           </div>
         </div>
         

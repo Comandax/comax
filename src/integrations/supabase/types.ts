@@ -13,6 +13,7 @@ export type Database = {
         Row: {
           active: boolean
           created_at: string
+          display_mode: string
           id: string
           logo_url: string | null
           name: string
@@ -22,6 +23,7 @@ export type Database = {
         Insert: {
           active?: boolean
           created_at?: string
+          display_mode?: string
           id?: string
           logo_url?: string | null
           name: string
@@ -31,6 +33,7 @@ export type Database = {
         Update: {
           active?: boolean
           created_at?: string
+          display_mode?: string
           id?: string
           logo_url?: string | null
           name?: string
