@@ -32,29 +32,40 @@ export function UserDetailsModal({ isOpen, onOpenChange, userId }: UserDetailsMo
       
       try {
         // Fetch company information
-        const { data: company } = await supabase
+        const { data: companies, error: companyError } = await supabase
           .from('companies')
-          .select('name')
-          .eq('owner_id', userId)
-          .single();
+          .select('id, name')
+          .eq('owner_id', userId);
 
-        // Fetch products count
-        const { count: productsCount } = await supabase
-          .from('products')
-          .select('*', { count: 'exact', head: true })
-          .eq('company_id', company?.id || '');
+        if (companyError) throw companyError;
+        
+        const company = companies?.[0];
+        
+        if (company) {
+          // Fetch products count
+          const { count: productsCount } = await supabase
+            .from('products')
+            .select('*', { count: 'exact', head: true })
+            .eq('company_id', company.id);
 
-        // Fetch orders count
-        const { count: ordersCount } = await supabase
-          .from('orders')
-          .select('*', { count: 'exact', head: true })
-          .eq('company_id', company?.id || '');
+          // Fetch orders count
+          const { count: ordersCount } = await supabase
+            .from('orders')
+            .select('*', { count: 'exact', head: true })
+            .eq('company_id', company.id);
 
-        setDetails({
-          companyName: company?.name || null,
-          productsCount: productsCount || 0,
-          ordersCount: ordersCount || 0,
-        });
+          setDetails({
+            companyName: company.name,
+            productsCount: productsCount || 0,
+            ordersCount: ordersCount || 0,
+          });
+        } else {
+          setDetails({
+            companyName: null,
+            productsCount: 0,
+            ordersCount: 0,
+          });
+        }
       } catch (err: any) {
         console.error('Error fetching user details:', err);
         setError(err.message);
