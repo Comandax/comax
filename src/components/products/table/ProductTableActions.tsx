@@ -1,3 +1,4 @@
+
 import { Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -86,7 +87,10 @@ export function ProductTableActions({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={() => onDelete(product._id)}>
+            <AlertDialogAction 
+              onClick={() => onDelete(product._id)}
+              className="text-onPrimary"
+            >
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>
