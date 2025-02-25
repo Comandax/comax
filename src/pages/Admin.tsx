@@ -1,4 +1,3 @@
-
 import { Menu, Loader } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -86,7 +85,21 @@ const Admin = () => {
         customerZipCode: order.customer_zip_code,
         date: order.date,
         time: order.time,
-        items: Array.isArray(order.items) ? order.items : [],
+        items: Array.isArray(order.items) 
+          ? order.items.map((item: any) => ({
+              productId: item.productId,
+              reference: item.reference,
+              name: item.name,
+              sizes: Array.isArray(item.sizes) 
+                ? item.sizes.map((size: any) => ({
+                    size: size.size,
+                    price: size.price,
+                    quantity: size.quantity,
+                    subtotal: size.subtotal
+                  }))
+                : []
+            }))
+          : [],
         total: order.total,
         companyId: order.company_id,
         notes: order.notes || undefined
@@ -122,7 +135,6 @@ const Admin = () => {
     });
   };
 
-  // Movido para o início do componente para evitar flash de loading
   const isLoading = isLoadingCompany || isLoadingOrders;
   if (isLoading) {
     return (
@@ -133,7 +145,6 @@ const Admin = () => {
     );
   }
 
-  // Calcular contagem de produtos
   const productsCount = userCompany?.products?.[0]?.count || 0;
 
   return (
