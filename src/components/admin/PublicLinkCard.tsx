@@ -25,14 +25,14 @@ export function PublicLinkCard({ companyShortName, onEdit }: PublicLinkCardProps
   };
 
   return (
-    <Card className="bg-surface border-2 border-surfaceVariant">
-      <CardHeader>
+    <Card className="bg-card rounded-xl p-6 shadow-sm border border-gray-200 hover:border-primary/20 transition-colors">
+      <CardHeader className="p-0 mb-6">
         <CardTitle className="text-lg font-semibold flex items-center gap-2 text-onSurfaceVariant">
           <Link2 className="h-5 w-5" />
           Link para Pedidos
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="p-0 space-y-4">
         <div className="flex gap-4">
           <div className="flex-1">
             <Input
