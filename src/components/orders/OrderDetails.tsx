@@ -72,7 +72,7 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
           <h3 className="font-semibold mb-4">Itens do pedido</h3>
           <div className="space-y-4">
             {order.items.map(item => (
-              <div key={`${item.productId}`} className="border rounded-lg overflow-hidden">
+              <div key={`${item.productId}`} className="border border-gray-200 rounded-lg overflow-hidden">
                 <div className="bg-gray-100 p-3 font-semibold">
                   {item.reference} - {item.name}
                 </div>
