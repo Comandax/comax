@@ -24,6 +24,7 @@ import { DisplayModeCard } from "@/components/admin/DisplayModeCard";
 import { NoCompanyRegisteredCard } from "@/components/admin/NoCompanyRegisteredCard";
 import { CompanyForm } from "@/components/companies/CompanyForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import type { Order } from "@/types/order";
 
 const Admin = () => {
   const { user, logout } = useAuth();
@@ -43,9 +44,9 @@ const Admin = () => {
   const { data: userCompany, isError, isLoading: isLoadingCompany, refetch } = useQuery({
     queryKey: ['company', user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: company, error } = await supabase
         .from('companies')
-        .select('*')
+        .select('*, products:products(count)')
         .eq('owner_id', user?.id)
         .maybeSingle();
       
@@ -53,7 +54,8 @@ const Admin = () => {
         console.error('Error fetching company:', error);
         throw error;
       }
-      return data;
+
+      return company;
     },
     enabled: !!user,
     staleTime: 1000 * 60 * 5, // 5 minutos
@@ -74,7 +76,21 @@ const Admin = () => {
         throw error;
       }
 
-      return data;
+      // Mapear os dados do banco para o formato esperado pelo tipo Order
+      return (data || []).map((order): Order => ({
+        _id: order.id,
+        customerName: order.customer_name,
+        customerPhone: order.customer_phone,
+        customerCity: order.customer_city,
+        customerState: order.customer_state,
+        customerZipCode: order.customer_zip_code,
+        date: order.date,
+        time: order.time,
+        items: order.items,
+        total: order.total,
+        companyId: order.company_id,
+        notes: order.notes || undefined
+      }));
     },
     enabled: !!userCompany?.id,
     staleTime: 1000 * 60 * 5, // 5 minutos
@@ -117,6 +133,9 @@ const Admin = () => {
     );
   }
 
+  // Calcular contagem de produtos
+  const productsCount = userCompany?.products?.count || 0;
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
@@ -152,7 +171,7 @@ const Admin = () => {
                 <div className="bg-card rounded-xl p-6 shadow-sm border border-border/40 hover:border-primary/20 transition-colors">
                   <h3 className="text-sm font-medium text-muted-foreground mb-2">Produtos</h3>
                   <div className="text-2xl font-bold text-foreground/90">
-                    {userCompany?.products_count || 0}
+                    {productsCount}
                   </div>
                 </div>
                 <div className="bg-card rounded-xl p-6 shadow-sm border border-border/40 hover:border-primary/20 transition-colors">
