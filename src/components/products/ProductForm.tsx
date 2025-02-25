@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Form } from "@/components/ui/form";
 import { productFormSchema } from "@/schemas/productSchema";
 import type { Product, ProductFormData } from "@/types/product";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { ProductBasicInfo } from "./form/ProductBasicInfo";
 import { ProductSizes } from "./form/ProductSizes";
 import { ProductQuantities } from "./form/ProductQuantities";
@@ -19,6 +19,7 @@ interface ProductFormProps {
 
 export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormProps) {
   const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const isEditing = Boolean(initialData?._id);
 
   const form = useForm<ProductFormData>({
@@ -66,7 +67,7 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
         return;
       }
 
-      const fileName = `${reference}.${fileExt}`;
+      const fileName = `${reference}-${Date.now()}.${fileExt}`; // Adiciona timestamp para evitar cache
       
       const { data, error: uploadError } = await supabase.storage
         .from('products')
@@ -83,6 +84,11 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
         .getPublicUrl(fileName);
 
       form.setValue('image', urlData.publicUrl);
+      
+      // Limpa o input de arquivo após o upload
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     } catch (error) {
       console.error('Error uploading file:', error);
       form.setError('image', {
@@ -107,7 +113,8 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
         <ProductBasicInfo 
           form={form} 
           isUploading={isUploading} 
-          onImageUpload={handleImageUpload} 
+          onImageUpload={handleImageUpload}
+          fileInputRef={fileInputRef}
         />
         
         <ProductSizes 
