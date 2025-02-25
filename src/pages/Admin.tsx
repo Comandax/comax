@@ -86,7 +86,7 @@ const Admin = () => {
         customerZipCode: order.customer_zip_code,
         date: order.date,
         time: order.time,
-        items: order.items,
+        items: Array.isArray(order.items) ? order.items : [],
         total: order.total,
         companyId: order.company_id,
         notes: order.notes || undefined
@@ -134,7 +134,7 @@ const Admin = () => {
   }
 
   // Calcular contagem de produtos
-  const productsCount = userCompany?.products?.count || 0;
+  const productsCount = userCompany?.products?.[0]?.count || 0;
 
   return (
     <SidebarProvider>
@@ -143,7 +143,7 @@ const Admin = () => {
           <SidebarHeader className="bg-card/50 backdrop-blur-sm">
             <CompanyHeader company={userCompany} />
           </SidebarHeader>
-          <SidebarContent className="px-4 bg-card/50 backdrop-blur-sm">
+          <SidebarContent className="px-4 pt-4 bg-card/50 backdrop-blur-sm">
             <AdminSidebarMenu userId={user.id} onLogout={handleLogout} />
           </SidebarContent>
         </Sidebar>
