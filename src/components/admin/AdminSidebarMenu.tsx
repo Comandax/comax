@@ -14,8 +14,8 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Company } from "@/types/company";
-import { UserProfileModal } from "@/components/users/UserProfileModal";
 import { Profile } from "@/types/profile";
+import { UserProfileModal } from "@/components/users/UserProfileModal";
 
 interface AdminSidebarMenuProps {
   userId: string;
@@ -130,9 +130,9 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
         onOpenChange={setIsProfileEditModalOpen}
       />
 
-      <Dialog open={isCompanyModalOpen} onOpenChange={setIsCompanyModalOpen}>
-        <DialogContent className="max-w-3xl">
-          {company && (
+      {company && (
+        <Dialog open={isCompanyModalOpen} onOpenChange={setIsCompanyModalOpen}>
+          <DialogContent className="max-w-3xl">
             <CompanyDetails 
               company={company}
               onUpdateSuccess={() => {
@@ -141,9 +141,9 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
               }}
               onClose={() => setIsCompanyModalOpen(false)}
             />
-          )}
-        </DialogContent>
-      </Dialog>
+          </DialogContent>
+        </Dialog>
+      )}
     </SidebarMenu>
   );
 };
