@@ -14,6 +14,7 @@ import { Company } from "@/types/company";
 import { Profile } from "@/types/profile";
 import { UserProfileModal } from "@/components/users/UserProfileModal";
 import { CompanyDetailsDialog } from "@/components/companies/details/CompanyDetailsDialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface AdminSidebarMenuProps {
   userId: string;
