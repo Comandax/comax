@@ -37,37 +37,39 @@ const Admin = () => {
   const { data: userCompany, isError, isLoading: isLoadingCompany, refetch } = useQuery({
     queryKey: ['company', user?.id],
     queryFn: async () => {
-      // Primeiro, busca a empresa
-      const { data: company, error: companyError } = await supabase
+      const { data: company, error } = await supabase
         .from('companies')
         .select('*')
         .eq('owner_id', user?.id)
         .maybeSingle();
       
-      if (companyError) {
-        console.error('Error fetching company:', companyError);
-        throw companyError;
+      if (error) {
+        console.error('Error fetching company:', error);
+        throw error;
       }
 
-      if (!company) return null;
-
-      // Depois, busca a contagem de produtos
-      const { count, error: countError } = await supabase
-        .from('products')
-        .select('*', { count: 'exact', head: true })
-        .eq('company_id', company.id);
-      
-      if (countError) {
-        console.error('Error fetching products count:', countError);
-        throw countError;
-      }
-
-      return {
-        ...company,
-        productsCount: count || 0
-      };
+      return company;
     },
     enabled: !!user,
+    staleTime: 1000 * 60 * 5, // 5 minutos
+  });
+
+  const { data: productsCount = 0 } = useQuery({
+    queryKey: ['products-count', userCompany?.id],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('products')
+        .select('*', { count: 'exact', head: true })
+        .eq('company_id', userCompany?.id);
+
+      if (error) {
+        console.error('Error fetching products count:', error);
+        throw error;
+      }
+
+      return count || 0;
+    },
+    enabled: !!userCompany?.id,
     staleTime: 1000 * 60 * 5, // 5 minutos
   });
 
@@ -162,7 +164,7 @@ const Admin = () => {
           
           <DashboardContent 
             company={userCompany}
-            productsCount={userCompany?.productsCount || 0}
+            productsCount={productsCount}
             recentOrders={recentOrders}
             isLoadingOrders={isLoadingOrders}
             onEditLink={() => setIsEditModalOpen(true)}
