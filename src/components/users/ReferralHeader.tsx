@@ -6,7 +6,7 @@ export function ReferralHeader() {
         <div className="max-w-2xl mx-auto px-4">
           <div className="py-4 flex items-center gap-4">
             <img 
-              src="/lovable-uploads/02adcbae-c4a2-4a37-8214-0e48d6485253.png" 
+              src="/lovable-uploads/6d917c6a-c09a-4465-bd23-009618661d72.png" 
               alt="COMAX Logo" 
               className="h-12 w-auto"
             />

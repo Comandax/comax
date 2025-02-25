@@ -1,3 +1,4 @@
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { Order } from "@/types/order";
@@ -24,17 +25,17 @@ const formatZipCode = (zipCode: string) => {
 
 const formatDate = (dateStr: string) => {
   try {
-    // Dividir a data em partes
     const [year, month, day] = dateStr.split('-').map(Number);
-    
-    // Criar uma data às 12:00 (meio-dia) para evitar problemas de timezone
     const date = new Date(year, month - 1, day, 12, 0, 0);
-    
     return format(date, "dd/MM/yyyy", { locale: ptBR });
   } catch (error) {
     console.error('Erro ao formatar data:', error, 'Data recebida:', dateStr);
     return dateStr;
   }
+};
+
+const formatTime = (timeStr: string) => {
+  return timeStr.split(':').slice(0, 2).join(':');
 };
 
 interface OrderDetailsProps {
@@ -50,7 +51,7 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
             <h3 className="font-semibold mb-2">Pedido</h3>
             <p>Código: {order._id}</p>
             <p>Data: {formatDate(order.date)}</p>
-            <p>Hora: {order.time}</p>
+            <p>Hora: {formatTime(order.time)}</p>
             {order.notes && (
               <div className="mt-2">
                 <h4 className="font-semibold mb-1">Observações:</h4>
@@ -71,7 +72,7 @@ export const OrderDetails = ({ order }: OrderDetailsProps) => {
           <h3 className="font-semibold mb-4">Itens do pedido</h3>
           <div className="space-y-4">
             {order.items.map(item => (
-              <div key={`${item.productId}`} className="border rounded-lg overflow-hidden">
+              <div key={`${item.productId}`} className="border border-gray-200 rounded-lg overflow-hidden">
                 <div className="bg-gray-100 p-3 font-semibold">
                   {item.reference} - {item.name}
                 </div>

@@ -64,9 +64,11 @@ export function UserForm({ initialData, onSubmit, isLoading }: UserFormProps) {
         <UserNameFields form={form} />
         <UserContactFields form={form} />
         <UserPasswordFields form={form} isEditMode={!!initialData} />
-        <Button type="submit" disabled={isLoading} className="bg-primary text-onPrimary">
-          {isLoading ? "Salvando..." : "Salvar"}
-        </Button>
+        <div className="flex justify-end">
+          <Button type="submit" disabled={isLoading} className="bg-primary text-onPrimary">
+            {isLoading ? "Salvando..." : "Salvar"}
+          </Button>
+        </div>
       </form>
     </Form>
   );

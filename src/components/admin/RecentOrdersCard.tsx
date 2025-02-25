@@ -1,4 +1,3 @@
-
 import { ArrowRight, ListStart } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -34,8 +33,8 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
 
   return (
     <>
-      <Card className="bg-surface border-2 border-surfaceVariant h-full">
-        <CardContent className="p-6 flex flex-col h-full">
+      <Card className="bg-card rounded-xl p-6 shadow-sm border border-gray-200 hover:border-primary/20 transition-colors">
+        <CardContent className="p-0 flex flex-col h-full">
           <div className="flex items-center gap-2 mb-6">
             <ListStart className="h-5 w-5" />
             <h2 className="text-lg font-semibold text-onSurfaceVariant">
@@ -54,7 +53,7 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
                   {orders.map((order) => (
                     <div 
                       key={order._id} 
-                      className="p-4 rounded-lg border border-surfaceVariant bg-surface hover:border-primary/30 transition-colors cursor-pointer"
+                      className="p-4 rounded-lg border border-gray-200 bg-surface hover:border-primary/30 transition-colors cursor-pointer"
                       onClick={() => setSelectedOrder(order)}
                     >
                       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">

@@ -46,14 +46,14 @@ export function DisplayModeCard({ companyId, currentMode, onSuccess }: DisplayMo
   };
 
   return (
-    <Card className="bg-surface border-2 border-surfaceVariant">
-      <CardHeader>
+    <Card className="bg-card rounded-xl p-6 shadow-sm border border-gray-200 hover:border-primary/20 transition-colors">
+      <CardHeader className="p-0 mb-6">
         <CardTitle className="text-lg font-semibold flex items-center gap-2 text-onSurfaceVariant">
           <LayoutGrid className="h-5 w-5" />
           Modo de Exibição de Produtos
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-0">
         <p className="text-sm text-muted-foreground mb-4">
           Escolha como seus produtos serão exibidos na página de pedidos.
         </p>

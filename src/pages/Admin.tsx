@@ -1,29 +1,23 @@
 
-import { Menu, Loader } from "lucide-react";
-import { Navigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
-import { CompanyEditShortNameModal } from "@/components/companies/details/CompanyEditShortNameModal";
 import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { CompanyEditShortNameModal } from "@/components/companies/details/CompanyEditShortNameModal";
+import { CompanyForm } from "@/components/companies/CompanyForm";
+import { CompanyHeader } from "@/components/admin/CompanyHeader";
+import { AdminSidebarMenu } from "@/components/admin/AdminSidebarMenu";
+import { DashboardHeader } from "@/components/admin/dashboard/DashboardHeader";
+import { DashboardContent } from "@/components/admin/dashboard/DashboardContent";
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
   SidebarProvider,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { CompanyHeader } from "@/components/admin/CompanyHeader";
-import { AdminSidebarMenu } from "@/components/admin/AdminSidebarMenu";
-import { RecentOrdersCard } from "@/components/admin/RecentOrdersCard";
-import { PublicLinkCard } from "@/components/admin/PublicLinkCard";
-import { DisplayModeCard } from "@/components/admin/DisplayModeCard";
-import { NoCompanyRegisteredCard } from "@/components/admin/NoCompanyRegisteredCard";
-import { CompanyForm } from "@/components/companies/CompanyForm";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const Admin = () => {
   const { user, logout } = useAuth();
@@ -43,7 +37,7 @@ const Admin = () => {
   const { data: userCompany, isError, isLoading: isLoadingCompany, refetch } = useQuery({
     queryKey: ['company', user?.id],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data: company, error } = await supabase
         .from('companies')
         .select('*')
         .eq('owner_id', user?.id)
@@ -53,9 +47,29 @@ const Admin = () => {
         console.error('Error fetching company:', error);
         throw error;
       }
-      return data;
+
+      return company;
     },
     enabled: !!user,
+    staleTime: 1000 * 60 * 5, // 5 minutos
+  });
+
+  const { data: productsCount = 0 } = useQuery({
+    queryKey: ['products-count', userCompany?.id],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('products')
+        .select('*', { count: 'exact', head: true })
+        .eq('company_id', userCompany?.id);
+
+      if (error) {
+        console.error('Error fetching products count:', error);
+        throw error;
+      }
+
+      return count || 0;
+    },
+    enabled: !!userCompany?.id,
     staleTime: 1000 * 60 * 5, // 5 minutos
   });
 
@@ -74,7 +88,7 @@ const Admin = () => {
         throw error;
       }
 
-      return (data || []).map(order => ({
+      return data.map((order) => ({
         _id: order.id,
         customerName: order.customer_name,
         customerPhone: order.customer_phone,
@@ -83,17 +97,21 @@ const Admin = () => {
         customerZipCode: order.customer_zip_code,
         date: order.date,
         time: order.time,
-        items: (order.items as any[]).map((item: any) => ({
-          productId: item.productId,
-          reference: item.reference,
-          name: item.name,
-          sizes: item.sizes.map((size: any) => ({
-            size: size.size,
-            price: size.price,
-            quantity: size.quantity,
-            subtotal: size.subtotal
-          }))
-        })),
+        items: Array.isArray(order.items) 
+          ? order.items.map((item: any) => ({
+              productId: item.productId,
+              reference: item.reference,
+              name: item.name,
+              sizes: Array.isArray(item.sizes) 
+                ? item.sizes.map((size: any) => ({
+                    size: size.size,
+                    price: size.price,
+                    quantity: size.quantity,
+                    subtotal: size.subtotal
+                  }))
+                : []
+            }))
+          : [],
         total: order.total,
         companyId: order.company_id,
         notes: order.notes || undefined
@@ -129,69 +147,30 @@ const Admin = () => {
     });
   };
 
-  // Movido para o início do componente para evitar flash de loading
-  const isLoading = isLoadingCompany || isLoadingOrders;
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-surfaceContainerLowest">
-        <Loader className="w-8 h-8 animate-spin text-primary mb-4" />
-        <p className="text-lg text-gray-600">Carregando dados...</p>
-      </div>
-    );
-  }
-
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-surfaceContainerLowest">
-        <Sidebar className="border-r border-gray-200 dark:border-gray-700 bg-surfaceContainer shadow-md">
-          <SidebarHeader className="bg-surfaceContainer">
+      <div className="min-h-screen flex w-full bg-background">
+        <Sidebar className="border-r border-border/40 bg-card shadow-lg">
+          <SidebarHeader className="bg-card/50 backdrop-blur-sm">
             <CompanyHeader company={userCompany} />
           </SidebarHeader>
-          <SidebarContent className="px-4 bg-surfaceContainer">
+          <SidebarContent className="px-4 pt-4 bg-card/50 backdrop-blur-sm">
             <AdminSidebarMenu userId={user.id} onLogout={handleLogout} />
           </SidebarContent>
         </Sidebar>
 
         <main className="flex-1 p-8">
-          <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-bold text-onSurfaceVariant">
-              Painel Administrativo
-            </h1>
-            <SidebarTrigger>
-              <Button variant="ghost" size="icon" className="hover:bg-primary/10">
-                <Menu className="h-6 w-6 text-primary" />
-              </Button>
-            </SidebarTrigger>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="h-full">
-              <RecentOrdersCard
-                orders={recentOrders}
-                isLoading={isLoadingOrders}
-              />
-            </div>
-            
-            {userCompany ? (
-              <div className="grid grid-rows-2 gap-6 h-full">
-                <PublicLinkCard
-                  companyShortName={userCompany.short_name}
-                  onEdit={() => setIsEditModalOpen(true)}
-                />
-                <DisplayModeCard
-                  companyId={userCompany.id}
-                  currentMode={userCompany.display_mode}
-                  onSuccess={() => {
-                    refetch();
-                  }}
-                />
-              </div>
-            ) : (
-              <div className="h-full">
-                <NoCompanyRegisteredCard onRegisterClick={() => setIsCompanyRegisterOpen(true)} />
-              </div>
-            )}
-          </div>
+          <DashboardHeader />
+          
+          <DashboardContent 
+            company={userCompany}
+            productsCount={productsCount}
+            recentOrders={recentOrders}
+            isLoadingOrders={isLoadingOrders}
+            onEditLink={() => setIsEditModalOpen(true)}
+            onRegisterCompany={() => setIsCompanyRegisterOpen(true)}
+            onDisplayModeSuccess={() => refetch()}
+          />
         </main>
 
         {userCompany && (

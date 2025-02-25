@@ -68,19 +68,14 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
 
   return (
     <SidebarMenu>
-      {company && (
-        <div className="px-3 py-2 mb-4">
-          <span className="text-lg font-medium text-onSurfaceVariant">{company.name}</span>
-        </div>
-      )}
       <SidebarMenuItem>
         <SidebarMenuButton asChild>
           <Link 
             to="/products" 
             className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
           >
-            <Package className="w-5 h-5 text-onSurfaceVariant" />
-            <span className="font-medium text-onSurfaceVariant">Produtos</span>
+            <Package className="w-5 h-5 text-foreground/70" />
+            <span className="font-medium text-foreground/90">Produtos</span>
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -90,8 +85,8 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
             to="/orders" 
             className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
           >
-            <ClipboardList className="w-5 h-5 text-onSurfaceVariant" />
-            <span className="font-medium text-onSurfaceVariant">Pedidos</span>
+            <ClipboardList className="w-5 h-5 text-foreground/70" />
+            <span className="font-medium text-foreground/90">Pedidos</span>
           </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
@@ -100,8 +95,8 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
           onClick={() => setIsCompanyModalOpen(true)}
           className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
         >
-          <Building2 className="w-5 h-5 text-onSurfaceVariant" />
-          <span className="font-medium text-onSurfaceVariant">Minha Empresa</span>
+          <Building2 className="w-5 h-5 text-foreground/70" />
+          <span className="font-medium text-foreground/90">Minha Empresa</span>
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>
@@ -109,8 +104,8 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
           onClick={() => setIsProfileViewModalOpen(true)}
           className="flex items-center space-x-2 p-3 rounded-lg hover:bg-primary/10 transition-colors w-full"
         >
-          <User className="w-5 h-5 text-onSurfaceVariant" />
-          <span className="font-medium text-onSurfaceVariant">Meu Perfil</span>
+          <User className="w-5 h-5 text-foreground/70" />
+          <span className="font-medium text-foreground/90">Meu Perfil</span>
         </SidebarMenuButton>
       </SidebarMenuItem>
       <SidebarMenuItem>

@@ -7,6 +7,7 @@ export interface Company {
   created_at: string;
   owner_id: string;
   short_name: string;
+  display_mode: string;
 }
 
 export interface CompanyEditFormData {
