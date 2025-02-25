@@ -1,3 +1,4 @@
+
 import { Menu, Loader } from "lucide-react";
 import { Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -179,13 +180,13 @@ const Admin = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="h-full">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-                <div className="bg-card rounded-xl p-6 shadow-sm border border-border/40 hover:border-primary/20 transition-colors">
+                <div className="bg-card rounded-xl p-6 shadow-sm border border-muted/60 hover:border-primary/20 transition-colors">
                   <h3 className="text-sm font-medium text-muted-foreground mb-2">Produtos</h3>
                   <div className="text-2xl font-bold text-foreground/90">
                     {productsCount}
                   </div>
                 </div>
-                <div className="bg-card rounded-xl p-6 shadow-sm border border-border/40 hover:border-primary/20 transition-colors">
+                <div className="bg-card rounded-xl p-6 shadow-sm border border-muted/60 hover:border-primary/20 transition-colors">
                   <h3 className="text-sm font-medium text-muted-foreground mb-2">Pedidos</h3>
                   <div className="text-2xl font-bold text-foreground/90">
                     {recentOrders.length}
