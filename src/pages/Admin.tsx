@@ -37,18 +37,35 @@ const Admin = () => {
   const { data: userCompany, isError, isLoading: isLoadingCompany, refetch } = useQuery({
     queryKey: ['company', user?.id],
     queryFn: async () => {
-      const { data: company, error } = await supabase
+      // Primeiro, busca a empresa
+      const { data: company, error: companyError } = await supabase
         .from('companies')
-        .select('*, products:products(count)')
+        .select('*')
         .eq('owner_id', user?.id)
         .maybeSingle();
       
-      if (error) {
-        console.error('Error fetching company:', error);
-        throw error;
+      if (companyError) {
+        console.error('Error fetching company:', companyError);
+        throw companyError;
       }
 
-      return company;
+      if (!company) return null;
+
+      // Depois, busca a contagem de produtos
+      const { count, error: countError } = await supabase
+        .from('products')
+        .select('*', { count: 'exact', head: true })
+        .eq('company_id', company.id);
+      
+      if (countError) {
+        console.error('Error fetching products count:', countError);
+        throw countError;
+      }
+
+      return {
+        ...company,
+        productsCount: count || 0
+      };
     },
     enabled: !!user,
     staleTime: 1000 * 60 * 5, // 5 minutos
@@ -128,8 +145,6 @@ const Admin = () => {
     });
   };
 
-  const productsCount = userCompany?.products?.[0]?.count || 0;
-
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
@@ -147,7 +162,7 @@ const Admin = () => {
           
           <DashboardContent 
             company={userCompany}
-            productsCount={productsCount}
+            productsCount={userCompany?.productsCount || 0}
             recentOrders={recentOrders}
             isLoadingOrders={isLoadingOrders}
             onEditLink={() => setIsEditModalOpen(true)}
