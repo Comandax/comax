@@ -1,30 +1,23 @@
 
-import { Menu, Loader } from "lucide-react";
 import { Navigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
-import { CompanyEditShortNameModal } from "@/components/companies/details/CompanyEditShortNameModal";
 import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { CompanyEditShortNameModal } from "@/components/companies/details/CompanyEditShortNameModal";
+import { CompanyForm } from "@/components/companies/CompanyForm";
+import { CompanyHeader } from "@/components/admin/CompanyHeader";
+import { AdminSidebarMenu } from "@/components/admin/AdminSidebarMenu";
+import { DashboardHeader } from "@/components/admin/dashboard/DashboardHeader";
+import { DashboardContent } from "@/components/admin/dashboard/DashboardContent";
 import {
   Sidebar,
   SidebarContent,
   SidebarHeader,
   SidebarProvider,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { CompanyHeader } from "@/components/admin/CompanyHeader";
-import { AdminSidebarMenu } from "@/components/admin/AdminSidebarMenu";
-import { RecentOrdersCard } from "@/components/admin/RecentOrdersCard";
-import { PublicLinkCard } from "@/components/admin/PublicLinkCard";
-import { DisplayModeCard } from "@/components/admin/DisplayModeCard";
-import { NoCompanyRegisteredCard } from "@/components/admin/NoCompanyRegisteredCard";
-import { CompanyForm } from "@/components/companies/CompanyForm";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import type { Order } from "@/types/order";
 
 const Admin = () => {
   const { user, logout } = useAuth();
@@ -76,8 +69,7 @@ const Admin = () => {
         throw error;
       }
 
-      // Mapear os dados do banco para o formato esperado pelo tipo Order
-      return (data || []).map((order): Order => ({
+      return data.map((order) => ({
         _id: order.id,
         customerName: order.customer_name,
         customerPhone: order.customer_phone,
@@ -136,16 +128,6 @@ const Admin = () => {
     });
   };
 
-  const isLoading = isLoadingCompany || isLoadingOrders;
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-background">
-        <Loader className="w-8 h-8 animate-spin text-primary mb-4" />
-        <p className="text-lg text-muted-foreground">Carregando dados...</p>
-      </div>
-    );
-  }
-
   const productsCount = userCompany?.products?.[0]?.count || 0;
 
   return (
@@ -161,64 +143,17 @@ const Admin = () => {
         </Sidebar>
 
         <main className="flex-1 p-8">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-4xl font-bold text-foreground/90 mb-2">
-                Painel Administrativo
-              </h1>
-              <p className="text-lg text-muted-foreground">
-                Bem-vindo ao seu painel de controle
-              </p>
-            </div>
-            <SidebarTrigger>
-              <Button variant="ghost" size="icon" className="hover:bg-primary/10">
-                <Menu className="h-6 w-6 text-foreground/70" />
-              </Button>
-            </SidebarTrigger>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="h-full">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
-                <div className="bg-card rounded-xl p-6 shadow-sm border border-gray-200 hover:border-primary/20 transition-colors">
-                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Produtos</h3>
-                  <div className="text-2xl font-bold text-foreground/90">
-                    {productsCount}
-                  </div>
-                </div>
-                <div className="bg-card rounded-xl p-6 shadow-sm border border-gray-200 hover:border-primary/20 transition-colors">
-                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Pedidos</h3>
-                  <div className="text-2xl font-bold text-foreground/90">
-                    {recentOrders.length}
-                  </div>
-                </div>
-              </div>
-              <RecentOrdersCard
-                orders={recentOrders}
-                isLoading={isLoadingOrders}
-              />
-            </div>
-            
-            {userCompany ? (
-              <div className="grid grid-rows-2 gap-6 h-full">
-                <PublicLinkCard
-                  companyShortName={userCompany.short_name}
-                  onEdit={() => setIsEditModalOpen(true)}
-                />
-                <DisplayModeCard
-                  companyId={userCompany.id}
-                  currentMode={userCompany.display_mode}
-                  onSuccess={() => {
-                    refetch();
-                  }}
-                />
-              </div>
-            ) : (
-              <div className="h-full">
-                <NoCompanyRegisteredCard onRegisterClick={() => setIsCompanyRegisterOpen(true)} />
-              </div>
-            )}
-          </div>
+          <DashboardHeader />
+          
+          <DashboardContent 
+            company={userCompany}
+            productsCount={productsCount}
+            recentOrders={recentOrders}
+            isLoadingOrders={isLoadingOrders}
+            onEditLink={() => setIsEditModalOpen(true)}
+            onRegisterCompany={() => setIsCompanyRegisterOpen(true)}
+            onDisplayModeSuccess={() => refetch()}
+          />
         </main>
 
         {userCompany && (
