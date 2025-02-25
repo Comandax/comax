@@ -74,30 +74,7 @@ const Admin = () => {
         throw error;
       }
 
-      return (data || []).map(order => ({
-        _id: order.id,
-        customerName: order.customer_name,
-        customerPhone: order.customer_phone,
-        customerCity: order.customer_city,
-        customerState: order.customer_state,
-        customerZipCode: order.customer_zip_code,
-        date: order.date,
-        time: order.time,
-        items: (order.items as any[]).map((item: any) => ({
-          productId: item.productId,
-          reference: item.reference,
-          name: item.name,
-          sizes: item.sizes.map((size: any) => ({
-            size: size.size,
-            price: size.price,
-            quantity: size.quantity,
-            subtotal: size.subtotal
-          }))
-        })),
-        total: order.total,
-        companyId: order.company_id,
-        notes: order.notes || undefined
-      }));
+      return data;
     },
     enabled: !!userCompany?.id,
     staleTime: 1000 * 60 * 5, // 5 minutos
@@ -133,39 +110,58 @@ const Admin = () => {
   const isLoading = isLoadingCompany || isLoadingOrders;
   if (isLoading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-surfaceContainerLowest">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background">
         <Loader className="w-8 h-8 animate-spin text-primary mb-4" />
-        <p className="text-lg text-gray-600">Carregando dados...</p>
+        <p className="text-lg text-muted-foreground">Carregando dados...</p>
       </div>
     );
   }
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-surfaceContainerLowest">
-        <Sidebar className="border-r border-gray-200 dark:border-gray-700 bg-surfaceContainer shadow-md">
-          <SidebarHeader className="bg-surfaceContainer">
+      <div className="min-h-screen flex w-full bg-background">
+        <Sidebar className="border-r border-border/40 bg-card shadow-lg">
+          <SidebarHeader className="bg-card/50 backdrop-blur-sm">
             <CompanyHeader company={userCompany} />
           </SidebarHeader>
-          <SidebarContent className="px-4 bg-surfaceContainer">
+          <SidebarContent className="px-4 bg-card/50 backdrop-blur-sm">
             <AdminSidebarMenu userId={user.id} onLogout={handleLogout} />
           </SidebarContent>
         </Sidebar>
 
         <main className="flex-1 p-8">
           <div className="flex items-center justify-between mb-8">
-            <h1 className="text-2xl font-bold text-onSurfaceVariant">
-              Painel Administrativo
-            </h1>
+            <div>
+              <h1 className="text-4xl font-bold text-foreground/90 mb-2">
+                Painel Administrativo
+              </h1>
+              <p className="text-lg text-muted-foreground">
+                Bem-vindo ao seu painel de controle
+              </p>
+            </div>
             <SidebarTrigger>
               <Button variant="ghost" size="icon" className="hover:bg-primary/10">
-                <Menu className="h-6 w-6 text-primary" />
+                <Menu className="h-6 w-6 text-foreground/70" />
               </Button>
             </SidebarTrigger>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="h-full">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                <div className="bg-card rounded-xl p-6 shadow-sm border border-border/40 hover:border-primary/20 transition-colors">
+                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Produtos</h3>
+                  <div className="text-2xl font-bold text-foreground/90">
+                    {userCompany?.products_count || 0}
+                  </div>
+                </div>
+                <div className="bg-card rounded-xl p-6 shadow-sm border border-border/40 hover:border-primary/20 transition-colors">
+                  <h3 className="text-sm font-medium text-muted-foreground mb-2">Pedidos</h3>
+                  <div className="text-2xl font-bold text-foreground/90">
+                    {recentOrders.length}
+                  </div>
+                </div>
+              </div>
               <RecentOrdersCard
                 orders={recentOrders}
                 isLoading={isLoadingOrders}
