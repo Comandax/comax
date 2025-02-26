@@ -12,6 +12,7 @@ import { CompanyHeader } from "@/components/admin/CompanyHeader";
 import { AdminSidebarMenu } from "@/components/admin/AdminSidebarMenu";
 import { DashboardHeader } from "@/components/admin/dashboard/DashboardHeader";
 import { DashboardContent } from "@/components/admin/dashboard/DashboardContent";
+import { CompanyDetailsDialog } from "@/components/companies/details/CompanyDetailsDialog";
 import {
   Sidebar,
   SidebarContent,
@@ -23,8 +24,9 @@ const Admin = () => {
   const { user, logout } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [isCompanyRegisterOpen, setIsCompanyRegisterOpen] = useState(false);
+  const [isEditShortNameOpen, setIsEditShortNameOpen] = useState(false);
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -167,22 +169,31 @@ const Admin = () => {
             productsCount={productsCount}
             recentOrders={recentOrders}
             isLoadingOrders={isLoadingOrders}
-            onEditLink={() => setIsEditModalOpen(true)}
+            onEditLink={() => setIsEditShortNameOpen(true)}
             onRegisterCompany={() => setIsCompanyRegisterOpen(true)}
             onDisplayModeSuccess={() => refetch()}
           />
         </main>
 
         {userCompany && (
-          <CompanyEditShortNameModal
-            open={isEditModalOpen}
-            onOpenChange={setIsEditModalOpen}
-            companyId={userCompany.id}
-            currentShortName={userCompany.short_name}
-            onSuccess={() => {
-              refetch();
-            }}
-          />
+          <>
+            <CompanyDetailsDialog
+              company={userCompany}
+              open={isDetailsOpen}
+              onOpenChange={setIsDetailsOpen}
+              onSuccess={refetch}
+            />
+            
+            <CompanyEditShortNameModal
+              open={isEditShortNameOpen}
+              onOpenChange={setIsEditShortNameOpen}
+              companyId={userCompany.id}
+              currentShortName={userCompany.short_name}
+              onSuccess={() => {
+                refetch();
+              }}
+            />
+          </>
         )}
 
         <Dialog open={isCompanyRegisterOpen} onOpenChange={setIsCompanyRegisterOpen}>

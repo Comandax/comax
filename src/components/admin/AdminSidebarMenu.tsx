@@ -8,14 +8,13 @@ import {
 } from "@/components/ui/sidebar";
 import { useState } from "react";
 import { UserEditModal } from "@/components/users/UserEditModal";
-import { CompanyDetails } from "@/components/companies/CompanyDetails";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { useIsMobile } from "@/hooks/use-mobile";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Company } from "@/types/company";
-import { UserProfileModal } from "@/components/users/UserProfileModal";
 import { Profile } from "@/types/profile";
+import { UserProfileModal } from "@/components/users/UserProfileModal";
+import { CompanyDetailsDialog } from "@/components/companies/details/CompanyDetailsDialog";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface AdminSidebarMenuProps {
   userId: string;
@@ -130,20 +129,16 @@ export const AdminSidebarMenu = ({ userId, onLogout }: AdminSidebarMenuProps) =>
         onOpenChange={setIsProfileEditModalOpen}
       />
 
-      <Dialog open={isCompanyModalOpen} onOpenChange={setIsCompanyModalOpen}>
-        <DialogContent className="max-w-3xl">
-          {company && (
-            <CompanyDetails 
-              company={company}
-              onUpdateSuccess={() => {
-                refetch();
-                setIsCompanyModalOpen(false);
-              }}
-              onClose={() => setIsCompanyModalOpen(false)}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+      {company && (
+        <CompanyDetailsDialog 
+          company={company}
+          open={isCompanyModalOpen}
+          onOpenChange={setIsCompanyModalOpen}
+          onSuccess={() => {
+            refetch();
+          }}
+        />
+      )}
     </SidebarMenu>
   );
 };

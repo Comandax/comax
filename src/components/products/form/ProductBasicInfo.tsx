@@ -4,14 +4,16 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { UseFormReturn } from "react-hook-form";
 import { ProductFormData } from "@/types/product";
+import { RefObject } from "react";
 
 interface ProductBasicInfoProps {
   form: UseFormReturn<ProductFormData>;
   isUploading: boolean;
   onImageUpload: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
+  fileInputRef: RefObject<HTMLInputElement>;
 }
 
-export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBasicInfoProps) {
+export function ProductBasicInfo({ form, isUploading, onImageUpload, fileInputRef }: ProductBasicInfoProps) {
   return (
     <div className="space-y-4 px-4">
       <div className="flex flex-row gap-4">
@@ -85,6 +87,7 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload }: ProductBa
                     onChange={onImageUpload}
                     disabled={isUploading}
                     className="cursor-pointer h-[42px] rounded-lg"
+                    ref={fileInputRef}
                   />
                 </div>
               </div>
