@@ -40,9 +40,10 @@ const formatTime = (timeStr: string) => {
 
 interface OrderDetailsProps {
   order: Order;
+  onPrint?: () => void;
 }
 
-export const OrderDetails = ({ order }: OrderDetailsProps) => {
+export const OrderDetails = ({ order, onPrint }: OrderDetailsProps) => {
   return (
     <ScrollArea className="h-[80vh]">
       <div className="space-y-6">

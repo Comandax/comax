@@ -8,6 +8,7 @@ export interface Company {
   owner_id: string;
   short_name: string;
   display_mode: string;
+  quantity_selection_mode?: string;
 }
 
 export interface CompanyEditFormData {

@@ -1,13 +1,12 @@
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useState, useEffect } from "react";
 import { Package, Rocket } from "lucide-react";
 import type { ResetItem } from "../index/types";
 
-interface ProductSelectionCardProps {
+interface ProductSelectQuantityCardProps {
   product: {
     id: string;
     name: string;
@@ -24,7 +23,7 @@ interface ProductSelectionCardProps {
   resetItem?: ResetItem | null;
 }
 
-export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: ProductSelectionCardProps) => {
+export const ProductSelectQuantityCard = ({ product, onQuantitySelect, resetItem }: ProductSelectQuantityCardProps) => {
   const [selectedQuantities, setSelectedQuantities] = useState<Record<string, number>>({});
 
   useEffect(() => {
@@ -59,7 +58,7 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
   return (
     <Card className="p-6 bg-white shadow-md relative">
       {product.isNew && (
-        <div className="absolute top-4 right-4 z-10">
+        <div className="absolute top-2 left-2 md:top-4 md:left-4 z-[5]">
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500 text-white">
             <Rocket className="h-3 w-3" />
             Lançamento
@@ -101,24 +100,23 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
                     <div className="text-xs text-gray-500">{formatCurrency(size.price)}</div>
                   </div>
                   
-                  <RadioGroup
+                  <Select
                     value={selectedQuantities[size.label]?.toString() || "0"}
                     onValueChange={(value) => {
                       handleQuantityChange(size.label, Number(value), size.price);
                     }}
-                    className="grid grid-cols-6 gap-3"
                   >
-                    {size.quantities.map((qty) => (
-                      <div key={qty} className="flex flex-col items-center gap-1">
-                        <RadioGroupItem 
-                          value={qty.toString()} 
-                          id={`${size.label}-${qty}`} 
-                          className="md:scale-75 scale-125"
-                        />
-                        <Label htmlFor={`${size.label}-${qty}`} className="text-xs">{qty}</Label>
-                      </div>
-                    ))}
-                  </RadioGroup>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="0" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {size.quantities.map((qty) => (
+                        <SelectItem key={qty} value={qty.toString()}>
+                          {qty}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   
                   <div className="text-right text-xs font-medium text-gray-600">
                     {formatCurrency(calculateSubtotal(size.label, size.price))}

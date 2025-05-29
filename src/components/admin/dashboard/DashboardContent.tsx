@@ -1,61 +1,68 @@
 
-import { StatsCards } from "./StatsCards";
-import { RecentOrdersCard } from "../RecentOrdersCard";
+import { NoCompanyRegisteredCard } from "../NoCompanyRegisteredCard";
 import { PublicLinkCard } from "../PublicLinkCard";
 import { DisplayModeCard } from "../DisplayModeCard";
-import { NoCompanyRegisteredCard } from "../NoCompanyRegisteredCard";
-import type { Company } from "@/types/company";
-import type { Order } from "@/types/order";
+import { StatsCards } from "./StatsCards";
+import { RecentOrdersCard } from "../RecentOrdersCard";
+import { QuantitySelectionModeCard } from "../QuantitySelectionModeCard";
 
 interface DashboardContentProps {
-  company: Company | null;
+  company: any;
   productsCount: number;
-  recentOrders: Order[];
+  recentOrders: any[];
   isLoadingOrders: boolean;
   onEditLink: () => void;
   onRegisterCompany: () => void;
   onDisplayModeSuccess: () => void;
 }
 
-export function DashboardContent({
-  company,
-  productsCount,
-  recentOrders,
-  isLoadingOrders,
-  onEditLink,
-  onRegisterCompany,
-  onDisplayModeSuccess,
-}: DashboardContentProps) {
+export const DashboardContent = ({ 
+  company, 
+  productsCount, 
+  recentOrders, 
+  isLoadingOrders, 
+  onEditLink, 
+  onRegisterCompany, 
+  onDisplayModeSuccess 
+}: DashboardContentProps) => {
+  if (!company) {
+    return (
+      <div className="space-y-6">
+        <NoCompanyRegisteredCard onRegisterClick={onRegisterCompany} />
+      </div>
+    );
+  }
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <div className="h-full">
-        <StatsCards 
-          productsCount={productsCount} 
-          ordersCount={recentOrders.length} 
+    <div className="space-y-6">
+      <StatsCards 
+        productsCount={productsCount} 
+        ordersCount={recentOrders.length}
+      />
+      
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <PublicLinkCard 
+          companyShortName={company.short_name} 
+          onEdit={onEditLink} 
         />
-        <RecentOrdersCard
+        <DisplayModeCard 
+          companyId={company.id}
+          currentMode={company.display_mode}
+          onSuccess={onDisplayModeSuccess}
+        />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <RecentOrdersCard 
           orders={recentOrders}
           isLoading={isLoadingOrders}
         />
+        <QuantitySelectionModeCard
+          companyId={company.id}
+          currentMode={company.quantity_selection_mode || 'radio'}
+          onSuccess={onDisplayModeSuccess}
+        />
       </div>
-      
-      {company ? (
-        <div className="grid grid-rows-2 gap-6 h-full">
-          <PublicLinkCard
-            companyShortName={company.short_name}
-            onEdit={onEditLink}
-          />
-          <DisplayModeCard
-            companyId={company.id}
-            currentMode={company.display_mode}
-            onSuccess={onDisplayModeSuccess}
-          />
-        </div>
-      ) : (
-        <div className="h-full">
-          <NoCompanyRegisteredCard onRegisterClick={onRegisterCompany} />
-        </div>
-      )}
     </div>
   );
-}
+};

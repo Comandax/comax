@@ -1,4 +1,3 @@
-
 import { Navigate, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -41,7 +40,7 @@ const Admin = () => {
     queryFn: async () => {
       const { data: company, error } = await supabase
         .from('companies')
-        .select('*')
+        .select('*, quantity_selection_mode')
         .eq('owner_id', user?.id)
         .maybeSingle();
       

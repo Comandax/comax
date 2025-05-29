@@ -14,6 +14,7 @@ import Users from "@/pages/Users";
 import NotFound from "@/pages/NotFound";
 import Index from "@/pages/Index";
 import OrderSuccess from "@/pages/OrderSuccess";
+import OrderPrint from "@/pages/OrderPrint";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
 import UserCreateWithReferral from "@/pages/UserCreateWithReferral";
 import UserEdit from "@/pages/UserEdit";
@@ -42,6 +43,7 @@ function App() {
               <Route path="/admin" element={<Admin />} />
               <Route path="/products" element={<Products />} />
               <Route path="/orders" element={<Orders />} />
+              <Route path="/orders/print/:orderId" element={<OrderPrint />} />
               <Route path="/users" element={<Users />} />
               <Route path="/users/:id" element={<UserEdit />} />
               <Route path="/companies" element={<Companies />} />
