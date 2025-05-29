@@ -19,13 +19,13 @@ export function ProductCard({ product, onSelect, hasInCart }: ProductCardProps) 
       {hasInCart && (
         <div className="absolute top-2 right-2 z-10">
           <div className="bg-primary rounded-full p-2">
-            <ShoppingBag className="h-6 w-6 text-onPrimary" />
+            <ShoppingBag className="h-6 w-6 text-primary-foreground" />
           </div>
         </div>
       )}
       <div className="p-4">
         {product.isNew && (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary text-onPrimary mb-2">
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500 text-white mb-2">
             <Rocket className="h-3 w-3" />
             Lançamento
           </span>
