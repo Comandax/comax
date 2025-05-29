@@ -1,0 +1,126 @@
+
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState, useEffect, useCallback } from "react";
+import { Package } from "lucide-react";
+
+interface ProductSelectQuantityCardProps {
+  product: {
+    id: string;
+    name: string;
+    image: string;
+    ref: string;
+    sizes: Array<{
+      label: string;
+      price: number;
+      quantities: number[];
+    }>;
+  };
+  onQuantitySelect: (size: string, quantity: number, price: number) => void;
+  resetItem?: { size: string; productId: string; };
+}
+
+export const ProductSelectQuantityCard = ({ product, onQuantitySelect, resetItem }: ProductSelectQuantityCardProps) => {
+  const [selectedQuantities, setSelectedQuantities] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    if (resetItem && resetItem.productId === product.id) {
+      setSelectedQuantities(prev => ({
+        ...prev,
+        [resetItem.size]: 0
+      }));
+    }
+  }, [resetItem, product.id]);
+
+  const calculateSubtotal = useCallback((size: string, price: number) => {
+    const quantity = selectedQuantities[size] || 0;
+    return quantity * price;
+  }, [selectedQuantities]);
+
+  const formatCurrency = (value: number) => {
+    return value.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    });
+  };
+
+  const handleQuantityChange = useCallback((size: string, quantity: number, price: number) => {
+    setSelectedQuantities(prev => ({
+      ...prev,
+      [size]: quantity
+    }));
+    onQuantitySelect(size, quantity, price);
+  }, [onQuantitySelect]);
+
+  return (
+    <Card className="p-6 bg-white/90 shadow-md">
+      <div className="flex flex-col md:flex-row gap-6">
+        <div className="md:w-1/2">
+          {product.image ? (
+            <img 
+              src={product.image} 
+              alt={product.name}
+              className="w-full rounded-lg object-cover"
+            />
+          ) : (
+            <div className="w-full aspect-square bg-gray-100 rounded-lg border flex items-center justify-center text-gray-400">
+              <Package className="w-16 h-16" />
+            </div>
+          )}
+          <div className="mt-2 text-center">
+            <h3 className="text-lg font-semibold">Ref: {product.ref}</h3>
+            <p className="text-gray-600">{product.name}</p>
+          </div>
+        </div>
+        
+        <div className="md:w-1/2">
+          <div className="grid grid-cols-[80px_1fr_60px] gap-4 text-sm font-medium bg-primary text-onPrimary p-2 rounded-md">
+            <div>Tamanho</div>
+            <div>Quantidade</div>
+            <div>Subtotal</div>
+          </div>
+          
+          {product.sizes.map((size, index) => (
+            <div key={size.label}>
+              <div className={`mb-2 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100 transition-colors`}>
+                <div className="grid grid-cols-[80px_1fr_60px] gap-4 items-center p-2">
+                  <div>
+                    <span className="font-medium text-sm">{size.label}</span>
+                    <div className="text-xs text-gray-500">{formatCurrency(size.price)}</div>
+                  </div>
+                  
+                  <Select
+                    value={selectedQuantities[size.label]?.toString() || "0"}
+                    onValueChange={(value) => {
+                      handleQuantityChange(size.label, Number(value), size.price);
+                    }}
+                  >
+                    <SelectTrigger className="h-8">
+                      <SelectValue placeholder="0" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white border shadow-lg z-50">
+                      <SelectItem value="0">0</SelectItem>
+                      {size.quantities.map((qty) => (
+                        <SelectItem key={qty} value={qty.toString()}>
+                          {qty}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  
+                  <div className="text-right text-xs font-medium text-gray-600">
+                    {formatCurrency(calculateSubtotal(size.label, size.price))}
+                  </div>
+                </div>
+              </div>
+              {index < product.sizes.length - 1 && (
+                <Separator className="my-0 opacity-50" />
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </Card>
+  );
+};

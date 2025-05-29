@@ -41,7 +41,7 @@ const Admin = () => {
     queryFn: async () => {
       const { data: company, error } = await supabase
         .from('companies')
-        .select('*')
+        .select('*, quantity_selection_mode')
         .eq('owner_id', user?.id)
         .maybeSingle();
       

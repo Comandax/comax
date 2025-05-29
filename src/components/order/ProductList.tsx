@@ -1,135 +1,92 @@
 
-import type { Product } from "@/types/product";
-import { ProductSelectionCard } from "@/components/order/ProductSelectionCard";
+import { ProductSelectionCard } from "./ProductSelectionCard";
+import { ProductSelectQuantityCard } from "./ProductSelectQuantityCard";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { LoadingState } from "@/components/index/LoadingState";
-import { PackageX, Sparkles } from "lucide-react";
+import type { Product } from "@/types/product";
+import type { ResetItem } from "../index/types";
 
 interface ProductListProps {
   products: Product[];
   onQuantitySelect: (productId: string, size: string, quantity: number, price: number) => void;
-  resetItem?: { size: string; productId: string; };
+  resetItem: ResetItem | null;
   isLoading?: boolean;
 }
 
-export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading = false }: ProductListProps) => {
-  const getImageUrl = async (reference: string) => {
-    const { data } = supabase.storage
-      .from('products')
-      .getPublicUrl(`${reference}.jpeg`);
-    return data.publicUrl;
-  };
+export const ProductList = ({ 
+  products, 
+  onQuantitySelect, 
+  resetItem, 
+  isLoading = false 
+}: ProductListProps) => {
+  const companyId = products[0]?.companyId;
+
+  const { data: company } = useQuery({
+    queryKey: ['company-config', companyId],
+    queryFn: async () => {
+      if (!companyId) return null;
+      
+      const { data, error } = await supabase
+        .from('companies')
+        .select('quantity_selection_mode')
+        .eq('id', companyId)
+        .single();
+      
+      if (error) {
+        console.error('Error fetching company config:', error);
+        return null;
+      }
+      return data;
+    },
+    enabled: !!companyId,
+    staleTime: 1000 * 60 * 5, // 5 minutos
+  });
+
+  const quantitySelectionMode = company?.quantity_selection_mode || 'radio';
 
   if (isLoading) {
     return (
-      <div className="space-y-6">
-        <h2 className="text-2xl font-semibold text-onSurfaceVariant mt-8">Itens para pedido</h2>
-        <div className="bg-white/90 rounded-lg p-8">
-          <LoadingState />
-        </div>
+      <div className="grid gap-6">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="animate-pulse">
+            <div className="bg-gray-200 h-48 rounded-lg"></div>
+          </div>
+        ))}
       </div>
     );
   }
 
-  const activeProducts = products
-    .filter(product => !product.disabled)
-    .sort((a, b) => a.reference.localeCompare(b.reference));
-
-  const newProducts = activeProducts.filter(product => product.isNew);
-
-  if (!products.length) {
-    return (
-      <div className="space-y-6">
-        <h2 className="text-2xl font-semibold text-onSurfaceVariant mt-8">Itens para pedido</h2>
-        <div className="bg-white/90 rounded-lg p-8 text-center">
-          <PackageX className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-          <h3 className="text-xl font-medium text-gray-900 mb-2">
-            Nenhum produto disponível
-          </h3>
-          <p className="text-gray-600">
-            No momento não há produtos cadastrados para esta empresa.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!activeProducts.length) {
-    return (
-      <div className="space-y-6">
-        <h2 className="text-2xl font-semibold text-onSurfaceVariant mt-8">Itens para pedido</h2>
-        <div className="bg-white/90 rounded-lg p-8 text-center">
-          <PackageX className="w-16 h-16 mx-auto text-gray-400 mb-4" />
-          <h3 className="text-xl font-medium text-gray-900 mb-2">
-            Produtos temporariamente indisponíveis
-          </h3>
-          <p className="text-gray-600">
-            No momento todos os produtos estão desativados para pedidos.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  const formatProductData = (product: Product) => ({
+    id: product._id,
+    name: product.name,
+    image: product.image || "",
+    ref: product.reference,
+    sizes: product.sizes.map(size => ({
+      label: size.size,
+      price: size.value,
+      quantities: product.quantities.map(q => q.value)
+    }))
+  });
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-semibold text-onSurfaceVariant mt-8">Itens para pedido</h2>
-
-      {newProducts.length > 0 && (
-        <div className="space-y-4 rounded-lg p-6 border bg-primaryContainer border-primaryContainer">
-          <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-onPrimaryContainer" />
-            <h3 className="text-lg font-medium text-onPrimaryContainer">Lançamento</h3>
-          </div>
-          <div className="space-y-4">
-            {newProducts.map((product) => (
-              <ProductSelectionCard
-                key={`new-${product._id}`}
-                product={{
-                  id: product._id,
-                  name: product.name,
-                  image: product.image || '',
-                  ref: product.reference,
-                  sizes: product.sizes.map(size => ({
-                    label: size.size,
-                    price: size.value,
-                    quantities: [0, ...product.quantities.map(q => q.value)]
-                  }))
-                }}
-                onQuantitySelect={(size, quantity, price) => 
-                  onQuantitySelect(product._id, size, quantity, price)
-                }
-                resetItem={resetItem && resetItem.productId === product._id ? resetItem : undefined}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      <div className="space-y-4">
-        {activeProducts
-          .filter(product => !product.isNew)
-          .map((product) => (
-            <ProductSelectionCard
-              key={product._id}
-              product={{
-                id: product._id,
-                name: product.name,
-                image: product.image || '',
-                ref: product.reference,
-                sizes: product.sizes.map(size => ({
-                  label: size.size,
-                  price: size.value,
-                  quantities: [0, ...product.quantities.map(q => q.value)]
-                }))
-              }}
-              onQuantitySelect={(size, quantity, price) => 
-                onQuantitySelect(product._id, size, quantity, price)
-              }
-              resetItem={resetItem && resetItem.productId === product._id ? resetItem : undefined}
-            />
-          ))}
-      </div>
+    <div className="grid gap-6">
+      {products.map((product) => {
+        const formattedProduct = formatProductData(product);
+        const ProductComponent = quantitySelectionMode === 'select' 
+          ? ProductSelectQuantityCard 
+          : ProductSelectionCard;
+        
+        return (
+          <ProductComponent
+            key={product._id}
+            product={formattedProduct}
+            onQuantitySelect={(size, quantity, price) => 
+              onQuantitySelect(product._id, size, quantity, price)
+            }
+            resetItem={resetItem}
+          />
+        );
+      })}
     </div>
   );
 };
