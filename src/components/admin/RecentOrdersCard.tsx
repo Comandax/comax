@@ -1,5 +1,5 @@
-import { ArrowRight, ListStart } from "lucide-react";
-import { Link } from "react-router-dom";
+import { ArrowRight, ListStart, Printer, X } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -13,6 +13,7 @@ interface RecentOrdersCardProps {
 }
 
 export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) => {
+  const navigate = useNavigate();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   const formatDate = (dateStr: string) => {
@@ -112,13 +113,27 @@ export const RecentOrdersCard = ({ orders, isLoading }: RecentOrdersCardProps) =
 
       <Dialog open={!!selectedOrder} onOpenChange={() => setSelectedOrder(null)}>
         <DialogContent className="max-w-4xl">
-          <DialogHeader>
-            <DialogTitle>Detalhes do Pedido</DialogTitle>
-            <DialogDescription>
-              Informações completas sobre o pedido, incluindo dados do cliente e itens solicitados.
-            </DialogDescription>
-          </DialogHeader>
-          {selectedOrder && <OrderDetails order={selectedOrder} />}
+          <div className="absolute top-4 right-14">
+            <button 
+              onClick={() => selectedOrder && navigate(`/orders/print/${selectedOrder._id}`)} 
+              className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 focus:outline-none"
+            >
+              <Printer className="h-4 w-4" />
+              <span className="sr-only">Imprimir</span>
+            </button>
+          </div>
+          <div className="flex items-center justify-between">
+            <DialogHeader className="flex-1">
+              <DialogTitle>Detalhes do Pedido</DialogTitle>
+              <DialogDescription>
+                Informações completas sobre o pedido, incluindo dados do cliente e itens solicitados.
+              </DialogDescription>
+            </DialogHeader>
+          </div>
+          {selectedOrder && <OrderDetails 
+            order={selectedOrder} 
+            onPrint={() => navigate(`/orders/print/${selectedOrder._id}`)} 
+          />}
         </DialogContent>
       </Dialog>
     </>
