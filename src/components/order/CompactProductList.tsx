@@ -1,6 +1,8 @@
 
 import { useState } from "react";
 import { Loader, Package } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import type { Product } from "@/types/product";
 import { ProductCard } from "./ProductCard";
 import { ProductDetailsDialog } from "./ProductDetailsDialog";
@@ -20,6 +22,31 @@ export function CompactProductList({
 }: CompactProductListProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedQuantities, setSelectedQuantities] = useState<Record<string, Record<string, number>>>({});
+  
+  const companyId = products[0]?.companyId;
+
+  const { data: company } = useQuery({
+    queryKey: ['company-config', companyId],
+    queryFn: async () => {
+      if (!companyId) return null;
+      
+      const { data, error } = await supabase
+        .from('companies')
+        .select('*')
+        .eq('id', companyId)
+        .single();
+      
+      if (error) {
+        console.error('Error fetching company config:', error);
+        return null;
+      }
+      return data;
+    },
+    enabled: !!companyId,
+    staleTime: 1000 * 60 * 5, // 5 minutos
+  });
+
+  const quantitySelectionMode = (company as any)?.quantity_selection_mode || 'radio';
 
   const handleProductClick = (product: Product) => {
     setSelectedProduct(product);
@@ -93,6 +120,7 @@ export function CompactProductList({
         onClose={handleCloseDialog}
         onQuantitySelect={handleQuantityChange}
         selectedQuantities={selectedProduct ? selectedQuantities[selectedProduct._id] || {} : {}}
+        quantitySelectionMode={quantitySelectionMode}
       />
     </>
   );
