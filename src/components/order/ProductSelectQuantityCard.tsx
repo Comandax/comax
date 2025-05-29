@@ -1,9 +1,10 @@
 
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useState, useEffect, useCallback } from "react";
-import { Package } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Package, Rocket } from "lucide-react";
+import type { ResetItem } from "../index/types";
 
 interface ProductSelectQuantityCardProps {
   product: {
@@ -16,9 +17,10 @@ interface ProductSelectQuantityCardProps {
       price: number;
       quantities: number[];
     }>;
+    isNew?: boolean;
   };
   onQuantitySelect: (size: string, quantity: number, price: number) => void;
-  resetItem?: { size: string; productId: string; };
+  resetItem?: ResetItem | null;
 }
 
 export const ProductSelectQuantityCard = ({ product, onQuantitySelect, resetItem }: ProductSelectQuantityCardProps) => {
@@ -33,10 +35,18 @@ export const ProductSelectQuantityCard = ({ product, onQuantitySelect, resetItem
     }
   }, [resetItem, product.id]);
 
-  const calculateSubtotal = useCallback((size: string, price: number) => {
+  const handleQuantityChange = (size: string, quantity: number, price: number) => {
+    setSelectedQuantities(prev => ({
+      ...prev,
+      [size]: quantity
+    }));
+    onQuantitySelect(size, quantity, price);
+  };
+
+  const calculateSubtotal = (size: string, price: number) => {
     const quantity = selectedQuantities[size] || 0;
     return quantity * price;
-  }, [selectedQuantities]);
+  };
 
   const formatCurrency = (value: number) => {
     return value.toLocaleString('pt-BR', {
@@ -45,16 +55,16 @@ export const ProductSelectQuantityCard = ({ product, onQuantitySelect, resetItem
     });
   };
 
-  const handleQuantityChange = useCallback((size: string, quantity: number, price: number) => {
-    setSelectedQuantities(prev => ({
-      ...prev,
-      [size]: quantity
-    }));
-    onQuantitySelect(size, quantity, price);
-  }, [onQuantitySelect]);
-
   return (
-    <Card className="p-6 bg-white/90 shadow-md">
+    <Card className="p-6 bg-white shadow-md relative">
+      {product.isNew && (
+        <div className="absolute top-4 right-4 z-10">
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500 text-white">
+            <Rocket className="h-3 w-3" />
+            Lançamento
+          </span>
+        </div>
+      )}
       <div className="flex flex-col md:flex-row gap-6">
         <div className="md:w-1/2">
           {product.image ? (
@@ -75,15 +85,15 @@ export const ProductSelectQuantityCard = ({ product, onQuantitySelect, resetItem
         </div>
         
         <div className="md:w-1/2">
-          <div className="grid grid-cols-[80px_1fr_60px] gap-4 text-sm font-medium bg-primary text-onPrimary p-2 rounded-md">
+          <div className="grid grid-cols-[80px_1fr_60px] gap-4 text-sm font-medium text-gray-700 mb-2 bg-gray-400 p-2 rounded-md">
             <div>Tamanho</div>
-            <div>Quantidade</div>
+            <div>Quantidades</div>
             <div>Subtotal</div>
           </div>
           
           {product.sizes.map((size, index) => (
             <div key={size.label}>
-              <div className={`mb-2 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100 transition-colors`}>
+              <div className={`mb-4 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100 transition-colors`}>
                 <div className="grid grid-cols-[80px_1fr_60px] gap-4 items-center p-2">
                   <div>
                     <span className="font-medium text-sm">{size.label}</span>
@@ -96,11 +106,10 @@ export const ProductSelectQuantityCard = ({ product, onQuantitySelect, resetItem
                       handleQuantityChange(size.label, Number(value), size.price);
                     }}
                   >
-                    <SelectTrigger className="h-8">
+                    <SelectTrigger className="w-full">
                       <SelectValue placeholder="0" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white border shadow-lg z-50">
-                      <SelectItem value="0">0</SelectItem>
+                    <SelectContent>
                       {size.quantities.map((qty) => (
                         <SelectItem key={qty} value={qty.toString()}>
                           {qty}
@@ -115,7 +124,7 @@ export const ProductSelectQuantityCard = ({ product, onQuantitySelect, resetItem
                 </div>
               </div>
               {index < product.sizes.length - 1 && (
-                <Separator className="my-0 opacity-50" />
+                <Separator className="my-4 opacity-50" />
               )}
             </div>
           ))}

@@ -61,6 +61,7 @@ export const ProductList = ({
     name: product.name,
     image: product.image || "",
     ref: product.reference,
+    isNew: product.isNew,
     sizes: product.sizes.map(size => ({
       label: size.size,
       price: size.value,
