@@ -46,7 +46,7 @@ export function DisplayModeCard({ companyId, currentMode, onSuccess }: DisplayMo
   };
 
   return (
-    <Card className="bg-card rounded-xl p-6 shadow-sm border border-gray-200 hover:border-primary/20 transition-colors">
+    <Card className="p-6 bg-white border-2 border-primary/20 shadow-lg rounded-lg">
       <CardHeader className="p-0 mb-6">
         <CardTitle className="text-lg font-semibold flex items-center gap-2 text-onSurfaceVariant">
           <LayoutGrid className="h-5 w-5" />

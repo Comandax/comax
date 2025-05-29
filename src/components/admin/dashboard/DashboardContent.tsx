@@ -53,14 +53,14 @@ export const DashboardContent = ({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <RecentOrdersCard 
+          orders={recentOrders}
+          isLoading={isLoadingOrders}
+        />
         <QuantitySelectionModeCard
           companyId={company.id}
           currentMode={company.quantity_selection_mode || 'radio'}
           onSuccess={onDisplayModeSuccess}
-        />
-        <RecentOrdersCard 
-          orders={recentOrders}
-          isLoading={isLoadingOrders}
         />
       </div>
     </div>

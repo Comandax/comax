@@ -50,7 +50,7 @@ export function QuantitySelectionModeCard({ companyId, currentMode, onSuccess }:
   };
 
   return (
-    <Card className="p-6 bg-white border-2 border-primary/20 shadow-lg">
+    <Card className="p-6 bg-white border-2 border-primary/20 shadow-lg rounded-lg">
       <div className="flex items-center gap-3 mb-4">
         <Settings className="h-6 w-6 text-primary" />
         <h3 className="text-xl font-semibold text-gray-900">

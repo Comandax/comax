@@ -9,7 +9,7 @@ interface NoCompanyRegisteredCardProps {
 
 export function NoCompanyRegisteredCard({ onRegisterClick }: NoCompanyRegisteredCardProps) {
   return (
-    <Card className="bg-surface border-2 border-surfaceVariant h-full">
+    <Card className="p-6 bg-white border-2 border-primary/20 shadow-lg rounded-lg h-full">
       <CardContent className="p-6 flex flex-col h-full justify-center items-center text-center space-y-4">
         <Building2 className="w-12 h-12 text-primary" />
         <div className="space-y-2">
