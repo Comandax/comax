@@ -68,9 +68,18 @@ export const ProductList = ({
     }))
   });
 
+  // Filtra produtos ativos e ordena colocando lançamentos primeiro
+  const sortedProducts = products
+    .filter(product => !product.disabled)
+    .sort((a, b) => {
+      if (a.isNew && !b.isNew) return -1;
+      if (!a.isNew && b.isNew) return 1;
+      return a.reference.localeCompare(b.reference);
+    });
+
   return (
     <div className="grid gap-6">
-      {products.map((product) => {
+      {sortedProducts.map((product) => {
         const formattedProduct = formatProductData(product);
         const ProductComponent = quantitySelectionMode === 'select' 
           ? ProductSelectQuantityCard 
