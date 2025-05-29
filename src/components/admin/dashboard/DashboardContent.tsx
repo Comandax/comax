@@ -1,8 +1,9 @@
-import { NoCompanyRegisteredCard } from "../companies/details/NoCompanyRegisteredCard";
-import { PublicLinkCard } from "./PublicLinkCard";
-import { DisplayModeCard } from "./DisplayModeCard";
+
+import { NoCompanyRegisteredCard } from "../NoCompanyRegisteredCard";
+import { PublicLinkCard } from "../PublicLinkCard";
+import { DisplayModeCard } from "../DisplayModeCard";
 import { StatsCards } from "./StatsCards";
-import { RecentOrdersCard } from "./RecentOrdersCard";
+import { RecentOrdersCard } from "../RecentOrdersCard";
 import { QuantitySelectionModeCard } from "../QuantitySelectionModeCard";
 
 interface DashboardContentProps {
@@ -27,7 +28,7 @@ export const DashboardContent = ({
   if (!company) {
     return (
       <div className="space-y-6">
-        <NoCompanyRegisteredCard onRegister={onRegisterCompany} />
+        <NoCompanyRegisteredCard onRegisterClick={onRegisterCompany} />
       </div>
     );
   }

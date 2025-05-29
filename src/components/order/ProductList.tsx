@@ -28,7 +28,7 @@ export const ProductList = ({
       
       const { data, error } = await supabase
         .from('companies')
-        .select('quantity_selection_mode')
+        .select('*')
         .eq('id', companyId)
         .single();
       
@@ -42,7 +42,7 @@ export const ProductList = ({
     staleTime: 1000 * 60 * 5, // 5 minutos
   });
 
-  const quantitySelectionMode = company?.quantity_selection_mode || 'radio';
+  const quantitySelectionMode = (company as any)?.quantity_selection_mode || 'radio';
 
   if (isLoading) {
     return (

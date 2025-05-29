@@ -18,6 +18,7 @@ export type Database = {
           logo_url: string | null
           name: string
           owner_id: string
+          quantity_selection_mode: string | null
           short_name: string
         }
         Insert: {
@@ -28,6 +29,7 @@ export type Database = {
           logo_url?: string | null
           name: string
           owner_id: string
+          quantity_selection_mode?: string | null
           short_name?: string
         }
         Update: {
@@ -38,6 +40,7 @@ export type Database = {
           logo_url?: string | null
           name?: string
           owner_id?: string
+          quantity_selection_mode?: string | null
           short_name?: string
         }
         Relationships: [

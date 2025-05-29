@@ -24,7 +24,9 @@ export function QuantitySelectionModeCard({ companyId, currentMode, onSuccess }:
       
       const { error } = await supabase
         .from('companies')
-        .update({ quantity_selection_mode: mode })
+        .update({ 
+          quantity_selection_mode: mode
+        } as any)
         .eq('id', companyId);
 
       if (error) throw error;
