@@ -35,12 +35,15 @@ export const DashboardContent = ({
 
   return (
     <div className="space-y-6">
-      <StatsCards company={company} productsCount={productsCount} />
+      <StatsCards 
+        productsCount={productsCount} 
+        ordersCount={recentOrders.length}
+      />
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <PublicLinkCard 
-          company={company} 
-          onEditLink={onEditLink} 
+          companyShortName={company.short_name} 
+          onEdit={onEditLink} 
         />
         <DisplayModeCard 
           companyId={company.id}
