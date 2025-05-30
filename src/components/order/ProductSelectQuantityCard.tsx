@@ -110,6 +110,7 @@ export const ProductSelectQuantityCard = ({ product, onQuantitySelect, resetItem
                       <SelectValue placeholder="0" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="0">0</SelectItem>
                       {size.quantities.map((qty) => (
                         <SelectItem key={qty} value={qty.toString()}>
                           {qty}

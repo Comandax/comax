@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useEffect, useState } from "react";
 import type { Product } from "@/types/product";
 
 interface ProductDetailsDialogProps {
@@ -12,15 +14,42 @@ interface ProductDetailsDialogProps {
   onClose: () => void;
   onQuantitySelect: (size: string, quantity: number, price: number) => void;
   selectedQuantities: Record<string, number>;
+  quantitySelectionMode?: 'radio' | 'select';
+  resetItem?: { size: string; productId: string; };
 }
 
 export function ProductDetailsDialog({ 
   product, 
   onClose, 
   onQuantitySelect,
-  selectedQuantities
+  selectedQuantities,
+  quantitySelectionMode = 'radio',
+  resetItem
 }: ProductDetailsDialogProps) {
+  const [localQuantities, setLocalQuantities] = useState<Record<string, number>>(selectedQuantities);
+
+  useEffect(() => {
+    setLocalQuantities(selectedQuantities);
+  }, [selectedQuantities]);
+
+  useEffect(() => {
+    if (resetItem && product && resetItem.productId === product._id) {
+      setLocalQuantities(prev => ({
+        ...prev,
+        [resetItem.size]: 0
+      }));
+    }
+  }, [resetItem, product]);
+
   if (!product) return null;
+
+  const handleQuantityChange = (size: string, quantity: number, price: number) => {
+    setLocalQuantities(prev => ({
+      ...prev,
+      [size]: quantity
+    }));
+    onQuantitySelect(size, quantity, price);
+  };
 
   return (
     <Dialog open={!!product} onOpenChange={(open) => !open && onClose()}>
@@ -49,39 +78,70 @@ export function ProductDetailsDialog({
           <div className="space-y-4">
             {product.sizes.map((size, index) => (
               <div key={index}>
-                <div className="flex justify-between mb-2">
-                  <span className="font-medium">{size.size}</span>
-                  <span className="font-medium text-primary">
-                    {new Intl.NumberFormat('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL'
-                    }).format(size.value)}
-                  </span>
-                </div>
-                
-                <RadioGroup
-                  value={selectedQuantities[size.size]?.toString() || "0"}
-                  onValueChange={(value) => {
-                    onQuantitySelect(size.size, Number(value), size.value);
-                  }}
-                  className="grid grid-cols-6 gap-3"
-                >
-                  {[0, ...product.quantities.map(q => q.value)].map((qty) => (
-                    <div key={qty} className="flex flex-col items-center gap-1">
-                      <RadioGroupItem 
-                        value={qty.toString()} 
-                        id={`${product._id}-${size.size}-${qty}`}
-                        className="md:scale-75 scale-125"
-                      />
-                      <Label 
-                        htmlFor={`${product._id}-${size.size}-${qty}`} 
-                        className="text-xs cursor-pointer"
+                <div className="flex items-center gap-4 mb-2">
+                  <div className="w-24">
+                    <span className="font-medium">{size.size}</span>
+                  </div>
+                  
+                  <div className="flex-1">
+                    {quantitySelectionMode === 'radio' ? (
+                      <RadioGroup
+                        value={localQuantities[size.size]?.toString() || "0"}
+                        onValueChange={(value) => {
+                          handleQuantityChange(size.size, Number(value), size.value);
+                        }}
+                        className="flex flex-wrap gap-3 justify-start"
                       >
-                        {qty}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
+                        {[0, ...product.quantities.map(q => q.value)].map((qty) => (
+                          <div key={qty} className="flex items-center gap-1">
+                            <RadioGroupItem 
+                              value={qty.toString()} 
+                              id={`${product._id}-${size.size}-${qty}`}
+                              className="md:scale-75 scale-100"
+                            />
+                            <Label 
+                              htmlFor={`${product._id}-${size.size}-${qty}`} 
+                              className="text-xs cursor-pointer"
+                            >
+                              {qty}
+                            </Label>
+                          </div>
+                        ))}
+                      </RadioGroup>
+                    ) : (
+                      <Select
+                        value={localQuantities[size.size]?.toString() || "0"}
+                        onValueChange={(value) => {
+                          handleQuantityChange(size.size, Number(value), size.value);
+                        }}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="0" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {[0, ...product.quantities.map(q => q.value)].map((qty) => (
+                            <SelectItem 
+                              key={qty} 
+                              value={qty.toString()} 
+                              className="hover:bg-primary/10 transition-colors duration-150"
+                            >
+                              {qty}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  </div>
+                  
+                  <div className="w-24 text-right">
+                    <span className="font-medium text-primary">
+                      {new Intl.NumberFormat('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL'
+                      }).format(size.value)}
+                    </span>
+                  </div>
+                </div>
 
                 {index < product.sizes.length - 1 && (
                   <Separator className="my-4" />
