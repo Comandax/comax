@@ -121,6 +121,7 @@ export function CompactProductList({
         onQuantitySelect={handleQuantityChange}
         selectedQuantities={selectedProduct ? selectedQuantities[selectedProduct._id] || {} : {}}
         quantitySelectionMode={quantitySelectionMode}
+        resetItem={resetItem && selectedProduct && resetItem.productId === selectedProduct._id ? resetItem : undefined}
       />
     </>
   );

@@ -22,6 +22,7 @@ const Index = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([]);
   const [contactData, setContactData] = useState<ContactFormData | null>(null);
+  const [resetItem, setResetItem] = useState<{ productId: string; size: string } | null>(null);
   const { toast } = useToast();
   const params = useParams();
   const navigate = useNavigate();
@@ -202,6 +203,14 @@ const Index = () => {
     setSelectedItems(prev => 
       prev.filter(item => !(item.productId === productId && item.size === size))
     );
+    
+    // Notify components to reset the quantity selector
+    setResetItem({ productId, size });
+    
+    // Clear reset state after a short delay
+    setTimeout(() => {
+      setResetItem(null);
+    }, 100);
   };
 
   if (isLoading) return <LoadingState />;
@@ -234,6 +243,7 @@ const Index = () => {
               isLoading={isLoadingProducts}
               onQuantitySelect={handleQuantitySelect}
               onContactSubmit={handleContactSubmit}
+              resetItem={resetItem}
             />
           </Card>
         </div>

@@ -13,6 +13,7 @@ interface OrderFormProps {
   isLoading?: boolean;
   onQuantitySelect: (productId: string, size: string, quantity: number, price: number) => void;
   onContactSubmit: (data: ContactFormData) => void;
+  resetItem?: { productId: string; size: string } | null;
 }
 
 export const OrderForm = ({ 
@@ -21,10 +22,9 @@ export const OrderForm = ({
   products, 
   isLoading = false,
   onQuantitySelect,
-  onContactSubmit
+  onContactSubmit,
+  resetItem
 }: OrderFormProps) => {
-  const [resetItem, setResetItem] = useState<ResetItem | null>(null);
-
   return (
     <>
       <ContactForm onSubmit={onContactSubmit} />

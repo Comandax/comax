@@ -6,6 +6,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useEffect, useState } from "react";
 import type { Product } from "@/types/product";
 
 interface ProductDetailsDialogProps {
@@ -14,6 +15,7 @@ interface ProductDetailsDialogProps {
   onQuantitySelect: (size: string, quantity: number, price: number) => void;
   selectedQuantities: Record<string, number>;
   quantitySelectionMode?: 'radio' | 'select';
+  resetItem?: { size: string; productId: string; };
 }
 
 export function ProductDetailsDialog({ 
@@ -21,9 +23,33 @@ export function ProductDetailsDialog({
   onClose, 
   onQuantitySelect,
   selectedQuantities,
-  quantitySelectionMode = 'radio'
+  quantitySelectionMode = 'radio',
+  resetItem
 }: ProductDetailsDialogProps) {
+  const [localQuantities, setLocalQuantities] = useState<Record<string, number>>(selectedQuantities);
+
+  useEffect(() => {
+    setLocalQuantities(selectedQuantities);
+  }, [selectedQuantities]);
+
+  useEffect(() => {
+    if (resetItem && product && resetItem.productId === product._id) {
+      setLocalQuantities(prev => ({
+        ...prev,
+        [resetItem.size]: 0
+      }));
+    }
+  }, [resetItem, product]);
+
   if (!product) return null;
+
+  const handleQuantityChange = (size: string, quantity: number, price: number) => {
+    setLocalQuantities(prev => ({
+      ...prev,
+      [size]: quantity
+    }));
+    onQuantitySelect(size, quantity, price);
+  };
 
   return (
     <Dialog open={!!product} onOpenChange={(open) => !open && onClose()}>
@@ -60,9 +86,9 @@ export function ProductDetailsDialog({
                   <div className="flex-1">
                     {quantitySelectionMode === 'radio' ? (
                       <RadioGroup
-                        value={selectedQuantities[size.size]?.toString() || "0"}
+                        value={localQuantities[size.size]?.toString() || "0"}
                         onValueChange={(value) => {
-                          onQuantitySelect(size.size, Number(value), size.value);
+                          handleQuantityChange(size.size, Number(value), size.value);
                         }}
                         className="flex flex-wrap gap-3 justify-start"
                       >
@@ -84,9 +110,9 @@ export function ProductDetailsDialog({
                       </RadioGroup>
                     ) : (
                       <Select
-                        value={selectedQuantities[size.size]?.toString() || "0"}
+                        value={localQuantities[size.size]?.toString() || "0"}
                         onValueChange={(value) => {
-                          onQuantitySelect(size.size, Number(value), size.value);
+                          handleQuantityChange(size.size, Number(value), size.value);
                         }}
                       >
                         <SelectTrigger className="w-full">
