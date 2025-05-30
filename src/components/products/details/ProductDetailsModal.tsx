@@ -22,6 +22,7 @@ interface ProductDetailsModalProps {
   onDelete: (productId: string) => Promise<void>;
   onSubmit: (data: ProductFormData, isEditing: boolean) => Promise<void>;
   onToggleStatus: (productId: string, disabled: boolean) => Promise<void>;
+  onToggleOutOfStock?: (productId: string, outOfStock: boolean) => Promise<void>;
 }
 
 export function ProductDetailsModal({
@@ -32,6 +33,7 @@ export function ProductDetailsModal({
   onDelete,
   onSubmit,
   onToggleStatus,
+  onToggleOutOfStock,
 }: ProductDetailsModalProps) {
   const isMobile = useIsMobile();
   
@@ -50,7 +52,11 @@ export function ProductDetailsModal({
         <div className="grid gap-6 py-4">
           <div className={`flex ${isMobile ? 'flex-col' : ''} gap-6`}>
             <ProductImage image={product.image} name={product.name} />
-            <ProductInfo product={product} onToggleStatus={onToggleStatus} />
+            <ProductInfo 
+              product={product} 
+              onToggleStatus={onToggleStatus} 
+              onToggleOutOfStock={onToggleOutOfStock}
+            />
           </div>
 
           <ProductSizes sizes={product.sizes} />

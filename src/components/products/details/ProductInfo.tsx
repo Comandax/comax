@@ -7,9 +7,10 @@ import { toast } from "@/components/ui/use-toast";
 interface ProductInfoProps {
   product: Product;
   onToggleStatus: (productId: string, disabled: boolean) => Promise<void>;
+  onToggleOutOfStock?: (productId: string, outOfStock: boolean) => Promise<void>;
 }
 
-export function ProductInfo({ product, onToggleStatus }: ProductInfoProps) {
+export function ProductInfo({ product, onToggleStatus, onToggleOutOfStock }: ProductInfoProps) {
   const handleToggleNew = async () => {
     try {
       const { error } = await supabase
@@ -37,6 +38,38 @@ export function ProductInfo({ product, onToggleStatus }: ProductInfoProps) {
     }
   };
 
+  const handleToggleOutOfStock = async () => {
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update({ out_of_stock: !product.outOfStock })
+        .eq('id', product._id);
+
+      if (error) throw error;
+
+      // Atualiza o estado do produto no componente pai
+      product.outOfStock = !product.outOfStock;
+      
+      toast({
+        title: "Produto atualizado",
+        description: `O produto ${product.name} foi ${product.outOfStock ? 'marcado' : 'desmarcado'} como sem estoque.`,
+      });
+
+      // Chama a função do componente pai se fornecida
+      if (onToggleOutOfStock) {
+        await onToggleOutOfStock(product._id, product.outOfStock);
+      }
+
+    } catch (error) {
+      console.error('Error updating product out of stock status:', error);
+      toast({
+        title: "Erro ao atualizar produto",
+        description: "Não foi possível atualizar o status de estoque do produto.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="space-y-4 flex-1">
       <div className="flex items-center justify-between">
@@ -58,6 +91,14 @@ export function ProductInfo({ product, onToggleStatus }: ProductInfoProps) {
           <Switch
             checked={product.isNew}
             onCheckedChange={handleToggleNew}
+          />
+        </div>
+
+        <div>
+          <h3 className="font-semibold">Sem Estoque</h3>
+          <Switch
+            checked={product.outOfStock}
+            onCheckedChange={handleToggleOutOfStock}
           />
         </div>
       </div>

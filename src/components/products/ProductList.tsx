@@ -15,6 +15,7 @@ interface ProductListProps {
   onDelete?: (productId: string) => Promise<void>;
   onSubmit?: (data: ProductFormData, isEditing: boolean) => Promise<void>;
   onToggleStatus?: (productId: string, disabled: boolean) => Promise<void>;
+  onToggleOutOfStock?: (productId: string, outOfStock: boolean) => Promise<void>;
   isLoading?: boolean;
   onOpenNewProductModal: () => void;
 }
@@ -28,6 +29,7 @@ export function ProductList({
   onDelete, 
   onSubmit, 
   onToggleStatus,
+  onToggleOutOfStock,
   onOpenNewProductModal,
   isLoading = false 
 }: ProductListProps) {
@@ -63,6 +65,19 @@ export function ProductList({
         setSelectedProduct({
           ...selectedProduct,
           disabled: disabled
+        });
+      }
+    }
+  };
+
+  const handleToggleOutOfStock = async (productId: string, outOfStock: boolean) => {
+    if (onToggleOutOfStock) {
+      await onToggleOutOfStock(productId, outOfStock);
+      
+      if (selectedProduct && selectedProduct._id === productId) {
+        setSelectedProduct({
+          ...selectedProduct,
+          outOfStock: outOfStock
         });
       }
     }
@@ -141,6 +156,7 @@ export function ProductList({
         onDelete={onDelete}
         onSubmit={onSubmit}
         onToggleStatus={handleToggleStatus}
+        onToggleOutOfStock={handleToggleOutOfStock}
       />
     </div>
   );

@@ -24,7 +24,8 @@ export const fetchProducts = async (companyId: string): Promise<Product[]> => {
       : [],
     disabled: product.disabled,
     companyId: product.company_id,
-    isNew: product.is_new
+    isNew: product.is_new,
+    outOfStock: product.out_of_stock
   }));
 };
 
@@ -40,7 +41,8 @@ export const createProduct = async (product: ProductFormData, companyId: string)
       sizes: product.sizes,
       quantities: product.quantities.map(q => q.value),
       company_id: companyId,
-      is_new: product.isNew || false
+      is_new: product.isNew || false,
+      out_of_stock: product.outOfStock || false
     })
     .select()
     .single();
@@ -59,7 +61,8 @@ export const createProduct = async (product: ProductFormData, companyId: string)
     quantities: data.quantities.map(q => typeof q === 'number' ? { value: q } : q),
     disabled: data.disabled,
     companyId: data.company_id,
-    isNew: data.is_new
+    isNew: data.is_new,
+    outOfStock: data.out_of_stock
   };
 };
 
@@ -78,7 +81,8 @@ export const updateProduct = async (productId: string, product: ProductFormData)
       image_url: product.image,
       sizes: product.sizes,
       quantities: product.quantities.map(q => q.value),
-      is_new: product.isNew
+      is_new: product.isNew,
+      out_of_stock: product.outOfStock
     })
     .eq('id', productId)
     .select()
@@ -100,7 +104,8 @@ export const updateProduct = async (productId: string, product: ProductFormData)
     quantities: data.quantities.map(q => typeof q === 'number' ? { value: q } : q),
     disabled: data.disabled,
     companyId: data.company_id,
-    isNew: data.is_new
+    isNew: data.is_new,
+    outOfStock: data.out_of_stock
   };
 };
 
@@ -126,7 +131,35 @@ export const toggleProductStatus = async (productId: string, disabled: boolean):
     quantities: data.quantities.map(q => typeof q === 'number' ? { value: q } : q),
     disabled: data.disabled,
     companyId: data.company_id,
-    isNew: data.is_new
+    isNew: data.is_new,
+    outOfStock: data.out_of_stock
+  };
+};
+
+export const toggleProductOutOfStock = async (productId: string, outOfStock: boolean): Promise<Product> => {
+  const { data, error } = await supabase
+    .from('products')
+    .update({ out_of_stock: outOfStock })
+    .eq('id', productId)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error toggling product out of stock status:', error);
+    throw error;
+  }
+
+  return {
+    _id: data.id,
+    reference: data.reference,
+    name: data.name,
+    image: data.image_url,
+    sizes: (data.sizes as Array<{size: string; value: number}>),
+    quantities: data.quantities.map(q => typeof q === 'number' ? { value: q } : q),
+    disabled: data.disabled,
+    companyId: data.company_id,
+    isNew: data.is_new,
+    outOfStock: data.out_of_stock
   };
 };
 
