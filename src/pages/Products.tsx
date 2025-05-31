@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useParams } from "react-router-dom";
@@ -78,6 +77,7 @@ const Products = () => {
       }
 
       if (isEditing) {
+        console.log('Updating product and refreshing data...');
         await updateProduct(data._id!, data);
         toast({
           title: "Produto atualizado com sucesso!",
@@ -89,6 +89,8 @@ const Products = () => {
         });
       }
 
+      // Force a fresh refetch of the data
+      console.log('Calling refetch to update product list...');
       await refetch();
       setDialogOpen(false);
       setSelectedProduct(null);

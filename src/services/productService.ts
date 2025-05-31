@@ -2,6 +2,8 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Product, ProductFormData } from "@/types/product";
 
 export const fetchProducts = async (companyId: string): Promise<Product[]> => {
+  console.log('fetchProducts called for companyId:', companyId);
+  
   const { data, error } = await supabase
     .from('products')
     .select('*')
@@ -12,7 +14,9 @@ export const fetchProducts = async (companyId: string): Promise<Product[]> => {
     throw error;
   }
 
-  return (data || []).map(product => ({
+  console.log('Raw products data from DB:', data);
+
+  const mappedProducts = (data || []).map(product => ({
     _id: product.id,
     reference: product.reference,
     name: product.name,
@@ -26,6 +30,9 @@ export const fetchProducts = async (companyId: string): Promise<Product[]> => {
     isNew: product.is_new,
     outOfStock: product.out_of_stock
   }));
+
+  console.log('Mapped products:', mappedProducts);
+  return mappedProducts;
 };
 
 export const createProduct = async (product: ProductFormData, companyId: string): Promise<Product> => {
