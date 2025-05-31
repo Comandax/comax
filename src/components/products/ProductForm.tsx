@@ -22,6 +22,8 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
   const fileInputRef = useRef<HTMLInputElement>(null);
   const isEditing = Boolean(initialData?._id);
 
+  console.log('ProductForm initialData:', initialData);
+
   const form = useForm<ProductFormData>({
     resolver: zodResolver(productFormSchema),
     defaultValues: {
@@ -40,6 +42,8 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
           ],
     },
   });
+
+  console.log('Form current values:', form.getValues());
 
   const sizeArray = useFieldArray({
     control: form.control,
@@ -103,6 +107,7 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
 
   const handleFormSubmit = async (data: ProductFormData) => {
     console.log('Form data being submitted:', data);
+    console.log('outOfStock value before submit:', data.outOfStock);
     await onSubmit(data, isEditing);
     if (onComplete) {
       onComplete();

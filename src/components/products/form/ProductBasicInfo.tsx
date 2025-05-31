@@ -41,7 +41,10 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload, fileInputRe
                 <FormControl>
                   <Switch
                     checked={field.value}
-                    onCheckedChange={field.onChange}
+                    onCheckedChange={(checked) => {
+                      console.log('isNew changed to:', checked);
+                      field.onChange(checked);
+                    }}
                   />
                 </FormControl>
               </div>
@@ -60,7 +63,10 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload, fileInputRe
                 <FormControl>
                   <Switch
                     checked={field.value}
-                    onCheckedChange={field.onChange}
+                    onCheckedChange={(checked) => {
+                      console.log('outOfStock changed to:', checked);
+                      field.onChange(checked);
+                    }}
                   />
                 </FormControl>
               </div>

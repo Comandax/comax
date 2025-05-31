@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 import type { Product, ProductFormData } from "@/types/product";
 
@@ -67,23 +66,28 @@ export const createProduct = async (product: ProductFormData, companyId: string)
 };
 
 export const updateProduct = async (productId: string, product: ProductFormData): Promise<Product> => {
-  console.log('Updating product:', { productId, product });
+  console.log('Updating product with data:', { productId, product });
+  console.log('outOfStock value being sent to DB:', product.outOfStock);
   
   if (!productId) {
     throw new Error('Product ID is required for update');
   }
 
+  const updateData = {
+    reference: product.reference,
+    name: product.name,
+    image_url: product.image,
+    sizes: product.sizes,
+    quantities: product.quantities.map(q => q.value),
+    is_new: product.isNew || false,
+    out_of_stock: product.outOfStock || false
+  };
+
+  console.log('Final update data being sent:', updateData);
+
   const { data, error } = await supabase
     .from('products')
-    .update({
-      reference: product.reference,
-      name: product.name,
-      image_url: product.image,
-      sizes: product.sizes,
-      quantities: product.quantities.map(q => q.value),
-      is_new: product.isNew || false,
-      out_of_stock: product.outOfStock || false
-    })
+    .update(updateData)
     .eq('id', productId)
     .select()
     .single();
@@ -93,7 +97,7 @@ export const updateProduct = async (productId: string, product: ProductFormData)
     throw error;
   }
 
-  console.log('Update response:', data);
+  console.log('Update response from DB:', data);
 
   return {
     _id: data.id,
