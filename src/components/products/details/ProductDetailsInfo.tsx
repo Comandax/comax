@@ -1,15 +1,16 @@
+
 import { Switch } from "@/components/ui/switch";
 import type { Product } from "@/types/product";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
 
-interface ProductInfoProps {
+interface ProductDetailsInfoProps {
   product: Product;
   onToggleStatus: (productId: string, disabled: boolean) => Promise<void>;
   onToggleOutOfStock?: (productId: string, outOfStock: boolean) => Promise<void>;
 }
 
-export function ProductInfo({ product, onToggleStatus, onToggleOutOfStock }: ProductInfoProps) {
+export function ProductDetailsInfo({ product, onToggleStatus, onToggleOutOfStock }: ProductDetailsInfoProps) {
   const handleToggleNew = async () => {
     try {
       const { error } = await supabase

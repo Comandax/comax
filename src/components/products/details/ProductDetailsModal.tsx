@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import type { Product, ProductFormData } from "@/types/product";
 import { ProductImage } from "./ProductImage";
-import { ProductInfo } from "./ProductInfo";
+import { ProductDetailsInfo } from "./ProductDetailsInfo";
 import { ProductSizes } from "./ProductSizes";
 import { ProductQuantities } from "./ProductQuantities";
 import { ProductActions } from "./ProductActions";
@@ -52,7 +52,7 @@ export function ProductDetailsModal({
         <div className="grid gap-6 py-4">
           <div className={`flex ${isMobile ? 'flex-col' : ''} gap-6`}>
             <ProductImage image={product.image} name={product.name} />
-            <ProductInfo 
+            <ProductDetailsInfo 
               product={product} 
               onToggleStatus={onToggleStatus} 
               onToggleOutOfStock={onToggleOutOfStock}
