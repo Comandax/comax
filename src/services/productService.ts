@@ -81,8 +81,8 @@ export const updateProduct = async (productId: string, product: ProductFormData)
       image_url: product.image,
       sizes: product.sizes,
       quantities: product.quantities.map(q => q.value),
-      is_new: product.isNew,
-      out_of_stock: product.outOfStock
+      is_new: product.isNew || false,
+      out_of_stock: product.outOfStock || false
     })
     .eq('id', productId)
     .select()

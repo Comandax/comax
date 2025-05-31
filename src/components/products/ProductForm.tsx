@@ -102,6 +102,7 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
   };
 
   const handleFormSubmit = async (data: ProductFormData) => {
+    console.log('Form data being submitted:', data);
     await onSubmit(data, isEditing);
     if (onComplete) {
       onComplete();
