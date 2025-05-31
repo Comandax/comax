@@ -1,15 +1,19 @@
+
 import { Switch } from "@/components/ui/switch";
 import type { Product } from "@/types/product";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/components/ui/use-toast";
+import { toast } from "@/hooks/use-toast";
+import { UseFormReturn } from "react-hook-form";
+import { ProductFormData } from "@/types/product";
 
 interface ProductInfoProps {
   product: Product;
   onToggleStatus: (productId: string, disabled: boolean) => Promise<void>;
   onToggleOutOfStock?: (productId: string, outOfStock: boolean) => Promise<void>;
+  form?: UseFormReturn<ProductFormData>;
 }
 
-export function ProductInfo({ product, onToggleStatus, onToggleOutOfStock }: ProductInfoProps) {
+export function ProductInfo({ product, onToggleStatus, onToggleOutOfStock, form }: ProductInfoProps) {
   const handleToggleNew = async () => {
     try {
       const { error } = await supabase
@@ -38,6 +42,14 @@ export function ProductInfo({ product, onToggleStatus, onToggleOutOfStock }: Pro
   };
 
   const handleToggleOutOfStock = async () => {
+    // Se temos acesso ao form, apenas atualiza o estado do form
+    if (form) {
+      const currentValue = form.getValues('outOfStock');
+      form.setValue('outOfStock', !currentValue);
+      return;
+    }
+
+    // Senão, atualiza diretamente no banco (para uso no modal de detalhes)
     try {
       const { error } = await supabase
         .from('products')
@@ -96,7 +108,7 @@ export function ProductInfo({ product, onToggleStatus, onToggleOutOfStock }: Pro
         <div>
           <h3 className="font-semibold">Sem Estoque</h3>
           <Switch
-            checked={product.outOfStock}
+            checked={form ? form.watch('outOfStock') : product.outOfStock}
             onCheckedChange={handleToggleOutOfStock}
           />
         </div>

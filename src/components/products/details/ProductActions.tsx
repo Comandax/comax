@@ -1,33 +1,15 @@
 
-import { Edit, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import type { Product, ProductFormData } from "@/types/product";
+import { Trash2, Edit } from "lucide-react";
 import { ProductForm } from "../ProductForm";
+import type { Product, ProductFormData } from "@/types/product";
 
 interface ProductActionsProps {
   product: Product;
-  onEdit: (product: Product) => void;
-  onDelete: (productId: string) => Promise<void>;
-  onSubmit: (data: ProductFormData, isEditing: boolean) => Promise<void>;
+  onEdit?: (product: Product) => void;
+  onDelete?: (productId: string) => Promise<void>;
+  onSubmit?: (data: ProductFormData) => Promise<void>;
   onOpenChange: (open: boolean) => void;
 }
 
@@ -35,66 +17,86 @@ export function ProductActions({
   product, 
   onEdit, 
   onDelete, 
-  onSubmit, 
+  onSubmit,
   onOpenChange 
 }: ProductActionsProps) {
-  const handleSubmit = async (data: ProductFormData) => {
-    await onSubmit(data, true); // Sempre true porque estamos editando
-    onOpenChange(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleEdit = () => {
+    if (onEdit) {
+      onEdit(product);
+      onOpenChange(false);
+    } else {
+      setIsEditing(true);
+    }
   };
 
-  return (
-    <div className="flex justify-end gap-2">
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="outline" onClick={(e) => e.stopPropagation()}>
-            <Edit className="h-4 w-4 mr-2" />
-            Editar
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Editar Produto</DialogTitle>
-          </DialogHeader>
-          <ScrollArea className="h-[80vh] pr-4">
-            <ProductForm 
-              onSubmit={handleSubmit} 
-              initialData={product} 
-              onComplete={() => onOpenChange(false)}
-            />
-          </ScrollArea>
-        </DialogContent>
-      </Dialog>
+  const handleDelete = async () => {
+    if (!onDelete) return;
+    
+    setIsDeleting(true);
+    try {
+      await onDelete(product._id);
+      onOpenChange(false);
+    } catch (error) {
+      console.error('Error deleting product:', error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
-      <AlertDialog>
-        <AlertDialogTrigger asChild>
-          <Button variant="destructive">
-            <Trash2 className="h-4 w-4 mr-2" />
-            Excluir
+  const handleSubmitEdit = async (data: ProductFormData) => {
+    if (!onSubmit) return;
+    
+    try {
+      await onSubmit(data);
+      setIsEditing(false);
+      onOpenChange(false);
+    } catch (error) {
+      console.error('Error updating product:', error);
+    }
+  };
+
+  if (isEditing) {
+    return (
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold">Editar Produto</h3>
+          <Button variant="outline" onClick={() => setIsEditing(false)}>
+            Cancelar
           </Button>
-        </AlertDialogTrigger>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Excluir Produto</AlertDialogTitle>
-            <AlertDialogDescription>
-              Tem certeza que deseja excluir este produto? Esta ação não
-              pode ser desfeita.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={() => {
-                onDelete(product._id);
-                onOpenChange(false);
-              }}
-              className="text-onPrimary"
-            >
-              Excluir
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        </div>
+        <ProductForm
+          initialData={product}
+          onSubmit={handleSubmitEdit}
+          onComplete={() => setIsEditing(false)}
+        />
+      </div>
+    );
+  }
+
+  if (!onEdit && !onDelete) return null;
+
+  return (
+    <div className="flex gap-2">
+      {onEdit && (
+        <Button onClick={handleEdit} variant="outline" size="sm">
+          <Edit className="w-4 h-4 mr-2" />
+          Editar
+        </Button>
+      )}
+      {onDelete && (
+        <Button 
+          onClick={handleDelete} 
+          variant="destructive" 
+          size="sm"
+          disabled={isDeleting}
+        >
+          <Trash2 className="w-4 h-4 mr-2" />
+          {isDeleting ? "Excluindo..." : "Excluir"}
+        </Button>
+      )}
     </div>
   );
 }
