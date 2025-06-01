@@ -35,7 +35,7 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
   }, [resetItem, product.id]);
 
   const handleQuantityChange = (size: string, quantity: number, price: number) => {
-    if (product.outOfStock) return; // Prevent selection when out of stock
+    if (product.outOfStock) return;
     
     setSelectedQuantities(prev => ({
       ...prev,
@@ -69,18 +69,11 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
               <img 
                 src={product.image} 
                 alt={product.name}
-                className={`w-full h-32 object-cover rounded-lg ${product.outOfStock ? 'grayscale' : ''}`}
+                className="w-full h-32 object-cover rounded-lg"
               />
             ) : (
-              <div className={`w-full h-32 bg-gray-100 rounded-lg border flex items-center justify-center text-gray-400 ${product.outOfStock ? 'grayscale' : ''}`}>
+              <div className="w-full h-32 bg-gray-100 rounded-lg border flex items-center justify-center text-gray-400">
                 <Package className="w-8 h-8" />
-              </div>
-            )}
-            {product.outOfStock && (
-              <div className="absolute inset-0 bg-gray-500 bg-opacity-20 rounded-lg flex items-center justify-center">
-                <div className="bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold">
-                  SEM ESTOQUE
-                </div>
               </div>
             )}
           </div>
@@ -88,42 +81,46 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
           <p className={`text-xs ${product.outOfStock ? 'text-gray-500' : 'text-gray-600'}`}>{product.name}</p>
         </div>
         
-        <div className="space-y-3">
-          {product.sizes.map((size) => (
-            <div key={size.label} className={`border rounded-lg p-3 ${product.outOfStock ? 'opacity-50' : ''}`}>
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium">{size.label}</span>
-                <span className="text-xs text-gray-500">{formatCurrency(size.price)}</span>
+        {product.outOfStock ? (
+          <div className="text-center py-6">
+            <p className="text-sm font-medium text-red-600">Sem estoque no momento</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {product.sizes.map((size) => (
+              <div key={size.label} className="border rounded-lg p-3">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-sm font-medium">{size.label}</span>
+                  <span className="text-xs text-gray-500">{formatCurrency(size.price)}</span>
+                </div>
+                
+                <RadioGroup
+                  value={selectedQuantities[size.label]?.toString() || "0"}
+                  onValueChange={(value) => {
+                    handleQuantityChange(size.label, Number(value), size.price);
+                  }}
+                  className="grid grid-cols-3 gap-2"
+                >
+                  {size.quantities.map((qty) => (
+                    <div key={qty} className="flex items-center gap-1">
+                      <RadioGroupItem 
+                        value={qty.toString()} 
+                        id={`${size.label}-${qty}-compact`}
+                        className="scale-75"
+                      />
+                      <Label 
+                        htmlFor={`${size.label}-${qty}-compact`} 
+                        className="text-xs"
+                      >
+                        {qty}
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
               </div>
-              
-              <RadioGroup
-                value={selectedQuantities[size.label]?.toString() || "0"}
-                onValueChange={(value) => {
-                  handleQuantityChange(size.label, Number(value), size.price);
-                }}
-                className="grid grid-cols-3 gap-2"
-                disabled={product.outOfStock}
-              >
-                {size.quantities.map((qty) => (
-                  <div key={qty} className="flex items-center gap-1">
-                    <RadioGroupItem 
-                      value={qty.toString()} 
-                      id={`${size.label}-${qty}-compact`}
-                      className={`scale-75 ${product.outOfStock ? 'opacity-50 cursor-not-allowed' : ''}`}
-                      disabled={product.outOfStock}
-                    />
-                    <Label 
-                      htmlFor={`${size.label}-${qty}-compact`} 
-                      className={`text-xs ${product.outOfStock ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    >
-                      {qty}
-                    </Label>
-                  </div>
-                ))}
-              </RadioGroup>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </Card>
   );
