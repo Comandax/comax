@@ -1,3 +1,4 @@
+
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
@@ -58,12 +59,6 @@ export const ProductCard = ({ product, onQuantitySelect, resetItem }: ProductCar
 
   return (
     <Card className={`p-6 shadow-md relative ${product.outOfStock ? 'bg-gray-50 opacity-75' : 'bg-white/90'}`}>
-      {product.outOfStock && (
-        <div className="absolute top-4 right-4 z-10">
-          <p className="text-sm font-medium text-gray-600">Sem estoque no momento</p>
-        </div>
-      )}
-      
       <div className="flex flex-col md:flex-row gap-6">
         <div className="md:w-1/2">
           <div className="relative">
