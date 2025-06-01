@@ -2,10 +2,8 @@
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { useState, useEffect } from "react";
-import { Package, Rocket } from "lucide-react";
-import type { ResetItem } from "../index/types";
+import { Package, AlertTriangle } from "lucide-react";
 
 interface ProductSelectionCardProps {
   product: {
@@ -18,10 +16,10 @@ interface ProductSelectionCardProps {
       price: number;
       quantities: number[];
     }>;
-    isNew?: boolean;
+    outOfStock?: boolean;
   };
   onQuantitySelect: (size: string, quantity: number, price: number) => void;
-  resetItem?: ResetItem | null;
+  resetItem?: { size: string; productId: string; };
 }
 
 export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: ProductSelectionCardProps) => {
@@ -37,16 +35,13 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
   }, [resetItem, product.id]);
 
   const handleQuantityChange = (size: string, quantity: number, price: number) => {
+    if (product.outOfStock) return; // Prevent selection when out of stock
+    
     setSelectedQuantities(prev => ({
       ...prev,
       [size]: quantity
     }));
     onQuantitySelect(size, quantity, price);
-  };
-
-  const calculateSubtotal = (size: string, price: number) => {
-    const quantity = selectedQuantities[size] || 0;
-    return quantity * price;
   };
 
   const formatCurrency = (value: number) => {
@@ -57,77 +52,75 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
   };
 
   return (
-    <Card className="p-6 bg-white shadow-md relative">
-      {product.isNew && (
-        <div className="absolute top-4 right-4 z-10">
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500 text-white">
-            <Rocket className="h-3 w-3" />
-            Lançamento
-          </span>
+    <Card className={`p-4 shadow-md relative ${product.outOfStock ? 'bg-gray-50 opacity-75' : 'bg-white/90'}`}>
+      {product.outOfStock && (
+        <div className="absolute top-2 right-2 z-10">
+          <div className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+            <AlertTriangle className="w-3 h-3" />
+            Sem Estoque
+          </div>
         </div>
       )}
-      <div className="flex flex-col md:flex-row gap-6">
-        <div className="md:w-1/2">
-          {product.image ? (
-            <img 
-              src={product.image} 
-              alt={product.name}
-              className="w-full rounded-lg object-cover"
-            />
-          ) : (
-            <div className="w-full aspect-square bg-gray-100 rounded-lg border flex items-center justify-center text-gray-400">
-              <Package className="w-16 h-16" />
-            </div>
-          )}
-          <div className="mt-2 text-center">
-            <h3 className="text-lg font-semibold">Ref: {product.ref}</h3>
-            <p className="text-gray-600">{product.name}</p>
-          </div>
-        </div>
-        
-        <div className="md:w-1/2">
-          <div className="grid grid-cols-[80px_1fr_60px] gap-4 text-sm font-medium text-gray-700 mb-2 bg-gray-400 p-2 rounded-md">
-            <div>Tamanho</div>
-            <div>Quantidades</div>
-            <div>Subtotal</div>
-          </div>
-          
-          {product.sizes.map((size, index) => (
-            <div key={size.label}>
-              <div className={`mb-4 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100 transition-colors`}>
-                <div className="grid grid-cols-[80px_1fr_60px] gap-4 items-center p-2">
-                  <div>
-                    <span className="font-medium text-sm">{size.label}</span>
-                    <div className="text-xs text-gray-500">{formatCurrency(size.price)}</div>
-                  </div>
-                  
-                  <RadioGroup
-                    value={selectedQuantities[size.label]?.toString() || "0"}
-                    onValueChange={(value) => {
-                      handleQuantityChange(size.label, Number(value), size.price);
-                    }}
-                    className="grid grid-cols-6 gap-3"
-                  >
-                    {size.quantities.map((qty) => (
-                      <div key={qty} className="flex flex-col items-center gap-1">
-                        <RadioGroupItem 
-                          value={qty.toString()} 
-                          id={`${size.label}-${qty}`} 
-                          className="md:scale-75 scale-125"
-                        />
-                        <Label htmlFor={`${size.label}-${qty}`} className="text-xs">{qty}</Label>
-                      </div>
-                    ))}
-                  </RadioGroup>
-                  
-                  <div className="text-right text-xs font-medium text-gray-600">
-                    {formatCurrency(calculateSubtotal(size.label, size.price))}
-                  </div>
+      
+      <div className="space-y-4">
+        <div className="text-center">
+          <div className="relative">
+            {product.image ? (
+              <img 
+                src={product.image} 
+                alt={product.name}
+                className={`w-full h-32 object-cover rounded-lg ${product.outOfStock ? 'grayscale' : ''}`}
+              />
+            ) : (
+              <div className={`w-full h-32 bg-gray-100 rounded-lg border flex items-center justify-center text-gray-400 ${product.outOfStock ? 'grayscale' : ''}`}>
+                <Package className="w-8 h-8" />
+              </div>
+            )}
+            {product.outOfStock && (
+              <div className="absolute inset-0 bg-gray-500 bg-opacity-20 rounded-lg flex items-center justify-center">
+                <div className="bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold">
+                  SEM ESTOQUE
                 </div>
               </div>
-              {index < product.sizes.length - 1 && (
-                <Separator className="my-4 opacity-50" />
-              )}
+            )}
+          </div>
+          <h3 className="text-sm font-semibold mt-2">Ref: {product.ref}</h3>
+          <p className={`text-xs ${product.outOfStock ? 'text-gray-500' : 'text-gray-600'}`}>{product.name}</p>
+        </div>
+        
+        <div className="space-y-3">
+          {product.sizes.map((size) => (
+            <div key={size.label} className={`border rounded-lg p-3 ${product.outOfStock ? 'opacity-50' : ''}`}>
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-medium">{size.label}</span>
+                <span className="text-xs text-gray-500">{formatCurrency(size.price)}</span>
+              </div>
+              
+              <RadioGroup
+                value={selectedQuantities[size.label]?.toString() || "0"}
+                onValueChange={(value) => {
+                  handleQuantityChange(size.label, Number(value), size.price);
+                }}
+                className="grid grid-cols-3 gap-2"
+                disabled={product.outOfStock}
+              >
+                {size.quantities.map((qty) => (
+                  <div key={qty} className="flex items-center gap-1">
+                    <RadioGroupItem 
+                      value={qty.toString()} 
+                      id={`${size.label}-${qty}-compact`}
+                      className={`scale-75 ${product.outOfStock ? 'opacity-50 cursor-not-allowed' : ''}`}
+                      disabled={product.outOfStock}
+                    />
+                    <Label 
+                      htmlFor={`${size.label}-${qty}-compact`} 
+                      className={`text-xs ${product.outOfStock ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
+                      {qty}
+                    </Label>
+                  </div>
+                ))}
+              </RadioGroup>
             </div>
           ))}
         </div>

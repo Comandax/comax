@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useState, useEffect } from "react";
-import { Package } from "lucide-react";
+import { Package, AlertTriangle } from "lucide-react";
 
 interface ProductCardProps {
   product: {
@@ -17,6 +17,7 @@ interface ProductCardProps {
       price: number;
       quantities: number[];
     }>;
+    outOfStock?: boolean;
   };
   onQuantitySelect: (size: string, quantity: number, price: number) => void;
   resetItem?: { size: string; productId: string; };
@@ -35,6 +36,8 @@ export const ProductCard = ({ product, onQuantitySelect, resetItem }: ProductCar
   }, [resetItem, product.id]);
 
   const handleQuantityChange = (size: string, quantity: number, price: number) => {
+    if (product.outOfStock) return; // Prevent selection when out of stock
+    
     setSelectedQuantities(prev => ({
       ...prev,
       [size]: quantity
@@ -55,23 +58,41 @@ export const ProductCard = ({ product, onQuantitySelect, resetItem }: ProductCar
   };
 
   return (
-    <Card className="p-6 bg-white/90 shadow-md">
+    <Card className={`p-6 shadow-md relative ${product.outOfStock ? 'bg-gray-50 opacity-75' : 'bg-white/90'}`}>
+      {product.outOfStock && (
+        <div className="absolute top-4 right-4 z-10">
+          <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
+            <AlertTriangle className="w-4 h-4" />
+            Sem Estoque
+          </div>
+        </div>
+      )}
+      
       <div className="flex flex-col md:flex-row gap-6">
         <div className="md:w-1/2">
-          {product.image ? (
-            <img 
-              src={product.image} 
-              alt={product.name}
-              className="w-full rounded-lg object-cover"
-            />
-          ) : (
-            <div className="w-full aspect-square bg-gray-100 rounded-lg border flex items-center justify-center text-gray-400">
-              <Package className="w-16 h-16" />
-            </div>
-          )}
+          <div className="relative">
+            {product.image ? (
+              <img 
+                src={product.image} 
+                alt={product.name}
+                className={`w-full rounded-lg object-cover ${product.outOfStock ? 'grayscale' : ''}`}
+              />
+            ) : (
+              <div className={`w-full aspect-square bg-gray-100 rounded-lg border flex items-center justify-center text-gray-400 ${product.outOfStock ? 'grayscale' : ''}`}>
+                <Package className="w-16 h-16" />
+              </div>
+            )}
+            {product.outOfStock && (
+              <div className="absolute inset-0 bg-gray-500 bg-opacity-20 rounded-lg flex items-center justify-center">
+                <div className="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold text-lg">
+                  SEM ESTOQUE
+                </div>
+              </div>
+            )}
+          </div>
           <div className="mt-2 text-center">
             <h3 className="text-lg font-semibold">Ref: {product.ref}</h3>
-            <p className="text-gray-600">{product.name}</p>
+            <p className={`${product.outOfStock ? 'text-gray-500' : 'text-gray-600'}`}>{product.name}</p>
           </div>
         </div>
         
@@ -84,7 +105,7 @@ export const ProductCard = ({ product, onQuantitySelect, resetItem }: ProductCar
           
           {product.sizes.map((size, index) => (
             <div key={size.label}>
-              <div className={`mb-4 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100 transition-colors`}>
+              <div className={`mb-4 ${index % 2 === 0 ? 'bg-gray-50' : 'bg-white'} hover:bg-gray-100 transition-colors ${product.outOfStock ? 'opacity-50 cursor-not-allowed' : ''}`}>
                 <div className="grid grid-cols-[80px_1fr_60px] gap-4 items-center p-2">
                   <div>
                     <span className="font-medium text-sm">{size.label}</span>
@@ -97,15 +118,22 @@ export const ProductCard = ({ product, onQuantitySelect, resetItem }: ProductCar
                       handleQuantityChange(size.label, Number(value), size.price);
                     }}
                     className="grid grid-cols-6 gap-3"
+                    disabled={product.outOfStock}
                   >
                     {size.quantities.map((qty) => (
                       <div key={qty} className="flex flex-col items-center gap-1">
                         <RadioGroupItem 
                           value={qty.toString()} 
                           id={`${size.label}-${qty}`} 
-                          className="md:scale-75 scale-125"
+                          className={`md:scale-75 scale-125 ${product.outOfStock ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          disabled={product.outOfStock}
                         />
-                        <Label htmlFor={`${size.label}-${qty}`} className="text-xs">{qty}</Label>
+                        <Label 
+                          htmlFor={`${size.label}-${qty}`} 
+                          className={`text-xs ${product.outOfStock ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                          {qty}
+                        </Label>
                       </div>
                     ))}
                   </RadioGroup>
