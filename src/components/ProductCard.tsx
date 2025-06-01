@@ -1,10 +1,9 @@
-
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useState, useEffect } from "react";
-import { Package, AlertTriangle } from "lucide-react";
+import { Package } from "lucide-react";
 
 interface ProductCardProps {
   product: {
@@ -61,10 +60,7 @@ export const ProductCard = ({ product, onQuantitySelect, resetItem }: ProductCar
     <Card className={`p-6 shadow-md relative ${product.outOfStock ? 'bg-gray-50 opacity-75' : 'bg-white/90'}`}>
       {product.outOfStock && (
         <div className="absolute top-4 right-4 z-10">
-          <div className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
-            <AlertTriangle className="w-4 h-4" />
-            Sem Estoque
-          </div>
+          <p className="text-sm font-medium text-gray-600">Sem estoque no momento</p>
         </div>
       )}
       
@@ -93,7 +89,7 @@ export const ProductCard = ({ product, onQuantitySelect, resetItem }: ProductCar
           {product.outOfStock ? (
             <div className="flex items-center justify-center h-full">
               <div className="text-center">
-                <p className="text-lg font-medium text-red-600">Sem estoque no momento</p>
+                <p className="text-lg font-medium text-gray-600">Sem estoque no momento</p>
               </div>
             </div>
           ) : (
