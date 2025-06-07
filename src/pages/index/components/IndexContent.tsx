@@ -5,12 +5,14 @@ import { OrderForm } from "@/components/index/OrderForm";
 import type { OrderItem } from "@/types/order";
 import type { Product } from "@/types/product";
 import type { ContactFormData } from "@/components/ContactForm";
-import type { SelectedItem } from "@/components/index/types";
 
 interface IndexContentProps {
   company: any;
   products: Product[];
   isLoadingProducts: boolean;
+  isFetchingNextPage: boolean;
+  hasNextPage: boolean;
+  onLoadMore: () => void;
   total: number;
   orderItems: OrderItem[];
   isModalOpen: boolean;
@@ -26,6 +28,9 @@ export const IndexContent = ({
   company,
   products,
   isLoadingProducts,
+  isFetchingNextPage,
+  hasNextPage,
+  onLoadMore,
   total,
   orderItems,
   isModalOpen,
@@ -62,6 +67,9 @@ export const IndexContent = ({
               quantitySelectionMode={company.quantity_selection_mode}
               products={products}
               isLoading={isLoadingProducts}
+              isFetchingNextPage={isFetchingNextPage}
+              hasNextPage={hasNextPage}
+              onLoadMore={onLoadMore}
               onQuantitySelect={onQuantitySelect}
               onContactSubmit={onContactSubmit}
               resetItem={resetItem}

@@ -1,10 +1,9 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { fetchProducts } from "@/services/productService";
 import { useToast } from "@/hooks/use-toast";
+import { useInfiniteProducts } from "@/hooks/useInfiniteProducts";
 
 export const useIndexData = () => {
   const [company, setCompany] = useState<any>(null);
@@ -62,20 +61,22 @@ export const useIndexData = () => {
     fetchCompany();
   }, [shortName, toast, navigate]);
 
-  const { data: products = [], isLoading: isLoadingProducts } = useQuery({
-    queryKey: ['products', company?.id],
-    queryFn: () => {
-      console.log('🔍 Buscando produtos para empresa:', company?.id);
-      return fetchProducts(company?.id || '');
-    },
-    enabled: !!company?.id,
-  });
+  const {
+    products,
+    isLoading: isLoadingProducts,
+    isFetchingNextPage,
+    hasNextPage,
+    loadMore,
+  } = useInfiniteProducts(company?.id);
 
   return {
     company,
     products,
     isLoading,
     isLoadingProducts,
+    isFetchingNextPage,
+    hasNextPage,
+    loadMore,
     error,
     shortName
   };
