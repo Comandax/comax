@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, useParams } from "react-router-dom";
@@ -14,7 +13,7 @@ import { ProductsLayout } from "./products/components/ProductsLayout";
 import { useUserProfile } from "./products/hooks/useUserProfile";
 import { useProducts } from "./products/hooks/useProducts";
 import type { Product, ProductFormData } from "@/types/product";
-import { createProduct, updateProduct, deleteProduct, toggleProductStatus } from "@/services/productService";
+import { createProduct, updateProduct, deleteProduct, toggleProductStatus, toggleProductOutOfStock } from "@/services/productService";
 
 const Products = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -78,6 +77,7 @@ const Products = () => {
       }
 
       if (isEditing) {
+        console.log('Updating product and refreshing data...');
         await updateProduct(data._id!, data);
         toast({
           title: "Produto atualizado com sucesso!",
@@ -89,6 +89,8 @@ const Products = () => {
         });
       }
 
+      // Force a fresh refetch of the data
+      console.log('Calling refetch to update product list...');
       await refetch();
       setDialogOpen(false);
       setSelectedProduct(null);
@@ -113,6 +115,22 @@ const Products = () => {
       console.error('Error toggling product status:', error);
       toast({
         title: "Erro ao alterar status do produto",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleToggleOutOfStock = async (productId: string, outOfStock: boolean) => {
+    try {
+      await toggleProductOutOfStock(productId, outOfStock);
+      await refetch();
+      toast({
+        title: `Produto ${outOfStock ? "marcado como sem estoque" : "marcado como em estoque"} com sucesso!`,
+      });
+    } catch (error) {
+      console.error('Error toggling product out of stock status:', error);
+      toast({
+        title: "Erro ao alterar status de estoque do produto",
         variant: "destructive",
       });
     }
@@ -179,6 +197,7 @@ const Products = () => {
                 onDelete={isPublicView ? undefined : handleDelete}
                 onSubmit={isPublicView ? undefined : (data, isEditing) => onSubmit(data, isEditing)}
                 onToggleStatus={isPublicView ? undefined : handleToggleStatus}
+                onToggleOutOfStock={isPublicView ? undefined : handleToggleOutOfStock}
                 onOpenNewProductModal={handleOpenNewProductModal}
               />
             </div>

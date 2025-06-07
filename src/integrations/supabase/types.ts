@@ -121,6 +121,7 @@ export type Database = {
           image_url: string | null
           is_new: boolean
           name: string
+          out_of_stock: boolean
           quantities: number[]
           reference: string
           sizes: Json
@@ -134,6 +135,7 @@ export type Database = {
           image_url?: string | null
           is_new?: boolean
           name: string
+          out_of_stock?: boolean
           quantities?: number[]
           reference: string
           sizes?: Json
@@ -147,6 +149,7 @@ export type Database = {
           image_url?: string | null
           is_new?: boolean
           name?: string
+          out_of_stock?: boolean
           quantities?: number[]
           reference?: string
           sizes?: Json

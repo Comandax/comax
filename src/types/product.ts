@@ -14,6 +14,7 @@ export interface Product {
   disabled: boolean;
   companyId: string;
   isNew: boolean;
+  outOfStock: boolean;
 }
 
 export type ProductFormData = {
@@ -29,4 +30,5 @@ export type ProductFormData = {
     value: number;
   }>;
   isNew?: boolean;
+  outOfStock?: boolean;
 }

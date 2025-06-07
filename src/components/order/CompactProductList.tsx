@@ -1,128 +1,72 @@
 
-import { useState } from "react";
-import { Loader, Package } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { ProductSelectionCard } from "./ProductSelectionCard";
 import type { Product } from "@/types/product";
-import { ProductCard } from "./ProductCard";
-import { ProductDetailsDialog } from "./ProductDetailsDialog";
+import { LoadingState } from "@/components/index/LoadingState";
 
 interface CompactProductListProps {
   products: Product[];
   onQuantitySelect: (productId: string, size: string, quantity: number, price: number) => void;
-  resetItem?: { size: string; productId: string; };
+  resetItem?: { productId: string; size: string } | null;
   isLoading?: boolean;
 }
 
-export function CompactProductList({ 
-  products, 
-  onQuantitySelect, 
-  resetItem, 
-  isLoading = false 
-}: CompactProductListProps) {
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [selectedQuantities, setSelectedQuantities] = useState<Record<string, Record<string, number>>>({});
-  
-  const companyId = products[0]?.companyId;
-
-  const { data: company } = useQuery({
-    queryKey: ['company-config', companyId],
-    queryFn: async () => {
-      if (!companyId) return null;
-      
-      const { data, error } = await supabase
-        .from('companies')
-        .select('*')
-        .eq('id', companyId)
-        .single();
-      
-      if (error) {
-        console.error('Error fetching company config:', error);
-        return null;
-      }
-      return data;
-    },
-    enabled: !!companyId,
-    staleTime: 1000 * 60 * 5, // 5 minutos
-  });
-
-  const quantitySelectionMode = (company as any)?.quantity_selection_mode || 'radio';
-
-  const handleProductClick = (product: Product) => {
-    setSelectedProduct(product);
-  };
-
-  const handleQuantityChange = (size: string, quantity: number, price: number) => {
-    if (!selectedProduct) return;
-
-    setSelectedQuantities(prev => ({
-      ...prev,
-      [selectedProduct._id]: {
-        ...(prev[selectedProduct._id] || {}),
-        [size]: quantity
-      }
-    }));
-
-    onQuantitySelect(selectedProduct._id, size, quantity, price);
-  };
-
-  const hasProductInCart = (productId: string) => {
-    const productQuantities = selectedQuantities[productId];
-    if (!productQuantities) return false;
-    return Object.values(productQuantities).some(quantity => quantity > 0);
-  };
-
-  const handleCloseDialog = () => {
-    setSelectedProduct(null);
-  };
-
-  const activeProducts = products
-    .filter(product => !product.disabled)
-    .sort((a, b) => {
-      if (a.isNew && !b.isNew) return -1;
-      if (!a.isNew && b.isNew) return 1;
-      return a.reference.localeCompare(b.reference);
-    });
-
+export const CompactProductList = ({ products, onQuantitySelect, resetItem, isLoading = false }: CompactProductListProps) => {
   if (isLoading) {
     return (
-      <div className="text-center p-8">
-        <Loader className="mx-auto h-12 w-12 text-gray-400 animate-spin" />
-        <h3 className="mt-4 text-sm font-semibold text-gray-900">Carregando produtos...</h3>
+      <div className="min-h-[400px] flex items-center justify-center">
+        <LoadingState />
       </div>
     );
   }
 
-  if (!activeProducts.length) {
+  if (products.length === 0) {
     return (
-      <div className="text-center p-8">
-        <Package className="mx-auto h-12 w-12 text-gray-400" />
-        <h3 className="mt-2 text-sm font-semibold text-gray-900">Nenhum produto disponível</h3>
+      <div className="text-center py-12">
+        <p className="text-lg text-gray-600">Nenhum produto encontrado.</p>
       </div>
     );
   }
+
+  // Sort products to show featured (isNew) products first
+  const sortedProducts = [...products].sort((a, b) => {
+    if (a.isNew && !b.isNew) return -1;
+    if (!a.isNew && b.isNew) return 1;
+    return 0;
+  });
+
+  const handleQuantitySelect = (size: string, quantity: number, price: number, productId: string) => {
+    onQuantitySelect(productId, size, quantity, price);
+  };
 
   return (
-    <>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {activeProducts.map((product) => (
-          <ProductCard
-            key={product._id}
-            product={product}
-            onSelect={handleProductClick}
-            hasInCart={hasProductInCart(product._id)}
-          />
-        ))}
-      </div>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {sortedProducts.map((product) => {
+        const productForCard = {
+          id: product._id,
+          name: product.name,
+          image: product.image || "",
+          ref: product.reference,
+          sizes: product.sizes.map(size => ({
+            label: size.size,
+            price: size.value,
+            quantities: product.quantities.map(q => q.value)
+          })),
+          outOfStock: product.outOfStock
+        };
 
-      <ProductDetailsDialog
-        product={selectedProduct}
-        onClose={handleCloseDialog}
-        onQuantitySelect={handleQuantityChange}
-        selectedQuantities={selectedProduct ? selectedQuantities[selectedProduct._id] || {} : {}}
-        quantitySelectionMode={quantitySelectionMode}
-        resetItem={resetItem && selectedProduct && resetItem.productId === selectedProduct._id ? resetItem : undefined}
-      />
-    </>
+        return (
+          <ProductSelectionCard
+            key={product._id}
+            product={productForCard}
+            onQuantitySelect={(size, quantity, price) => 
+              handleQuantitySelect(size, quantity, price, product._id)
+            }
+            resetItem={resetItem && resetItem.productId === product._id ? 
+              { size: resetItem.size, productId: resetItem.productId } : undefined
+            }
+          />
+        );
+      })}
+    </div>
   );
-}
+};

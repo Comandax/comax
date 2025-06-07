@@ -18,6 +18,7 @@ export const productFormSchema = z.object({
     })
   ).min(1, "Adicione pelo menos uma quantidade"),
   isNew: z.boolean().optional(),
+  outOfStock: z.boolean().optional(),
 });
 
 export type ProductFormSchemaType = z.infer<typeof productFormSchema>;

@@ -35,13 +35,38 @@ export function ProductBasicInfo({ form, isUploading, onImageUpload, fileInputRe
           control={form.control}
           name="isNew"
           render={({ field }) => (
-            <FormItem className="w-[30%]">
+            <FormItem className="w-[25%]">
               <FormLabel className="text-base">Lançamento</FormLabel>
               <div className="flex flex-row items-center h-[42px]">
                 <FormControl>
                   <Switch
                     checked={field.value}
-                    onCheckedChange={field.onChange}
+                    onCheckedChange={(checked) => {
+                      console.log('isNew changed to:', checked);
+                      field.onChange(checked);
+                    }}
+                  />
+                </FormControl>
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="outOfStock"
+          render={({ field }) => (
+            <FormItem className="w-[25%]">
+              <FormLabel className="text-base">Sem Estoque</FormLabel>
+              <div className="flex flex-row items-center h-[42px]">
+                <FormControl>
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={(checked) => {
+                      console.log('outOfStock changed to:', checked);
+                      field.onChange(checked);
+                    }}
                   />
                 </FormControl>
               </div>

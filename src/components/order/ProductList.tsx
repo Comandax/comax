@@ -1,99 +1,69 @@
 
-import { ProductSelectionCard } from "./ProductSelectionCard";
-import { ProductSelectQuantityCard } from "./ProductSelectQuantityCard";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { ProductCard } from "@/components/ProductCard";
 import type { Product } from "@/types/product";
-import type { ResetItem } from "../index/types";
+import { LoadingState } from "@/components/index/LoadingState";
 
 interface ProductListProps {
   products: Product[];
   onQuantitySelect: (productId: string, size: string, quantity: number, price: number) => void;
-  resetItem: ResetItem | null;
+  resetItem?: { productId: string; size: string } | null;
   isLoading?: boolean;
 }
 
-export const ProductList = ({ 
-  products, 
-  onQuantitySelect, 
-  resetItem, 
-  isLoading = false 
-}: ProductListProps) => {
-  const companyId = products[0]?.companyId;
-
-  const { data: company } = useQuery({
-    queryKey: ['company-config', companyId],
-    queryFn: async () => {
-      if (!companyId) return null;
-      
-      const { data, error } = await supabase
-        .from('companies')
-        .select('*')
-        .eq('id', companyId)
-        .single();
-      
-      if (error) {
-        console.error('Error fetching company config:', error);
-        return null;
-      }
-      return data;
-    },
-    enabled: !!companyId,
-    staleTime: 1000 * 60 * 5, // 5 minutos
-  });
-
-  const quantitySelectionMode = (company as any)?.quantity_selection_mode || 'radio';
-
+export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading = false }: ProductListProps) => {
   if (isLoading) {
     return (
-      <div className="grid gap-6">
-        {[1, 2, 3].map((i) => (
-          <div key={i} className="animate-pulse">
-            <div className="bg-gray-200 h-48 rounded-lg"></div>
-          </div>
-        ))}
+      <div className="min-h-[400px] flex items-center justify-center">
+        <LoadingState />
       </div>
     );
   }
 
-  const formatProductData = (product: Product) => ({
-    id: product._id,
-    name: product.name,
-    image: product.image || "",
-    ref: product.reference,
-    isNew: product.isNew,
-    sizes: product.sizes.map(size => ({
-      label: size.size,
-      price: size.value,
-      quantities: product.quantities.map(q => q.value)
-    }))
+  if (products.length === 0) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-lg text-gray-600">Nenhum produto encontrado.</p>
+      </div>
+    );
+  }
+
+  // Sort products to show featured (isNew) products first
+  const sortedProducts = [...products].sort((a, b) => {
+    if (a.isNew && !b.isNew) return -1;
+    if (!a.isNew && b.isNew) return 1;
+    return 0;
   });
 
-  // Filtra produtos ativos e ordena colocando lançamentos primeiro
-  const sortedProducts = products
-    .filter(product => !product.disabled)
-    .sort((a, b) => {
-      if (a.isNew && !b.isNew) return -1;
-      if (!a.isNew && b.isNew) return 1;
-      return a.reference.localeCompare(b.reference);
-    });
+  const handleQuantitySelect = (size: string, quantity: number, price: number, productId: string) => {
+    onQuantitySelect(productId, size, quantity, price);
+  };
 
   return (
-    <div className="grid gap-6">
+    <div className="space-y-8">
       {sortedProducts.map((product) => {
-        const formattedProduct = formatProductData(product);
-        const ProductComponent = quantitySelectionMode === 'select' 
-          ? ProductSelectQuantityCard 
-          : ProductSelectionCard;
-        
+        const productForCard = {
+          id: product._id,
+          name: product.name,
+          image: product.image || "",
+          ref: product.reference,
+          sizes: product.sizes.map(size => ({
+            label: size.size,
+            price: size.value,
+            quantities: product.quantities.map(q => q.value)
+          })),
+          outOfStock: product.outOfStock
+        };
+
         return (
-          <ProductComponent
+          <ProductCard
             key={product._id}
-            product={formattedProduct}
+            product={productForCard}
             onQuantitySelect={(size, quantity, price) => 
-              onQuantitySelect(product._id, size, quantity, price)
+              handleQuantitySelect(size, quantity, price, product._id)
             }
-            resetItem={resetItem}
+            resetItem={resetItem && resetItem.productId === product._id ? 
+              { size: resetItem.size, productId: resetItem.productId } : undefined
+            }
           />
         );
       })}

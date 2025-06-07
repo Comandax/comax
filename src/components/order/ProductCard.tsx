@@ -1,6 +1,6 @@
 
 import { Card } from "@/components/ui/card";
-import { Package, Rocket, ShoppingBag } from "lucide-react";
+import { Package, Star, ShoppingBag } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import type { Product } from "@/types/product";
 
@@ -26,8 +26,8 @@ export function ProductCard({ product, onSelect, hasInCart }: ProductCardProps) 
       <div className="p-4">
         {product.isNew && (
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500 text-white mb-2">
-            <Rocket className="h-3 w-3" />
-            Lançamento
+            <Star className="h-3 w-3" />
+            Destaque
           </span>
         )}
         <div className="aspect-square mb-4 bg-gray-100 rounded-lg overflow-hidden">

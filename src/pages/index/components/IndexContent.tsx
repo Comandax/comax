@@ -59,6 +59,7 @@ export const IndexContent = ({
             <OrderForm 
               companyId={company.id}
               displayMode={company.display_mode}
+              quantitySelectionMode={company.quantity_selection_mode}
               products={products}
               isLoading={isLoadingProducts}
               onQuantitySelect={onQuantitySelect}

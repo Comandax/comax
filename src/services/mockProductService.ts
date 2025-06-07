@@ -18,7 +18,8 @@ const mockProducts: Product[] = [
     ],
     disabled: false,
     companyId: "company1",
-    isNew: false
+    isNew: false,
+    outOfStock: false
   },
   {
     _id: "2",
@@ -36,7 +37,8 @@ const mockProducts: Product[] = [
     ],
     disabled: false,
     companyId: "company1",
-    isNew: true
+    isNew: true,
+    outOfStock: false
   }
 ];
 
@@ -50,7 +52,8 @@ export const createProduct = async (product: ProductFormData, companyId: string)
     ...product,
     disabled: false,
     companyId,
-    isNew: product.isNew || false
+    isNew: product.isNew || false,
+    outOfStock: product.outOfStock || false
   };
   
   mockProducts.push(newProduct);
@@ -69,7 +72,8 @@ export const updateProduct = async (productId: string, product: ProductFormData)
     _id: productId,
     companyId: mockProducts[index].companyId,
     disabled: mockProducts[index].disabled,
-    isNew: product.isNew ?? mockProducts[index].isNew
+    isNew: product.isNew ?? mockProducts[index].isNew,
+    outOfStock: product.outOfStock ?? mockProducts[index].outOfStock
   };
 
   mockProducts[index] = updatedProduct;
