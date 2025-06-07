@@ -27,13 +27,20 @@ export const CompactProductList = ({ products, onQuantitySelect, resetItem, isLo
     );
   }
 
+  // Sort products to show featured (isNew) products first
+  const sortedProducts = [...products].sort((a, b) => {
+    if (a.isNew && !b.isNew) return -1;
+    if (!a.isNew && b.isNew) return 1;
+    return 0;
+  });
+
   const handleQuantitySelect = (size: string, quantity: number, price: number, productId: string) => {
     onQuantitySelect(productId, size, quantity, price);
   };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {products.map((product) => {
+      {sortedProducts.map((product) => {
         const productForCard = {
           id: product._id,
           name: product.name,

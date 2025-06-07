@@ -27,13 +27,20 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
     );
   }
 
+  // Sort products to show featured (isNew) products first
+  const sortedProducts = [...products].sort((a, b) => {
+    if (a.isNew && !b.isNew) return -1;
+    if (!a.isNew && b.isNew) return 1;
+    return 0;
+  });
+
   const handleQuantitySelect = (size: string, quantity: number, price: number, productId: string) => {
     onQuantitySelect(productId, size, quantity, price);
   };
 
   return (
     <div className="space-y-8">
-      {products.map((product) => {
+      {sortedProducts.map((product) => {
         const productForCard = {
           id: product._id,
           name: product.name,
