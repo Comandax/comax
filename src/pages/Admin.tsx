@@ -74,6 +74,25 @@ const Admin = () => {
     staleTime: 1000 * 60 * 5, // 5 minutos
   });
 
+  const { data: ordersCount = 0 } = useQuery({
+    queryKey: ['orders-count', userCompany?.id],
+    queryFn: async () => {
+      const { count, error } = await supabase
+        .from('orders')
+        .select('*', { count: 'exact', head: true })
+        .eq('company_id', userCompany?.id);
+
+      if (error) {
+        console.error('Error fetching orders count:', error);
+        throw error;
+      }
+
+      return count || 0;
+    },
+    enabled: !!userCompany?.id,
+    staleTime: 1000 * 60 * 5, // 5 minutos
+  });
+
   const { data: recentOrders = [], isLoading: isLoadingOrders } = useQuery({
     queryKey: ['recent-orders', userCompany?.id],
     queryFn: async () => {
@@ -166,6 +185,7 @@ const Admin = () => {
           <DashboardContent 
             company={userCompany}
             productsCount={productsCount}
+            ordersCount={ordersCount}
             recentOrders={recentOrders}
             isLoadingOrders={isLoadingOrders}
             onEditLink={() => setIsEditShortNameOpen(true)}

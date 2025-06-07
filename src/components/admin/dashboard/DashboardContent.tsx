@@ -9,6 +9,7 @@ import { QuantitySelectionModeCard } from "../QuantitySelectionModeCard";
 interface DashboardContentProps {
   company: any;
   productsCount: number;
+  ordersCount: number;
   recentOrders: any[];
   isLoadingOrders: boolean;
   onEditLink: () => void;
@@ -19,6 +20,7 @@ interface DashboardContentProps {
 export const DashboardContent = ({ 
   company, 
   productsCount, 
+  ordersCount,
   recentOrders, 
   isLoadingOrders, 
   onEditLink, 
@@ -37,7 +39,7 @@ export const DashboardContent = ({
     <div className="space-y-6">
       <StatsCards 
         productsCount={productsCount} 
-        ordersCount={recentOrders.length}
+        ordersCount={ordersCount}
       />
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
