@@ -64,7 +64,7 @@ export const ProductSelectQuantityCard = ({ product, onQuantitySelect, resetItem
         <div className="absolute top-2 left-2 md:top-4 md:left-4 z-[5]">
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500 text-white">
             <Rocket className="h-3 w-3" />
-            Lançamento
+            Destaque
           </span>
         </div>
       )}
