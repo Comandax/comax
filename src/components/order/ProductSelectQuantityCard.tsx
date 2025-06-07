@@ -1,9 +1,8 @@
-
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useState, useEffect } from "react";
-import { Package, Rocket } from "lucide-react";
+import { Package, Star } from "lucide-react";
 import type { ResetItem } from "../index/types";
 
 interface ProductSelectQuantityCardProps {
@@ -63,7 +62,7 @@ export const ProductSelectQuantityCard = ({ product, onQuantitySelect, resetItem
       {product.isNew && (
         <div className="absolute top-2 left-2 md:top-4 md:left-4 z-[5]">
           <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-500 text-white">
-            <Rocket className="h-3 w-3" />
+            <Star className="h-3 w-3" />
             Destaque
           </span>
         </div>

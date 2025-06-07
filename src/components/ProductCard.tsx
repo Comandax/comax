@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useState, useEffect } from "react";
-import { Package } from "lucide-react";
+import { Package, Star } from "lucide-react";
 
 interface ProductCardProps {
   product: {
