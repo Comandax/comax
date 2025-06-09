@@ -27,11 +27,14 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
     );
   }
 
-  // Sort products to show featured (isNew) products first
+  // Sort products: featured (isNew) first, then by reference
   const sortedProducts = [...products].sort((a, b) => {
+    // First, prioritize featured products
     if (a.isNew && !b.isNew) return -1;
     if (!a.isNew && b.isNew) return 1;
-    return 0;
+    
+    // Then sort by reference
+    return a.reference.localeCompare(b.reference);
   });
 
   const handleQuantitySelect = (size: string, quantity: number, price: number, productId: string) => {
