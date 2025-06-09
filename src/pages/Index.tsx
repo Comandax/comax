@@ -8,17 +8,7 @@ import { useOrderState } from "./index/hooks/useOrderState";
 import { useOrderSubmission } from "./index/hooks/useOrderSubmission";
 
 const Index = () => {
-  const { 
-    company, 
-    products, 
-    isLoading, 
-    isLoadingProducts, 
-    isFetchingNextPage,
-    hasNextPage,
-    loadMore,
-    error, 
-    shortName 
-  } = useIndexData();
+  const { company, products, isLoading, isLoadingProducts, error, shortName } = useIndexData();
   
   const {
     isModalOpen,
@@ -55,9 +45,6 @@ const Index = () => {
       company={company}
       products={products}
       isLoadingProducts={isLoadingProducts}
-      isFetchingNextPage={isFetchingNextPage}
-      hasNextPage={hasNextPage}
-      onLoadMore={loadMore}
       total={total}
       orderItems={orderItems}
       isModalOpen={isModalOpen}
