@@ -19,7 +19,10 @@ export const CompactProductList = ({ products, onQuantitySelect, resetItem, isLo
     );
   }
 
-  if (products.length === 0) {
+  // Filter out disabled products first
+  const availableProducts = products.filter(product => !product.disabled);
+
+  if (availableProducts.length === 0) {
     return (
       <div className="text-center py-12">
         <p className="text-lg text-gray-600">Nenhum produto encontrado.</p>
@@ -27,11 +30,14 @@ export const CompactProductList = ({ products, onQuantitySelect, resetItem, isLo
     );
   }
 
-  // Sort products to show featured (isNew) products first
-  const sortedProducts = [...products].sort((a, b) => {
+  // Sort products: featured (isNew) first, then by reference
+  const sortedProducts = [...availableProducts].sort((a, b) => {
+    // First, prioritize featured products
     if (a.isNew && !b.isNew) return -1;
     if (!a.isNew && b.isNew) return 1;
-    return 0;
+    
+    // Then sort by reference
+    return a.reference.localeCompare(b.reference);
   });
 
   const handleQuantitySelect = (size: string, quantity: number, price: number, productId: string) => {
