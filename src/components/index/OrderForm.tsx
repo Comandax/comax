@@ -70,7 +70,8 @@ const SelectQuantityProductList = ({ products, onQuantitySelect, resetItem, isLo
             price: size.value,
             quantities: product.quantities.map(q => q.value)
           })),
-          isNew: product.isNew
+          isNew: product.isNew,
+          outOfStock: product.outOfStock
         };
 
         return (
