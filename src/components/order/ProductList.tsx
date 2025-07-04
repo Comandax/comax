@@ -56,14 +56,16 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
 
   // Set up intersection observer for the penultimate item
   useEffect(() => {
-    if (displayedItems.length >= 2 && hasMore) {
+    if (displayedItems.length >= 4 && hasMore) {
       const penultimateIndex = displayedItems.length - 2;
-      const penultimateElement = document.querySelector(`[data-product-index="${penultimateIndex}"]`) as HTMLElement;
-      if (penultimateElement) {
-        createObserver(penultimateElement);
-      }
+      setTimeout(() => {
+        const penultimateElement = document.querySelector(`[data-product-index="${penultimateIndex}"]`) as HTMLElement;
+        if (penultimateElement) {
+          createObserver(penultimateElement);
+        }
+      }, 100);
     }
-  }, [displayedItems.length, hasMore]);
+  }, [displayedItems.length, hasMore, createObserver]);
 
   return (
     <div className="space-y-8">

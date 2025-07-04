@@ -19,11 +19,13 @@ export function useVirtualPagination<T>({
 
   // Initialize displayed items
   useEffect(() => {
-    const initial = items.slice(0, initialItemsPerPage);
-    setDisplayedItems(initial);
-    setCurrentIndex(initialItemsPerPage);
-    setHasMore(items.length > initialItemsPerPage);
-  }, [items, initialItemsPerPage]);
+    if (items.length > 0) {
+      const initial = items.slice(0, initialItemsPerPage);
+      setDisplayedItems(initial);
+      setCurrentIndex(initialItemsPerPage);
+      setHasMore(items.length > initialItemsPerPage);
+    }
+  }, [items.length, initialItemsPerPage]);
 
   const loadMore = useCallback(() => {
     if (!hasMore) return;
@@ -42,6 +44,7 @@ export function useVirtualPagination<T>({
   const createObserver = useCallback((element: HTMLElement | null) => {
     if (observerRef.current) {
       observerRef.current.disconnect();
+      observerRef.current = null;
     }
 
     if (!element || !hasMore) return;
@@ -49,13 +52,13 @@ export function useVirtualPagination<T>({
     observerRef.current = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && hasMore) {
           loadMore();
         }
       },
       {
         threshold: 0.1,
-        rootMargin: '100px'
+        rootMargin: '50px'
       }
     );
 
