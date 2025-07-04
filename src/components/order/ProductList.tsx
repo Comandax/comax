@@ -59,9 +59,11 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
     if (displayedItems.length >= 2 && hasMore) {
       const penultimateIndex = displayedItems.length - 2;
       const penultimateElement = document.querySelector(`[data-product-index="${penultimateIndex}"]`) as HTMLElement;
-      createObserver(penultimateElement);
+      if (penultimateElement) {
+        createObserver(penultimateElement);
+      }
     }
-  }, [displayedItems.length, hasMore, createObserver]);
+  }, [displayedItems.length, hasMore]);
 
   return (
     <div className="space-y-8">

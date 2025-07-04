@@ -66,9 +66,11 @@ const SelectQuantityProductList = ({ products, onQuantitySelect, resetItem, isLo
     if (displayedItems.length >= 2 && hasMore) {
       const penultimateIndex = displayedItems.length - 2;
       const penultimateElement = document.querySelector(`[data-select-product-index="${penultimateIndex}"]`) as HTMLElement;
-      createObserver(penultimateElement);
+      if (penultimateElement) {
+        createObserver(penultimateElement);
+      }
     }
-  }, [displayedItems.length, hasMore, createObserver]);
+  }, [displayedItems.length, hasMore]);
 
   const handleQuantitySelect = (size: string, quantity: number, price: number, productId: string) => {
     onQuantitySelect(productId, size, quantity, price);

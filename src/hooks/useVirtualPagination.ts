@@ -31,8 +31,9 @@ export function useVirtualPagination<T>({
     const nextItems = items.slice(currentIndex, currentIndex + itemsPerLoad);
     if (nextItems.length > 0) {
       setDisplayedItems(prev => [...prev, ...nextItems]);
-      setCurrentIndex(prev => prev + itemsPerLoad);
-      setHasMore(currentIndex + itemsPerLoad < items.length);
+      const newIndex = currentIndex + itemsPerLoad;
+      setCurrentIndex(newIndex);
+      setHasMore(newIndex < items.length);
     } else {
       setHasMore(false);
     }
