@@ -2,6 +2,8 @@
 import { ProductCard } from "@/components/ProductCard";
 import type { Product } from "@/types/product";
 import { LoadingState } from "@/components/index/LoadingState";
+import { useVirtualPagination } from "@/hooks/useVirtualPagination";
+import { useEffect, useRef } from "react";
 
 interface ProductListProps {
   products: Product[];
@@ -11,6 +13,8 @@ interface ProductListProps {
 }
 
 export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading = false }: ProductListProps) => {
+  const triggerRef = useRef<HTMLDivElement>(null);
+
   if (isLoading) {
     return (
       <div className="min-h-[400px] flex items-center justify-center">
@@ -40,13 +44,28 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
     return a.reference.localeCompare(b.reference);
   });
 
+  const { displayedItems, hasMore, createObserver } = useVirtualPagination({
+    items: sortedProducts,
+    initialItemsPerPage: 5,
+    itemsPerLoad: 5
+  });
+
   const handleQuantitySelect = (size: string, quantity: number, price: number, productId: string) => {
     onQuantitySelect(productId, size, quantity, price);
   };
 
+  // Set up intersection observer for the penultimate item
+  useEffect(() => {
+    if (displayedItems.length >= 2 && hasMore) {
+      const penultimateIndex = displayedItems.length - 2;
+      const penultimateElement = document.querySelector(`[data-product-index="${penultimateIndex}"]`) as HTMLElement;
+      createObserver(penultimateElement);
+    }
+  }, [displayedItems.length, hasMore, createObserver]);
+
   return (
     <div className="space-y-8">
-      {sortedProducts.map((product) => {
+      {displayedItems.map((product, index) => {
         const productForCard = {
           id: product._id,
           name: product.name,
@@ -61,18 +80,25 @@ export const ProductList = ({ products, onQuantitySelect, resetItem, isLoading =
         };
 
         return (
-          <ProductCard
-            key={product._id}
-            product={productForCard}
-            onQuantitySelect={(size, quantity, price) => 
-              handleQuantitySelect(size, quantity, price, product._id)
-            }
-            resetItem={resetItem && resetItem.productId === product._id ? 
-              { size: resetItem.size, productId: resetItem.productId } : undefined
-            }
-          />
+          <div key={product._id} data-product-index={index}>
+            <ProductCard
+              product={productForCard}
+              onQuantitySelect={(size, quantity, price) => 
+                handleQuantitySelect(size, quantity, price, product._id)
+              }
+              resetItem={resetItem && resetItem.productId === product._id ? 
+                { size: resetItem.size, productId: resetItem.productId } : undefined
+              }
+            />
+          </div>
         );
       })}
+      
+      {hasMore && (
+        <div ref={triggerRef} className="flex justify-center py-4">
+          <div className="text-sm text-gray-500">Carregando mais produtos...</div>
+        </div>
+      )}
     </div>
   );
 };
