@@ -6,8 +6,6 @@ import { CompactProductList } from "@/components/order/CompactProductList";
 import { ProductSelectQuantityCard } from "@/components/order/ProductSelectQuantityCard";
 import type { Product } from "@/types/product";
 import type { ResetItem } from "./types";
-import { useVirtualPagination } from "@/hooks/useVirtualPagination";
-import { useEffect } from "react";
 
 interface OrderFormProps {
   companyId: string;
@@ -55,32 +53,13 @@ const SelectQuantityProductList = ({ products, onQuantitySelect, resetItem, isLo
     return a.reference.localeCompare(b.reference);
   });
 
-  const { displayedItems, hasMore, createObserver } = useVirtualPagination({
-    items: sortedProducts,
-    initialItemsPerPage: 5,
-    itemsPerLoad: 5
-  });
-
-  // Set up intersection observer for the penultimate item
-  useEffect(() => {
-    if (displayedItems.length >= 4 && hasMore) {
-      const penultimateIndex = displayedItems.length - 2;
-      setTimeout(() => {
-        const penultimateElement = document.querySelector(`[data-select-product-index="${penultimateIndex}"]`) as HTMLElement;
-        if (penultimateElement) {
-          createObserver(penultimateElement);
-        }
-      }, 100);
-    }
-  }, [displayedItems.length, hasMore, createObserver]);
-
   const handleQuantitySelect = (size: string, quantity: number, price: number, productId: string) => {
     onQuantitySelect(productId, size, quantity, price);
   };
 
   return (
     <div className="space-y-8">
-      {displayedItems.map((product, index) => {
+      {sortedProducts.map((product) => {
         const productForCard = {
           id: product._id,
           name: product.name,
@@ -96,25 +75,18 @@ const SelectQuantityProductList = ({ products, onQuantitySelect, resetItem, isLo
         };
 
         return (
-          <div key={product._id} data-select-product-index={index}>
-            <ProductSelectQuantityCard
-              product={productForCard}
-              onQuantitySelect={(size, quantity, price) => 
-                handleQuantitySelect(size, quantity, price, product._id)
-              }
-              resetItem={resetItem && resetItem.productId === product._id ? 
-                { size: resetItem.size, productId: resetItem.productId } : undefined
-              }
-            />
-          </div>
+          <ProductSelectQuantityCard
+            key={product._id}
+            product={productForCard}
+            onQuantitySelect={(size, quantity, price) => 
+              handleQuantitySelect(size, quantity, price, product._id)
+            }
+            resetItem={resetItem && resetItem.productId === product._id ? 
+              { size: resetItem.size, productId: resetItem.productId } : undefined
+            }
+          />
         );
       })}
-      
-      {hasMore && (
-        <div className="flex justify-center py-4">
-          <div className="text-sm text-gray-500">Carregando mais produtos...</div>
-        </div>
-      )}
     </div>
   );
 };
