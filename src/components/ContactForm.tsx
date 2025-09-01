@@ -98,13 +98,13 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="city">Cidade</Label>
+            <Label htmlFor="city">Cidade / Estado</Label>
             <Input
               id="city"
               name="city"
               value={formData.city}
               onChange={(e) => handleInputChange("city", e.target.value)}
-              placeholder="Digite sua cidade"
+              placeholder="Digite sua cidade e estado"
               required
             />
           </div>
