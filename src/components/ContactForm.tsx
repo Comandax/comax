@@ -104,7 +104,7 @@ export const ContactForm = ({ onSubmit }: ContactFormProps) => {
               name="city"
               value={formData.city}
               onChange={(e) => handleInputChange("city", e.target.value)}
-              placeholder="Digite sua cidade"
+              placeholder="Digite sua cidade e estado"
               required
             />
           </div>
