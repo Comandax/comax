@@ -9,7 +9,12 @@ export const productFormSchema = z.object({
   sizes: z.array(
     z.object({
       size: z.string().min(1, "Tamanho não pode ficar vazio"),
-      value: z.number().min(0.01, "Valor deve ser maior que zero"),
+      // Zero é um preço válido (brinde, cortesia) e exige confirmação do usuário no
+      // formulário. Nunca é sinal de indisponibilidade: para isso existe `available`.
+      value: z
+        .number({ invalid_type_error: "Informe um valor" })
+        .min(0, "Valor não pode ser negativo"),
+      available: z.boolean().optional(),
     })
   ).min(1, "Adicione pelo menos um tamanho"),
   quantities: z.array(

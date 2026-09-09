@@ -5,7 +5,7 @@ import { LoadingState } from "@/components/index/LoadingState";
 
 interface CompactProductListProps {
   products: Product[];
-  onQuantitySelect: (productId: string, size: string, quantity: number, price: number) => void;
+  onQuantitySelect: (productId: string, size: string, quantity: number, price: number, futureDelivery?: boolean) => void;
   resetItem?: { productId: string; size: string } | null;
   isLoading?: boolean;
 }
@@ -40,8 +40,8 @@ export const CompactProductList = ({ products, onQuantitySelect, resetItem, isLo
     return a.reference.localeCompare(b.reference);
   });
 
-  const handleQuantitySelect = (size: string, quantity: number, price: number, productId: string) => {
-    onQuantitySelect(productId, size, quantity, price);
+  const handleQuantitySelect = (size: string, quantity: number, price: number, productId: string, futureDelivery?: boolean) => {
+    onQuantitySelect(productId, size, quantity, price, futureDelivery);
   };
 
   return (
@@ -55,6 +55,7 @@ export const CompactProductList = ({ products, onQuantitySelect, resetItem, isLo
           sizes: product.sizes.map(size => ({
             label: size.size,
             price: size.value,
+            available: size.available,
             quantities: product.quantities.map(q => q.value)
           })),
           outOfStock: product.outOfStock
@@ -64,8 +65,8 @@ export const CompactProductList = ({ products, onQuantitySelect, resetItem, isLo
           <ProductSelectionCard
             key={product._id}
             product={productForCard}
-            onQuantitySelect={(size, quantity, price) => 
-              handleQuantitySelect(size, quantity, price, product._id)
+            onQuantitySelect={(size, quantity, price, futureDelivery) =>
+              handleQuantitySelect(size, quantity, price, product._id, futureDelivery)
             }
             resetItem={resetItem && resetItem.productId === product._id ? 
               { size: resetItem.size, productId: resetItem.productId } : undefined

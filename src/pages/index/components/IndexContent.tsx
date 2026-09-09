@@ -12,6 +12,7 @@ interface IndexContentProps {
   products: Product[];
   isLoadingProducts: boolean;
   total: number;
+  futureTotal?: number;
   orderItems: OrderItem[];
   isModalOpen: boolean;
   setIsModalOpen: (open: boolean) => void;
@@ -27,6 +28,7 @@ export const IndexContent = ({
   products,
   isLoadingProducts,
   total,
+  futureTotal = 0,
   orderItems,
   isModalOpen,
   setIsModalOpen,
@@ -41,6 +43,7 @@ export const IndexContent = ({
       <CompanyInfo 
         company={company}
         total={total}
+        futureTotal={futureTotal}
         items={orderItems}
         onSubmitOrder={onSubmitOrder}
         isOpen={isModalOpen}

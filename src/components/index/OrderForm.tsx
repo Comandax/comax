@@ -13,14 +13,14 @@ interface OrderFormProps {
   quantitySelectionMode?: string;
   products: Product[];
   isLoading?: boolean;
-  onQuantitySelect: (productId: string, size: string, quantity: number, price: number) => void;
+  onQuantitySelect: (productId: string, size: string, quantity: number, price: number, futureDelivery?: boolean) => void;
   onContactSubmit: (data: ContactFormData) => void;
   resetItem?: { productId: string; size: string } | null;
 }
 
 const SelectQuantityProductList = ({ products, onQuantitySelect, resetItem, isLoading }: {
   products: Product[];
-  onQuantitySelect: (productId: string, size: string, quantity: number, price: number) => void;
+  onQuantitySelect: (productId: string, size: string, quantity: number, price: number, futureDelivery?: boolean) => void;
   resetItem?: { productId: string; size: string } | null;
   isLoading?: boolean;
 }) => {
@@ -53,8 +53,8 @@ const SelectQuantityProductList = ({ products, onQuantitySelect, resetItem, isLo
     return a.reference.localeCompare(b.reference);
   });
 
-  const handleQuantitySelect = (size: string, quantity: number, price: number, productId: string) => {
-    onQuantitySelect(productId, size, quantity, price);
+  const handleQuantitySelect = (size: string, quantity: number, price: number, productId: string, futureDelivery?: boolean) => {
+    onQuantitySelect(productId, size, quantity, price, futureDelivery);
   };
 
   return (
@@ -68,6 +68,7 @@ const SelectQuantityProductList = ({ products, onQuantitySelect, resetItem, isLo
           sizes: (product.sizes || []).map(size => ({
             label: size.size,
             price: size.value,
+            available: size.available,
             quantities: (product.quantities || []).map(q => q.value)
           })),
           isNew: product.isNew,
@@ -78,8 +79,8 @@ const SelectQuantityProductList = ({ products, onQuantitySelect, resetItem, isLo
           <ProductSelectQuantityCard
             key={product._id}
             product={productForCard}
-            onQuantitySelect={(size, quantity, price) => 
-              handleQuantitySelect(size, quantity, price, product._id)
+            onQuantitySelect={(size, quantity, price, futureDelivery) =>
+              handleQuantitySelect(size, quantity, price, product._id, futureDelivery)
             }
             resetItem={resetItem && resetItem.productId === product._id ? 
               { size: resetItem.size, productId: resetItem.productId } : undefined

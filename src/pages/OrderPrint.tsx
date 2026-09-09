@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import type { Order } from "@/types/order";
+import { splitOrderItems } from "@/lib/orderSections";
 
 const formatPhoneNumber = (phone: string) => {
   const cleaned = phone.replace(/\\D/g, '');
@@ -39,6 +40,47 @@ const formatTime = (timeStr: string) => {
   return timeStr.split(':').slice(0, 2).join(':');
 };
 
+const PrintItemsSection = ({
+  items,
+  sectionTotal
+}: {
+  items: Order['items'];
+  sectionTotal: number;
+}) => (
+  <>
+    {items.map((item, index) => (
+      <div key={`${item.productId}-${index}`} className="mb-3 border rounded-lg overflow-hidden">
+        <div className="bg-gray-100 p-2 font-semibold text-sm">
+          {item.reference} - {item.name}
+        </div>
+        <table className="w-full border-collapse">
+          <thead>
+            <tr className="bg-gray-50 text-xs">
+              <th className="border p-1 text-left">Tamanho</th>
+              <th className="border p-1 text-left">Quantidade</th>
+              <th className="border p-1 text-right">Preço Unit.</th>
+              <th className="border p-1 text-right">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {item.sizes.map((size, sizeIndex) => (
+              <tr key={`${item.productId}-${size.size}-${sizeIndex}`} className={sizeIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                <td className="border p-1 text-xs">{size.size}</td>
+                <td className="border p-1 text-xs">{size.quantity}</td>
+                <td className="border p-1 text-xs text-right">R$ {size.price.toFixed(2)}</td>
+                <td className="border p-1 text-xs text-right">R$ {size.subtotal.toFixed(2)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    ))}
+    <div className="text-right text-xs text-gray-600 mb-2">
+      Subtotal: <span className="font-medium">R$ {sectionTotal.toFixed(2)}</span>
+    </div>
+  </>
+);
+
 const OrderPrint = () => {
   const { orderId } = useParams();
   
@@ -71,12 +113,13 @@ const OrderPrint = () => {
               productId: item.productId,
               reference: item.reference,
               name: item.name,
-              sizes: Array.isArray(item.sizes) 
+              sizes: Array.isArray(item.sizes)
                 ? item.sizes.map((size: any) => ({
                     size: size.size,
                     price: size.price,
                     quantity: size.quantity,
-                    subtotal: size.subtotal
+                    subtotal: size.subtotal,
+                    futureDelivery: size.futureDelivery || false
                   }))
                 : []
             }))
@@ -141,6 +184,14 @@ const OrderPrint = () => {
     );
   }
 
+  const {
+    availableItems,
+    futureItems,
+    availableTotal,
+    futureTotal,
+    hasFutureItems
+  } = splitOrderItems(order.items);
+
   return (
     <div className="print-container p-4 max-w-4xl mx-auto">
       <div className="print-header flex justify-between items-center mb-4">
@@ -182,41 +233,34 @@ const OrderPrint = () => {
         </div>
       </div>
       
-      <h2 className="font-semibold text-md mb-2 border-b pb-1">Itens do Pedido</h2>
-      
-      {order.items.map((item, index) => (
-        <div key={`${item.productId}-${index}`} className="mb-3 border rounded-lg overflow-hidden">
-          <div className="bg-gray-100 p-2 font-semibold text-sm">
-            {item.reference} - {item.name}
-          </div>
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-gray-50 text-xs">
-                <th className="border p-1 text-left">Tamanho</th>
-                <th className="border p-1 text-left">Quantidade</th>
-                <th className="border p-1 text-right">Preço Unit.</th>
-                <th className="border p-1 text-right">Subtotal</th>
-              </tr>
-            </thead>
-            <tbody>
-              {item.sizes.map((size, sizeIndex) => (
-                <tr key={`${item.productId}-${size.size}-${sizeIndex}`} className={sizeIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                  <td className="border p-1 text-xs">{size.size}</td>
-                  <td className="border p-1 text-xs">{size.quantity}</td>
-                  <td className="border p-1 text-xs text-right">R$ {size.price.toFixed(2)}</td>
-                  <td className="border p-1 text-xs text-right">R$ {size.subtotal.toFixed(2)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ))}
-      
+      <h2 className="font-semibold text-md mb-2 border-b pb-1">Disponíveis para Entrega</h2>
+      <PrintItemsSection items={availableItems} sectionTotal={availableTotal} />
+
+      {hasFutureItems && (
+        <>
+          <h2 className="font-semibold text-md mb-2 mt-5 border-b pb-1">
+            Entrega Futura{" "}
+            <span className="font-normal text-xs text-gray-600">(sujeito a disponibilidade)</span>
+          </h2>
+          <PrintItemsSection items={futureItems} sectionTotal={futureTotal} />
+        </>
+      )}
+
       <div className="mt-6 text-right">
         <div className="inline-block border rounded-lg overflow-hidden">
           <div className="bg-gray-100 p-3 text-lg font-bold">
-            Total do Pedido: R$ {order.total.toFixed(2)}
+            Total do Pedido: R$ {availableTotal.toFixed(2)}
           </div>
+          {hasFutureItems && (
+            <>
+              <div className="border-t p-2 text-sm">
+                Entrega futura: R$ {futureTotal.toFixed(2)}
+              </div>
+              <div className="border-t p-2 text-sm font-semibold">
+                Total geral: R$ {(availableTotal + futureTotal).toFixed(2)}
+              </div>
+            </>
+          )}
         </div>
       </div>
       

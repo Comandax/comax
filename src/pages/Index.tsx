@@ -23,7 +23,7 @@ const Index = () => {
     handleRemoveItem
   } = useOrderState();
 
-  const { total, orderItems } = useOrderCalculations(selectedItems, products);
+  const { total, futureTotal, orderItems } = useOrderCalculations(selectedItems, products);
 
   const { handleSubmitOrder } = useOrderSubmission({
     company,
@@ -46,6 +46,7 @@ const Index = () => {
       products={products}
       isLoadingProducts={isLoadingProducts}
       total={total}
+      futureTotal={futureTotal}
       orderItems={orderItems}
       isModalOpen={isModalOpen}
       setIsModalOpen={setIsModalOpen}

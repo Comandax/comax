@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Form } from "@/components/ui/form";
 import { productFormSchema } from "@/schemas/productSchema";
 import type { Product, ProductFormData } from "@/types/product";
+import { withNormalizedAvailability } from "@/lib/availability";
 import { useState, useRef } from "react";
 import { ProductBasicInfo } from "./form/ProductBasicInfo";
 import { ProductSizes } from "./form/ProductSizes";
@@ -33,7 +34,11 @@ export function ProductForm({ onSubmit, initialData, onComplete }: ProductFormPr
       image: initialData?.image || "",
       isNew: initialData?.isNew || false,
       outOfStock: initialData?.outOfStock || false,
-      sizes: initialData?.sizes || [{ size: "", value: 0 }],
+      // Produtos cadastrados antes da disponibilidade por tamanho não têm `available`;
+      // normalizar aqui evita que o switch apareça desligado indevidamente.
+      sizes: initialData?.sizes
+        ? withNormalizedAvailability(initialData.sizes)
+        : [{ size: "", value: undefined, available: true }],
       quantities: initialData?.quantities 
         ? initialData.quantities.map(q => typeof q === 'number' ? { value: q } : q)
         : [

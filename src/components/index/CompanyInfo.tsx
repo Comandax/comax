@@ -10,6 +10,7 @@ import { useState } from "react";
 interface CompanyInfoProps {
   company: Pick<Company, 'name' | 'logo_url'>;
   total: number;
+  futureTotal?: number;
   items: OrderItem[];
   onSubmitOrder: (notes: string) => Promise<void> | void;
   isOpen: boolean;
@@ -18,9 +19,10 @@ interface CompanyInfoProps {
   isCalculating?: boolean;
 }
 
-export const CompanyInfo = ({ 
+export const CompanyInfo = ({
   company,
   total,
+  futureTotal = 0,
   items,
   onSubmitOrder,
   isOpen,
@@ -40,10 +42,14 @@ export const CompanyInfo = ({
     }, 500);
   };
 
-  const formattedTotal = new Intl.NumberFormat('pt-BR', {
+  const currencyFormatter = new Intl.NumberFormat('pt-BR', {
     style: 'currency',
     currency: 'BRL'
-  }).format(total);
+  });
+  const formattedTotal = currencyFormatter.format(total);
+  const formattedFutureTotal = currencyFormatter.format(futureTotal);
+  // Um pedido só de entrega futura também precisa exibir o card.
+  const hasSelection = total > 0 || futureTotal > 0;
 
   return (
     <>
@@ -63,7 +69,7 @@ export const CompanyInfo = ({
               </div>
 
               <div className="flex items-center gap-4">
-                {total > 0 && (
+                {hasSelection && (
                   <div className="absolute right-20 -bottom-16 flex items-center gap-4 bg-tertiary text-white p-4 rounded-lg shadow-lg animate-float-in">
                     <div className="flex items-center gap-2">
                       <ShoppingBag className="w-4 h-4" />
@@ -79,6 +85,11 @@ export const CompanyInfo = ({
                             <span>{formattedTotal}</span>
                           )}
                         </div>
+                        {!isCalculating && futureTotal > 0 && (
+                          <div className="text-[11px] font-medium text-white/80">
+                            + {formattedFutureTotal} em entrega futura
+                          </div>
+                        )}
                       </div>
                     </div>
                     <Button 
@@ -114,6 +125,7 @@ export const CompanyInfo = ({
         onOpenChange={onOpenChange}
         items={items}
         total={total}
+        futureTotal={futureTotal}
         notes={notes}
         onNotesChange={setNotes}
         onSubmit={async () => {

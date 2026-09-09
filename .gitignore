@@ -41,3 +41,7 @@ __pycache__/
 reports/
 test-results/
 playwright-report/
+
+# Dump do banco remoto: contém dados reais de clientes (nome, telefone, endereço).
+# Gerado por supabase/export-remoto.sql para uso local apenas.
+supabase/seed_remoto.sql

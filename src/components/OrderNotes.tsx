@@ -9,13 +9,13 @@ interface OrderNotesProps {
 
 export const OrderNotes = ({ value, onChange }: OrderNotesProps) => {
   return (
-    <div className="space-y-2 bg-white/90 p-6 rounded-lg shadow-md">
+    <div className="space-y-2 bg-white/90 p-3 md:p-6 rounded-lg shadow-md shrink-0">
       <Label htmlFor="notes">Observações sobre seu pedido</Label>
       <Textarea
         id="notes"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="min-h-[100px]"
+        className="min-h-[80px] md:min-h-[100px]"
         placeholder="Caso precise, coloque aqui as observações sobre seu pedido."
       />
     </div>

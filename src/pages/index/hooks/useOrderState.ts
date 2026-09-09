@@ -9,14 +9,14 @@ export const useOrderState = () => {
   const [contactData, setContactData] = useState<ContactFormData | null>(null);
   const [resetItem, setResetItem] = useState<{ productId: string; size: string } | null>(null);
 
-  const handleQuantitySelect = (productId: string, size: string, quantity: number, price: number) => {
+  const handleQuantitySelect = (productId: string, size: string, quantity: number, price: number, futureDelivery?: boolean) => {
     setSelectedItems(prev => {
       const filtered = prev.filter(item => !(item.productId === productId && item.size === size));
-      
+
       if (quantity > 0) {
-        return [...filtered, { productId, size, quantity, price }];
+        return [...filtered, { productId, size, quantity, price, futureDelivery }];
       }
-      
+
       return filtered;
     });
   };

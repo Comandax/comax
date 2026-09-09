@@ -99,6 +99,12 @@ export default {
         "muted-foreground": "#1B1B21",
         accent: "#FBF8FF",
         "accent-foreground": "#1B1B21",
+
+        // Sem estes tokens o Tailwind não gera bg-destructive, e o toast de erro
+        // (variant="destructive") ficava sem plano de fundo. Reaproveita o par
+        // error/onError da paleta MD3 acima.
+        destructive: "#BA1A1A",
+        "destructive-foreground": "#FFFFFF",
       },
       borderRadius: {
         lg: "var(--radius)",

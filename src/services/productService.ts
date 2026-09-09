@@ -1,9 +1,31 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { Product, ProductFormData } from "@/types/product";
+import type { Product, ProductFormData, ProductSize } from "@/types/product";
+import type { Json, Database } from "@/integrations/supabase/types";
+
+type ProductRow = Database['public']['Tables']['products']['Row'];
+
+/** `sizes` é uma coluna jsonb; o cast é necessário porque ProductSize é uma interface nomeada. */
+const sizesToJson = (sizes: ProductSize[]): Json => sizes as unknown as Json;
+
+/** Converte uma linha da tabela `products` no formato usado pela aplicação. */
+const mapProductRow = (row: ProductRow): Product => ({
+  _id: row.id,
+  reference: row.reference,
+  name: row.name,
+  image: row.image_url,
+  sizes: Array.isArray(row.sizes) ? (row.sizes as unknown as ProductSize[]) : [],
+  quantities: Array.isArray(row.quantities)
+    ? row.quantities.map(q => typeof q === 'number' ? { value: q } : q)
+    : [],
+  disabled: row.disabled,
+  companyId: row.company_id,
+  isNew: row.is_new,
+  outOfStock: row.out_of_stock
+});
 
 export const fetchProducts = async (companyId: string): Promise<Product[]> => {
   console.log('fetchProducts called for companyId:', companyId);
-  
+
   const { data, error } = await supabase
     .from('products')
     .select('*')
@@ -16,20 +38,7 @@ export const fetchProducts = async (companyId: string): Promise<Product[]> => {
 
   console.log('Raw products data from DB:', data);
 
-  const mappedProducts = (data || []).map(product => ({
-    _id: product.id,
-    reference: product.reference,
-    name: product.name,
-    image: product.image_url,
-    sizes: Array.isArray(product.sizes) ? (product.sizes as Array<{size: string; value: number}>) : [],
-    quantities: Array.isArray(product.quantities)
-      ? product.quantities.map(q => typeof q === 'number' ? { value: q } : q)
-      : [],
-    disabled: product.disabled,
-    companyId: product.company_id,
-    isNew: product.is_new,
-    outOfStock: product.out_of_stock
-  }));
+  const mappedProducts = (data || []).map(mapProductRow);
 
   console.log('Mapped products:', mappedProducts);
   return mappedProducts;
@@ -44,7 +53,7 @@ export const createProduct = async (product: ProductFormData, companyId: string)
       reference: product.reference,
       name: product.name,
       image_url: product.image,
-      sizes: product.sizes,
+      sizes: sizesToJson(product.sizes),
       quantities: product.quantities.map(q => q.value),
       company_id: companyId,
       is_new: product.isNew || false,
@@ -58,18 +67,7 @@ export const createProduct = async (product: ProductFormData, companyId: string)
     throw error;
   }
 
-  return {
-    _id: data.id,
-    reference: data.reference,
-    name: data.name,
-    image: data.image_url,
-    sizes: (data.sizes as Array<{size: string; value: number}>),
-    quantities: data.quantities.map(q => typeof q === 'number' ? { value: q } : q),
-    disabled: data.disabled,
-    companyId: data.company_id,
-    isNew: data.is_new,
-    outOfStock: data.out_of_stock
-  };
+  return mapProductRow(data);
 };
 
 export const updateProduct = async (productId: string, product: ProductFormData): Promise<Product> => {
@@ -84,7 +82,7 @@ export const updateProduct = async (productId: string, product: ProductFormData)
     reference: product.reference,
     name: product.name,
     image_url: product.image,
-    sizes: product.sizes,
+    sizes: sizesToJson(product.sizes),
     quantities: product.quantities.map(q => q.value),
     is_new: product.isNew || false,
     out_of_stock: product.outOfStock || false
@@ -106,18 +104,7 @@ export const updateProduct = async (productId: string, product: ProductFormData)
 
   console.log('Update response from DB:', data);
 
-  return {
-    _id: data.id,
-    reference: data.reference,
-    name: data.name,
-    image: data.image_url,
-    sizes: (data.sizes as Array<{size: string; value: number}>),
-    quantities: data.quantities.map(q => typeof q === 'number' ? { value: q } : q),
-    disabled: data.disabled,
-    companyId: data.company_id,
-    isNew: data.is_new,
-    outOfStock: data.out_of_stock
-  };
+  return mapProductRow(data);
 };
 
 export const toggleProductStatus = async (productId: string, disabled: boolean): Promise<Product> => {
@@ -133,18 +120,7 @@ export const toggleProductStatus = async (productId: string, disabled: boolean):
     throw error;
   }
 
-  return {
-    _id: data.id,
-    reference: data.reference,
-    name: data.name,
-    image: data.image_url,
-    sizes: (data.sizes as Array<{size: string; value: number}>),
-    quantities: data.quantities.map(q => typeof q === 'number' ? { value: q } : q),
-    disabled: data.disabled,
-    companyId: data.company_id,
-    isNew: data.is_new,
-    outOfStock: data.out_of_stock
-  };
+  return mapProductRow(data);
 };
 
 export const toggleProductOutOfStock = async (productId: string, outOfStock: boolean): Promise<Product> => {
@@ -160,18 +136,7 @@ export const toggleProductOutOfStock = async (productId: string, outOfStock: boo
     throw error;
   }
 
-  return {
-    _id: data.id,
-    reference: data.reference,
-    name: data.name,
-    image: data.image_url,
-    sizes: (data.sizes as Array<{size: string; value: number}>),
-    quantities: data.quantities.map(q => typeof q === 'number' ? { value: q } : q),
-    disabled: data.disabled,
-    companyId: data.company_id,
-    isNew: data.is_new,
-    outOfStock: data.out_of_stock
-  };
+  return mapProductRow(data);
 };
 
 export const deleteProduct = async (productId: string): Promise<void> => {

@@ -64,7 +64,8 @@ export const useOrderSubmission = ({
           size: size.size,
           price: size.price,
           quantity: size.quantity,
-          subtotal: size.subtotal
+          subtotal: size.subtotal,
+          futureDelivery: size.futureDelivery || false
         }))
       }));
 

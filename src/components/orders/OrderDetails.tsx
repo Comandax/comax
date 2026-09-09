@@ -2,6 +2,7 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { Order } from "@/types/order";
+import { splitOrderItems } from "@/lib/orderSections";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -38,12 +39,80 @@ const formatTime = (timeStr: string) => {
   return timeStr.split(':').slice(0, 2).join(':');
 };
 
+interface OrderItemsSectionProps {
+  title: string;
+  subtitle?: string;
+  items: Order['items'];
+  sectionTotal: number;
+  highlighted?: boolean;
+}
+
+const OrderItemsSection = ({
+  title,
+  subtitle,
+  items,
+  sectionTotal,
+  highlighted = false
+}: OrderItemsSectionProps) => (
+  <div className={highlighted ? "rounded-lg border border-amber-300 bg-amber-50/40 p-3" : ""}>
+    <div className="mb-3">
+      <h3 className={`font-semibold ${highlighted ? "text-amber-800" : ""}`}>{title}</h3>
+      {subtitle && <p className="text-xs text-gray-500">{subtitle}</p>}
+    </div>
+
+    <div className="space-y-4">
+      {items.map(item => (
+        <div key={`${item.productId}`} className="border border-gray-200 rounded-lg overflow-hidden bg-white">
+          <div className="bg-gray-100 p-3 font-semibold">
+            {item.reference} - {item.name}
+          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Tamanho</TableHead>
+                <TableHead>Quantidade</TableHead>
+                <TableHead className="text-right">Subtotal</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {item.sizes.map((size, index) => (
+                <TableRow
+                  key={`${item.productId}-${size.size}-${index}`}
+                  className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
+                >
+                  <TableCell>{size.size}</TableCell>
+                  <TableCell>{size.quantity}</TableCell>
+                  <TableCell className="text-right">
+                    R$ {size.subtotal.toFixed(2)}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      ))}
+    </div>
+
+    <div className="mt-2 text-right text-sm text-gray-600 pr-[20px]">
+      Subtotal: <span className="font-medium">R$ {sectionTotal.toFixed(2)}</span>
+    </div>
+  </div>
+);
+
 interface OrderDetailsProps {
   order: Order;
   onPrint?: () => void;
 }
 
 export const OrderDetails = ({ order, onPrint }: OrderDetailsProps) => {
+  const {
+    availableItems,
+    futureItems,
+    availableTotal,
+    futureTotal,
+    hasFutureItems
+  } = splitOrderItems(order.items);
+
   return (
     <ScrollArea className="h-[80vh]">
       <div className="space-y-6">
@@ -69,42 +138,37 @@ export const OrderDetails = ({ order, onPrint }: OrderDetailsProps) => {
           </div>
         </div>
 
-        <div className="pr-[10px]">
-          <h3 className="font-semibold mb-4">Itens do pedido</h3>
-          <div className="space-y-4">
-            {order.items.map(item => (
-              <div key={`${item.productId}`} className="border border-gray-200 rounded-lg overflow-hidden">
-                <div className="bg-gray-100 p-3 font-semibold">
-                  {item.reference} - {item.name}
+        <div className="pr-[10px] space-y-6">
+          <OrderItemsSection
+            title="Disponíveis para entrega"
+            items={availableItems}
+            sectionTotal={availableTotal}
+          />
+
+          {hasFutureItems && (
+            <OrderItemsSection
+              title="Entrega futura"
+              subtitle="Sujeito a disponibilidade"
+              items={futureItems}
+              sectionTotal={futureTotal}
+              highlighted
+            />
+          )}
+
+          <div className="mt-4 text-right pr-[20px] space-y-1">
+            <div className="font-semibold">
+              Total do pedido: R$ {availableTotal.toFixed(2)}
+            </div>
+            {hasFutureItems && (
+              <>
+                <div className="text-sm text-amber-800">
+                  Entrega futura: R$ {futureTotal.toFixed(2)}
                 </div>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Tamanho</TableHead>
-                      <TableHead>Quantidade</TableHead>
-                      <TableHead className="text-right">Subtotal</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {item.sizes.map((size, index) => (
-                      <TableRow 
-                        key={`${item.productId}-${size.size}-${index}`}
-                        className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}
-                      >
-                        <TableCell>{size.size}</TableCell>
-                        <TableCell>{size.quantity}</TableCell>
-                        <TableCell className="text-right">
-                          R$ {size.subtotal.toFixed(2)}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
-            ))}
-          </div>
-          <div className="mt-4 text-right font-semibold pr-[20px]">
-            Total do pedido: R$ {order.total.toFixed(2)}
+                <div className="text-sm text-gray-600">
+                  Total geral: R$ {(availableTotal + futureTotal).toFixed(2)}
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

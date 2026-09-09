@@ -26,9 +26,10 @@ const mockProducts: Product[] = [
     reference: "REF002",
     name: "Produto 2",
     sizes: [
-      { size: "P", value: 45 },
-      { size: "M", value: 50 },
-      { size: "G", value: 55 }
+      { size: "P", value: 45, available: true },
+      // Tamanho de entrega futura: mantém o preço, apenas não está disponível agora.
+      { size: "M", value: 50, available: false },
+      { size: "G", value: 55, available: true }
     ],
     quantities: [
       { value: 5 },
@@ -38,6 +39,23 @@ const mockProducts: Product[] = [
     disabled: false,
     companyId: "company1",
     isNew: true,
+    outOfStock: false
+  },
+  {
+    _id: "3",
+    reference: "REF003",
+    name: "Produto 3 (somente entrega futura)",
+    sizes: [
+      { size: "P", value: 70, available: false },
+      { size: "M", value: 75, available: false }
+    ],
+    quantities: [
+      { value: 5 },
+      { value: 10 }
+    ],
+    disabled: false,
+    companyId: "company1",
+    isNew: false,
     outOfStock: false
   }
 ];

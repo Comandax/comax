@@ -1,13 +1,17 @@
 
+export interface ProductSize {
+  size: string;
+  value: number;
+  /** Ausente ou true = disponível. Sempre leia com isSizeAvailable(). */
+  available?: boolean;
+}
+
 export interface Product {
   _id: string;
   reference: string;
   name: string;
   image?: string;
-  sizes: Array<{
-    size: string;
-    value: number;
-  }>;
+  sizes: ProductSize[];
   quantities: Array<{
     value: number;
   }>;
@@ -22,10 +26,7 @@ export type ProductFormData = {
   reference: string;
   name: string;
   image?: string;
-  sizes: Array<{
-    size: string;
-    value: number;
-  }>;
+  sizes: ProductSize[];
   quantities: Array<{
     value: number;
   }>;

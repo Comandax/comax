@@ -4,6 +4,10 @@ import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { useState, useEffect } from "react";
 import { Package } from "lucide-react";
+import { isSizeAvailable } from "@/lib/availability";
+import { FutureDeliveryBadge, FutureDeliveryNotice } from "./FutureDeliveryBadge";
+import { FutureDeliveryDialog } from "./FutureDeliveryDialog";
+import { useFutureDeliveryConfirm } from "./useFutureDeliveryConfirm";
 
 interface ProductSelectionCardProps {
   product: {
@@ -15,15 +19,20 @@ interface ProductSelectionCardProps {
       label: string;
       price: number;
       quantities: number[];
+      available?: boolean;
     }>;
     outOfStock?: boolean;
   };
-  onQuantitySelect: (size: string, quantity: number, price: number) => void;
+  onQuantitySelect: (size: string, quantity: number, price: number, futureDelivery?: boolean) => void;
   resetItem?: { size: string; productId: string; };
 }
 
 export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: ProductSelectionCardProps) => {
   const [selectedQuantities, setSelectedQuantities] = useState<Record<string, number>>({});
+  const futureDelivery = useFutureDeliveryConfirm();
+  const { forgetConfirmation } = futureDelivery;
+  const allSizesUnavailable =
+    product.sizes.length > 0 && product.sizes.every(size => !isSizeAvailable(size));
 
   useEffect(() => {
     if (resetItem && resetItem.productId === product.id) {
@@ -31,17 +40,25 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
         ...prev,
         [resetItem.size]: 0
       }));
+      forgetConfirmation(resetItem.size);
     }
-  }, [resetItem, product.id]);
+  }, [resetItem, product.id, forgetConfirmation]);
 
-  const handleQuantityChange = (size: string, quantity: number, price: number) => {
-    if (product.outOfStock) return;
-    
+  const applyQuantityChange = (size: string, quantity: number, price: number, isFuture: boolean) => {
     setSelectedQuantities(prev => ({
       ...prev,
       [size]: quantity
     }));
-    onQuantitySelect(size, quantity, price);
+    onQuantitySelect(size, quantity, price, isFuture);
+  };
+
+  const handleQuantityChange = (size: string, quantity: number, price: number, available: boolean) => {
+    if (product.outOfStock) return;
+
+    // A seleção só é aplicada após a confirmação; cancelar mantém o valor anterior.
+    futureDelivery.requestChange(size, available, () =>
+      applyQuantityChange(size, quantity, price, !available)
+    );
   };
 
   const formatCurrency = (value: number) => {
@@ -78,30 +95,43 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
           </div>
         ) : (
           <div className="space-y-3">
-            {product.sizes.map((size) => (
-              <div key={size.label} className="border rounded-lg p-3">
+            {allSizesUnavailable && <FutureDeliveryNotice />}
+
+            {product.sizes.map((size) => {
+              const available = isSizeAvailable(size);
+
+              return (
+              <div key={size.label} className={`border rounded-lg p-3 ${available ? '' : 'border-amber-300 bg-amber-50/40'}`}>
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-medium">{size.label}</span>
                   <span className="text-xs text-gray-500">{formatCurrency(size.price)}</span>
                 </div>
-                
+
+                {/* Com todos os tamanhos indisponíveis o aviso do topo já informa; o badge seria ruído. */}
+                {!available && !allSizesUnavailable && (
+                  <div className="mb-2">
+                    <FutureDeliveryBadge />
+                  </div>
+                )}
+
                 <RadioGroup
                   value={selectedQuantities[size.label]?.toString() || "0"}
                   onValueChange={(value) => {
-                    handleQuantityChange(size.label, Number(value), size.price);
+                    handleQuantityChange(size.label, Number(value), size.price, available);
                   }}
-                  className="grid grid-cols-3 gap-2"
+                  className="flex flex-wrap gap-x-3 gap-y-2"
                 >
-                  {size.quantities.map((qty) => (
+                  {/* O 0 permite desmarcar o tamanho, como já acontece no modo select. */}
+                  {[0, ...size.quantities].map((qty) => (
                     <div key={qty} className="flex items-center gap-1">
-                      <RadioGroupItem 
-                        value={qty.toString()} 
+                      <RadioGroupItem
+                        value={qty.toString()}
                         id={`${product.id}-${size.label}-${qty}-compact`}
                         className="scale-75"
                       />
                       <Label
                         htmlFor={`${product.id}-${size.label}-${qty}-compact`}
-                        className="text-xs"
+                        className="text-xs cursor-pointer"
                       >
                         {qty}
                       </Label>
@@ -109,10 +139,19 @@ export const ProductSelectionCard = ({ product, onQuantitySelect, resetItem }: P
                   ))}
                 </RadioGroup>
               </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>
+
+      <FutureDeliveryDialog
+        open={futureDelivery.isDialogOpen}
+        productName={product.name}
+        size={futureDelivery.pendingSize ?? ""}
+        onConfirm={futureDelivery.confirm}
+        onCancel={futureDelivery.cancel}
+      />
     </Card>
   );
 };
